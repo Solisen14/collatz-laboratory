@@ -34,6 +34,8 @@ const stageTitle = document.getElementById("stage-title");
 const statusPill = document.getElementById("status-pill");
 const storySteps = [...document.querySelectorAll(".story-step")];
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+
 function clearTimers() {
   state.timers.forEach(clearTimeout);
   state.timers = [];
@@ -63,12 +65,109 @@ function colourForNode(start, index) {
 }
 
 /*
- * The opening path is built once at its final width. We then reveal nodes
- * inside that fixed geometry. Existing numbers never move when a new value
- * appears, so the sequence grows from left to right rather than snapping.
+ * The opening sequence gets its own fixed SVG coordinate system. Every number
+ * has a permanent position from the moment the scene is created, so revealing
+ * a new value never causes an earlier value to reflow, vanish, or jump.
  */
+function ensurePrimaryStyles() {
+  if (document.getElementById("primary-sequence-styles")) return;
+
+  const style = document.createElement("style");
+  style.id = "primary-sequence-styles";
+  style.textContent = `
+    .primary-sequence-row {
+      grid-template-columns: 92px minmax(0, 1fr);
+    }
+
+    .primary-svg-shell {
+      position: relative;
+      width: 100%;
+      height: 118px;
+      overflow: visible;
+    }
+
+    .primary-path-svg {
+      display: block;
+      width: 100%;
+      height: 118px;
+      overflow: visible;
+    }
+
+    .primary-line {
+      fill: none;
+      stroke: #7ae7ff;
+      stroke-width: 1.35;
+      stroke-linecap: round;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      filter: drop-shadow(0 0 5px rgba(122, 231, 255, .28));
+      transition: stroke-dashoffset .52s cubic-bezier(.2,.78,.25,1);
+    }
+
+    .primary-segment.visible .primary-line {
+      stroke-dashoffset: 0;
+    }
+
+    .primary-arrow {
+      fill: #7ae7ff;
+      opacity: 0;
+      filter: drop-shadow(0 0 5px rgba(122, 231, 255, .4));
+      transition: opacity .16s ease .42s;
+    }
+
+    .primary-segment.visible .primary-arrow {
+      opacity: .95;
+    }
+
+    .primary-node {
+      opacity: 0;
+      transform: translateY(7px) scale(.94);
+      transform-box: fill-box;
+      transform-origin: center;
+      transition:
+        opacity .34s ease,
+        transform .46s cubic-bezier(.16,.78,.28,1);
+    }
+
+    .primary-node.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .primary-node circle {
+      fill: rgba(9, 14, 22, .96);
+      stroke: #7ae7ff;
+      stroke-width: 1.25;
+      filter: drop-shadow(0 0 10px rgba(122, 231, 255, .25));
+    }
+
+    .primary-node text {
+      fill: #f8fbff;
+      font: 500 17px Inter, ui-sans-serif, system-ui, sans-serif;
+      text-anchor: middle;
+      dominant-baseline: central;
+      font-variant-numeric: tabular-nums;
+      user-select: none;
+    }
+
+    .primary-node.final-node circle {
+      stroke-width: 1.55;
+      filter: drop-shadow(0 0 16px rgba(122, 231, 255, .46));
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function svgElement(name, attributes = {}) {
+  const element = document.createElementNS(SVG_NS, name);
+  Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, String(value)));
+  return element;
+}
+
 function buildPrimaryPath() {
   clearTimers();
+  ensurePrimaryStyles();
+
   sequenceArea.innerHTML = "";
   sequenceArea.dataset.mode = "primary-3";
   sequenceArea.dataset.revealCount = "0";
@@ -81,88 +180,115 @@ function buildPrimaryPath() {
   label.className = "row-label";
   label.textContent = "START 3";
 
-  const track = document.createElement("div");
-  track.className = "path-track primary-path-track";
+  const shell = document.createElement("div");
+  shell.className = "primary-svg-shell";
 
-  values.forEach((value, index) => {
-    const wrap = document.createElement("div");
-    wrap.className = "node-wrap";
-    wrap.dataset.index = String(index);
-
-    const node = document.createElement("div");
-    node.className = "path-node colour-cyan";
-    node.textContent = value;
-
-    if (index === values.length - 1) {
-      node.classList.add("end-node");
-    }
-
-    wrap.appendChild(node);
-
-    if (index < values.length - 1) {
-      const connector = document.createElement("div");
-      connector.className = "connector colour-cyan";
-      wrap.appendChild(connector);
-    }
-
-    track.appendChild(wrap);
+  const svg = svgElement("svg", {
+    class: "primary-path-svg",
+    viewBox: "0 0 1000 118",
+    preserveAspectRatio: "xMidYMid meet",
+    role: "img",
+    "aria-label": "The Collatz sequence beginning at 3"
   });
 
-  rowEl.append(label, track);
+  // 3 begins near the left edge and 1 lands near the far right. All eight
+  // positions exist from the start, even while most of them remain invisible.
+  const left = 36;
+  const right = 964;
+  const y = 59;
+  const radius = 27;
+  const step = (right - left) / (values.length - 1);
+  const xs = values.map((_, index) => left + step * index);
+
+  for (let index = 0; index < values.length - 1; index++) {
+    const x1 = xs[index] + radius + 7;
+    const nextCircleLeft = xs[index + 1] - radius;
+    const arrowTip = nextCircleLeft - 7;
+    const lineEnd = arrowTip - 10;
+
+    const group = svgElement("g", {
+      class: "primary-segment",
+      "data-segment-index": index
+    });
+
+    const line = svgElement("line", {
+      class: "primary-line",
+      x1,
+      y1: y,
+      x2: lineEnd,
+      y2: y,
+      pathLength: 1
+    });
+
+    const arrow = svgElement("polygon", {
+      class: "primary-arrow",
+      points: `${arrowTip},${y} ${arrowTip - 10},${y - 5.5} ${arrowTip - 10},${y + 5.5}`
+    });
+
+    group.append(line, arrow);
+    svg.appendChild(group);
+  }
+
+  values.forEach((value, index) => {
+    const group = svgElement("g", {
+      class: `primary-node${index === values.length - 1 ? " final-node" : ""}`,
+      "data-node-index": index
+    });
+
+    const circle = svgElement("circle", {
+      cx: xs[index],
+      cy: y,
+      r: radius
+    });
+
+    const text = svgElement("text", {
+      x: xs[index],
+      y
+    });
+    text.textContent = value;
+
+    group.append(circle, text);
+    svg.appendChild(group);
+  });
+
+  shell.appendChild(svg);
+  rowEl.append(label, shell);
   sequenceArea.appendChild(rowEl);
 }
 
 function revealPrimaryPath(targetCount) {
-  clearTimers();
-
   if (sequenceArea.dataset.mode !== "primary-3") {
     buildPrimaryPath();
   }
 
-  const wraps = [...sequenceArea.querySelectorAll(".node-wrap")];
+  const nodes = [...sequenceArea.querySelectorAll(".primary-node")];
+  const segments = [...sequenceArea.querySelectorAll(".primary-segment")];
   const previousCount = Number(sequenceArea.dataset.revealCount || 0);
-  const count = Math.max(0, Math.min(targetCount, wraps.length));
+  const count = Math.max(0, Math.min(targetCount, nodes.length));
 
-  // Scrolling backwards simply rolls the reveal back while keeping geometry fixed.
-  if (count < previousCount) {
-    wraps.forEach((wrap, index) => {
-      const node = wrap.querySelector(".path-node");
-      const connector = wrap.querySelector(".connector");
-      node.classList.toggle("visible", index < count);
-      if (connector) connector.classList.toggle("visible", index < count - 1);
-    });
-    sequenceArea.dataset.revealCount = String(count);
-    return;
-  }
-
-  // Ensure everything already revealed remains visible and anchored.
-  wraps.forEach((wrap, index) => {
-    if (index < previousCount) {
-      wrap.querySelector(".path-node")?.classList.add("visible");
-      if (index < previousCount - 1) {
-        wrap.querySelector(".connector")?.classList.add("visible");
-      }
-    }
-  });
+  // The opening story is cumulative. Once a number has arrived, subsequent
+  // scroll events never remove it. This prevents the visible stutter caused by
+  // crossing a scene boundary and immediately re-rendering the same number.
+  if (count <= previousCount) return;
 
   if (previousCount === 0 && count > 0) {
-    wraps[0]?.querySelector(".path-node")?.classList.add("visible");
+    nodes[0]?.classList.add("visible");
   }
 
-  // Each new step draws its connector first, then lets the next integer flow in.
-  const firstNewIndex = Math.max(1, previousCount);
-  for (let index = firstNewIndex; index < count; index++) {
-    const stepOffset = index - firstNewIndex;
-    const connectorDelay = stepOffset * 620 + 80;
-    const nodeDelay = connectorDelay + 360;
+  const firstNewNode = Math.max(1, previousCount);
 
-    const previousConnector = wraps[index - 1]?.querySelector(".connector");
-    const node = wraps[index]?.querySelector(".path-node");
+  for (let nodeIndex = firstNewNode; nodeIndex < count; nodeIndex++) {
+    const sequenceOffset = nodeIndex - firstNewNode;
+    const segmentDelay = sequenceOffset * 650 + 70;
+    const nodeDelay = segmentDelay + 470;
 
-    if (previousConnector) {
+    const segment = segments[nodeIndex - 1];
+    const node = nodes[nodeIndex];
+
+    if (segment) {
       state.timers.push(setTimeout(() => {
-        previousConnector.classList.add("visible");
-      }, connectorDelay));
+        segment.classList.add("visible");
+      }, segmentDelay));
     }
 
     if (node) {
