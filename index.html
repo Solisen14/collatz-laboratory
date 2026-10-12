@@ -108,7 +108,7 @@
           <div class="step-card">
             <p class="step-number">YOUR TURN</p>
             <h3>Trace both paths.</h3>
-            <p>Select 20 and 21. Each path will be added to the stage so all three seven-step examples can be compared together.</p>
+            <p>Select both 20 and 21 before continuing. Each path will be added to the stage so all three seven-step examples can be compared together.</p>
             <div style="display:flex; gap:12px; margin-top:20px;">
               <button class="choice-button" type="button" onclick="const b=document.querySelector('#choice-panel [data-seven=\'20\']'); if(b){b.click(); this.classList.add('done'); this.textContent='20 ✓';}">20</button>
               <button class="choice-button" type="button" onclick="const b=document.querySelector('#choice-panel [data-seven=\'21\']'); if(b){b.click(); this.classList.add('done'); this.textContent='21 ✓';}">21</button>
@@ -127,8 +127,8 @@
         <article class="story-step choice-step" data-scene="test-conjecture">
           <div class="step-card">
             <p class="step-number">TEST IT</p>
-            <h3>Choose a new starting value.</h3>
-            <p>6, 40, and 42 each have something interesting in common with the paths you have already seen.</p>
+            <h3>Test all three starting values.</h3>
+            <p>Select 6, 40, and 42 before continuing. Each one tests the seven-step conjecture in a related way.</p>
             <div style="display:flex; gap:12px; margin-top:20px;">
               <button class="choice-button test-card-choice" type="button" data-test-card="6" onclick="triggerTestChoice(6, this)">6</button>
               <button class="choice-button test-card-choice" type="button" data-test-card="40" onclick="triggerTestChoice(40, this)">40</button>
@@ -255,5 +255,6 @@
       if (hiddenButton) hiddenButton.click();
     }
   </script>
+  <script src="gate.js?v=20261012-1909"></script>
 </body>
 </html>
