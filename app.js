@@ -35,6 +35,10 @@ const statusPill = document.getElementById("status-pill");
 const storySteps = [...document.querySelectorAll(".story-step")];
 
 const SVG_NS = "http://www.w3.org/2000/svg";
+const PRIMARY_LEFT = 36;
+const PRIMARY_RIGHT = 964;
+const PRIMARY_Y = 59;
+const PRIMARY_RADIUS = 27;
 
 function clearTimers() {
   state.timers.forEach(clearTimeout);
@@ -64,11 +68,15 @@ function colourForNode(start, index) {
   return palette[start] || "cyan";
 }
 
-/*
- * The opening sequence gets its own fixed SVG coordinate system. Every number
- * has a permanent position from the moment the scene is created, so revealing
- * a new value never causes an earlier value to reflow, vanish, or jump.
- */
+function cssColour(name) {
+  return {
+    cyan: "#7ae7ff",
+    violet: "#9f8cff",
+    pink: "#ff78b8",
+    gold: "#ffd479"
+  }[name] || "#7ae7ff";
+}
+
 function ensurePrimaryStyles() {
   if (document.getElementById("primary-sequence-styles")) return;
 
@@ -95,12 +103,10 @@ function ensurePrimaryStyles() {
 
     .primary-line {
       fill: none;
-      stroke: #7ae7ff;
       stroke-width: 1.35;
       stroke-linecap: round;
       stroke-dasharray: 1;
       stroke-dashoffset: 1;
-      filter: drop-shadow(0 0 5px rgba(122, 231, 255, .28));
       transition: stroke-dashoffset .52s cubic-bezier(.2,.78,.25,1);
     }
 
@@ -109,9 +115,7 @@ function ensurePrimaryStyles() {
     }
 
     .primary-arrow {
-      fill: #7ae7ff;
       opacity: 0;
-      filter: drop-shadow(0 0 5px rgba(122, 231, 255, .4));
       transition: opacity .16s ease .42s;
     }
 
@@ -124,9 +128,7 @@ function ensurePrimaryStyles() {
       transform: translateY(7px) scale(.94);
       transform-box: fill-box;
       transform-origin: center;
-      transition:
-        opacity .34s ease,
-        transform .46s cubic-bezier(.16,.78,.28,1);
+      transition: opacity .34s ease, transform .46s cubic-bezier(.16,.78,.28,1);
     }
 
     .primary-node.visible {
@@ -136,9 +138,7 @@ function ensurePrimaryStyles() {
 
     .primary-node circle {
       fill: rgba(9, 14, 22, .96);
-      stroke: #7ae7ff;
       stroke-width: 1.25;
-      filter: drop-shadow(0 0 10px rgba(122, 231, 255, .25));
     }
 
     .primary-node text {
@@ -152,7 +152,18 @@ function ensurePrimaryStyles() {
 
     .primary-node.final-node circle {
       stroke-width: 1.55;
-      filter: drop-shadow(0 0 16px rgba(122, 231, 255, .46));
+    }
+
+    .comparison-label {
+      font: 750 9px Inter, ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+
+    .comparison-label.visible {
+      opacity: .72;
     }
   `;
   document.head.appendChild(style);
@@ -164,6 +175,83 @@ function svgElement(name, attributes = {}) {
   return element;
 }
 
+function xPositions(count) {
+  const step = (PRIMARY_RIGHT - PRIMARY_LEFT) / (count - 1);
+  return Array.from({ length: count }, (_, index) => PRIMARY_LEFT + step * index);
+}
+
+function appendSvgSequence(svg, start, y, colourName, options = {}) {
+  const values = sequences[start];
+  const xs = xPositions(values.length);
+  const colour = cssColour(colourName);
+  const rowKey = String(start);
+
+  const label = svgElement("text", {
+    class: `comparison-label${options.labelVisible ? " visible" : ""}`,
+    x: PRIMARY_LEFT,
+    y: y - 43,
+    fill: colour,
+    "data-row-label": rowKey
+  });
+  label.textContent = `START ${start}`;
+  svg.appendChild(label);
+
+  for (let index = 0; index < values.length - 1; index++) {
+    const x1 = xs[index] + PRIMARY_RADIUS + 7;
+    const nextCircleLeft = xs[index + 1] - PRIMARY_RADIUS;
+    const arrowTip = nextCircleLeft - 7;
+    const lineEnd = arrowTip - 10;
+
+    const group = svgElement("g", {
+      class: `primary-segment${options.visible ? " visible" : ""}`,
+      "data-row-start": rowKey,
+      "data-segment-index": index
+    });
+
+    const line = svgElement("line", {
+      class: "primary-line",
+      x1,
+      y1: y,
+      x2: lineEnd,
+      y2: y,
+      pathLength: 1,
+      stroke: colour,
+      style: `filter: drop-shadow(0 0 5px ${colour}55)`
+    });
+
+    const arrow = svgElement("polygon", {
+      class: "primary-arrow",
+      points: `${arrowTip},${y} ${arrowTip - 10},${y - 5.5} ${arrowTip - 10},${y + 5.5}`,
+      fill: colour,
+      style: `filter: drop-shadow(0 0 5px ${colour}66)`
+    });
+
+    group.append(line, arrow);
+    svg.appendChild(group);
+  }
+
+  values.forEach((value, index) => {
+    const group = svgElement("g", {
+      class: `primary-node${index === values.length - 1 ? " final-node" : ""}${options.visible ? " visible" : ""}`,
+      "data-row-start": rowKey,
+      "data-node-index": index
+    });
+
+    const circle = svgElement("circle", {
+      cx: xs[index],
+      cy: y,
+      r: PRIMARY_RADIUS,
+      stroke: colour,
+      style: `filter: drop-shadow(0 0 ${index === values.length - 1 ? 16 : 10}px ${colour}${index === values.length - 1 ? "75" : "45"})`
+    });
+
+    const text = svgElement("text", { x: xs[index], y });
+    text.textContent = value;
+    group.append(circle, text);
+    svg.appendChild(group);
+  });
+}
+
 function buildPrimaryPath() {
   clearTimers();
   ensurePrimaryStyles();
@@ -172,7 +260,6 @@ function buildPrimaryPath() {
   sequenceArea.dataset.mode = "primary-3";
   sequenceArea.dataset.revealCount = "0";
 
-  const values = sequences[3];
   const rowEl = document.createElement("div");
   rowEl.className = "sequence-row primary-sequence-row";
 
@@ -191,65 +278,7 @@ function buildPrimaryPath() {
     "aria-label": "The Collatz sequence beginning at 3"
   });
 
-  // 3 begins near the left edge and 1 lands near the far right. All eight
-  // positions exist from the start, even while most of them remain invisible.
-  const left = 36;
-  const right = 964;
-  const y = 59;
-  const radius = 27;
-  const step = (right - left) / (values.length - 1);
-  const xs = values.map((_, index) => left + step * index);
-
-  for (let index = 0; index < values.length - 1; index++) {
-    const x1 = xs[index] + radius + 7;
-    const nextCircleLeft = xs[index + 1] - radius;
-    const arrowTip = nextCircleLeft - 7;
-    const lineEnd = arrowTip - 10;
-
-    const group = svgElement("g", {
-      class: "primary-segment",
-      "data-segment-index": index
-    });
-
-    const line = svgElement("line", {
-      class: "primary-line",
-      x1,
-      y1: y,
-      x2: lineEnd,
-      y2: y,
-      pathLength: 1
-    });
-
-    const arrow = svgElement("polygon", {
-      class: "primary-arrow",
-      points: `${arrowTip},${y} ${arrowTip - 10},${y - 5.5} ${arrowTip - 10},${y + 5.5}`
-    });
-
-    group.append(line, arrow);
-    svg.appendChild(group);
-  }
-
-  values.forEach((value, index) => {
-    const group = svgElement("g", {
-      class: `primary-node${index === values.length - 1 ? " final-node" : ""}`,
-      "data-node-index": index
-    });
-
-    const circle = svgElement("circle", {
-      cx: xs[index],
-      cy: y,
-      r: radius
-    });
-
-    const text = svgElement("text", {
-      x: xs[index],
-      y
-    });
-    text.textContent = value;
-
-    group.append(circle, text);
-    svg.appendChild(group);
-  });
+  appendSvgSequence(svg, 3, PRIMARY_Y, "cyan", { visible: false, labelVisible: false });
 
   shell.appendChild(svg);
   rowEl.append(label, shell);
@@ -261,14 +290,11 @@ function revealPrimaryPath(targetCount) {
     buildPrimaryPath();
   }
 
-  const nodes = [...sequenceArea.querySelectorAll(".primary-node")];
-  const segments = [...sequenceArea.querySelectorAll(".primary-segment")];
+  const nodes = [...sequenceArea.querySelectorAll('[data-row-start="3"].primary-node')];
+  const segments = [...sequenceArea.querySelectorAll('[data-row-start="3"].primary-segment')];
   const previousCount = Number(sequenceArea.dataset.revealCount || 0);
   const count = Math.max(0, Math.min(targetCount, nodes.length));
 
-  // The opening story is cumulative. Once a number has arrived, subsequent
-  // scroll events never remove it. This prevents the visible stutter caused by
-  // crossing a scene boundary and immediately re-rendering the same number.
   if (count <= previousCount) return;
 
   if (previousCount === 0 && count > 0) {
@@ -276,29 +302,75 @@ function revealPrimaryPath(targetCount) {
   }
 
   const firstNewNode = Math.max(1, previousCount);
-
   for (let nodeIndex = firstNewNode; nodeIndex < count; nodeIndex++) {
-    const sequenceOffset = nodeIndex - firstNewNode;
-    const segmentDelay = sequenceOffset * 650 + 70;
+    const offset = nodeIndex - firstNewNode;
+    const segmentDelay = offset * 650 + 70;
     const nodeDelay = segmentDelay + 470;
-
     const segment = segments[nodeIndex - 1];
     const node = nodes[nodeIndex];
 
     if (segment) {
-      state.timers.push(setTimeout(() => {
-        segment.classList.add("visible");
-      }, segmentDelay));
+      state.timers.push(setTimeout(() => segment.classList.add("visible"), segmentDelay));
     }
-
     if (node) {
-      state.timers.push(setTimeout(() => {
-        node.classList.add("visible");
-      }, nodeDelay));
+      state.timers.push(setTimeout(() => node.classList.add("visible"), nodeDelay));
     }
   }
 
   sequenceArea.dataset.revealCount = String(count);
+}
+
+function makePrimaryThreeFullyVisible() {
+  sequenceArea.querySelectorAll('[data-row-start="3"].primary-node, [data-row-start="3"].primary-segment')
+    .forEach(el => el.classList.add("visible"));
+  sequenceArea.dataset.revealCount = "8";
+}
+
+function ensureComparisonStage() {
+  ensurePrimaryStyles();
+  clearTimers();
+
+  if (sequenceArea.dataset.mode === "comparison-seven") return;
+
+  if (sequenceArea.dataset.mode !== "primary-3") {
+    buildPrimaryPath();
+  }
+
+  makePrimaryThreeFullyVisible();
+
+  const svg = sequenceArea.querySelector(".primary-path-svg");
+  if (!svg) return;
+
+  appendSvgSequence(svg, 20, -55, "violet", { visible: false, labelVisible: false });
+  appendSvgSequence(svg, 21, 173, "pink", { visible: false, labelVisible: false });
+
+  sequenceArea.dataset.mode = "comparison-seven";
+}
+
+function setComparisonRowVisible(start, animate = true) {
+  ensureComparisonStage();
+  const rowKey = String(start);
+  const nodes = [...sequenceArea.querySelectorAll(`[data-row-start="${rowKey}"].primary-node`)];
+  const segments = [...sequenceArea.querySelectorAll(`[data-row-start="${rowKey}"].primary-segment`)];
+  const label = sequenceArea.querySelector(`[data-row-label="${rowKey}"]`);
+
+  if (!animate) {
+    label?.classList.add("visible");
+    segments.forEach(segment => segment.classList.add("visible"));
+    nodes.forEach(node => node.classList.add("visible"));
+    return;
+  }
+
+  label?.classList.add("visible");
+  nodes[0]?.classList.add("visible");
+
+  for (let nodeIndex = 1; nodeIndex < nodes.length; nodeIndex++) {
+    const offset = nodeIndex - 1;
+    const segmentDelay = offset * 260 + 80;
+    const nodeDelay = segmentDelay + 190;
+    state.timers.push(setTimeout(() => segments[nodeIndex - 1]?.classList.add("visible"), segmentDelay));
+    state.timers.push(setTimeout(() => nodes[nodeIndex]?.classList.add("visible"), nodeDelay));
+  }
 }
 
 function renderRows(rows, options = {}) {
@@ -328,18 +400,13 @@ function renderRows(rows, options = {}) {
       node.className = `path-node colour-${colour}`;
       node.textContent = value;
 
-      if (mergeParent[row.start] && index >= 1) {
-        node.classList.add("shared-node");
-      }
-      if (index === values.length - 1 && value === 1) {
-        node.classList.add("end-node");
-      }
-
+      if (mergeParent[row.start] && index >= 1) node.classList.add("shared-node");
+      if (index === values.length - 1 && value === 1) node.classList.add("end-node");
       wrap.appendChild(node);
 
       if (index < values.length - 1) {
         const connector = document.createElement("div");
-        const connectorColour = mergeParent[row.start] && index >= 0
+        const connectorColour = mergeParent[row.start]
           ? (index === 0 ? palette[mergeParent[row.start]] : colourForNode(row.start, index + 1))
           : colour;
         connector.className = `connector colour-${connectorColour}`;
@@ -347,14 +414,11 @@ function renderRows(rows, options = {}) {
       }
 
       track.appendChild(wrap);
-
       const delay = 110 + rowIndex * 120 + index * (rows.length > 1 ? 95 : 170);
       state.timers.push(setTimeout(() => {
         node.classList.add("visible");
         const connector = wrap.querySelector(".connector");
-        if (connector) {
-          state.timers.push(setTimeout(() => connector.classList.add("visible"), 150));
-        }
+        if (connector) state.timers.push(setTimeout(() => connector.classList.add("visible"), 150));
       }, delay));
     });
 
@@ -363,29 +427,9 @@ function renderRows(rows, options = {}) {
   });
 }
 
-function sevenStepRows() {
-  return [3, 20, 21].map(start => ({ start, values: sequences[start] }));
-}
-
-function renderSevenChoiceScene() {
-  const starts = [3, ...state.tracedSeven];
-  renderRows(starts.map(start => ({ start, values: sequences[start] })));
-  stageTitle.textContent = state.tracedSeven.size === 2
-    ? "Different starts. Same destination."
-    : "Choose another starting number.";
-
-  showSevenChoices();
-
-  if (state.tracedSeven.size === 2) {
-    showStatus("20 + 21 traced · 7 steps each");
-  } else {
-    showStatus(`${state.tracedSeven.size} of 2 new paths traced`);
-  }
-}
-
 function showSevenChoices() {
   choicePanel.innerHTML = `
-    <div class="choice-label">Trace both paths</div>
+    <div class="choice-label">Add both seven-step paths</div>
     ${[20, 21].map(value => `
       <button class="choice-button ${state.tracedSeven.has(value) ? "done" : ""}" data-seven="${value}">
         ${value}${state.tracedSeven.has(value) ? " ✓" : ""}
@@ -397,10 +441,36 @@ function showSevenChoices() {
   choicePanel.querySelectorAll("[data-seven]").forEach(button => {
     button.addEventListener("click", () => {
       const value = Number(button.dataset.seven);
-      state.tracedSeven.add(value);
-      renderSevenChoiceScene();
+      if (!state.tracedSeven.has(value)) {
+        state.tracedSeven.add(value);
+        setComparisonRowVisible(value, true);
+      }
+
+      showSevenChoices();
+      if (state.tracedSeven.size === 2) {
+        stageTitle.textContent = "Three different starts. Three seven-step paths.";
+        showStatus("3 paths · 7 steps each");
+      } else {
+        stageTitle.textContent = "Choose the other starting number.";
+        showStatus(`${state.tracedSeven.size} of 2 new paths traced`);
+      }
     });
   });
+}
+
+function renderSevenChoiceScene() {
+  ensureComparisonStage();
+  makePrimaryThreeFullyVisible();
+  state.tracedSeven.forEach(start => setComparisonRowVisible(start, false));
+
+  stageTitle.textContent = state.tracedSeven.size === 2
+    ? "Three different starts. Three seven-step paths."
+    : "Choose another starting number.";
+
+  showSevenChoices();
+  showStatus(state.tracedSeven.size === 2
+    ? "3 paths · 7 steps each"
+    : `${state.tracedSeven.size} of 2 new paths traced`);
 }
 
 function showTestChoices() {
@@ -427,13 +497,16 @@ function showTestChoices() {
 
 function renderConjectureScene() {
   if (state.tracedSeven.size < 2) {
-    stageTitle.textContent = "Trace both paths before you move on.";
     renderSevenChoiceScene();
-    showPrompt("The conjecture is stronger if all three examples are visible.");
+    stageTitle.textContent = "Trace both paths before you move on.";
+    showPrompt("Test both 20 and 21 before making the conjecture.");
     return;
   }
 
-  renderRows(sevenStepRows());
+  ensureComparisonStage();
+  makePrimaryThreeFullyVisible();
+  setComparisonRowVisible(20, false);
+  setComparisonRowVisible(21, false);
   stageTitle.textContent = "Three paths. Seven steps each.";
   showStatus("3 examples · 7 steps");
   showPrompt("A pattern across examples can suggest a conjecture. It does not prove one.");
