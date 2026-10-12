@@ -129,6 +129,11 @@
             <p class="step-number">TEST IT</p>
             <h3>Choose a new starting value.</h3>
             <p>6, 40, and 42 each have something interesting in common with the paths you have already seen.</p>
+            <div style="display:flex; gap:12px; margin-top:20px;">
+              <button class="choice-button test-card-choice" type="button" data-test-card="6" onclick="triggerTestChoice(6, this)">6</button>
+              <button class="choice-button test-card-choice" type="button" data-test-card="40" onclick="triggerTestChoice(40, this)">40</button>
+              <button class="choice-button test-card-choice" type="button" data-test-card="42" onclick="triggerTestChoice(42, this)">42</button>
+            </div>
           </div>
         </article>
 
@@ -158,5 +163,97 @@
   </main>
 
   <script src="app.js?v=20261012-1652"></script>
+  <script>
+    // Prototype patch: keep the same SVG + arrow visual language for the
+    // counterexample stage instead of falling back to the older flex-row view.
+    const legacyRenderRows = renderRows;
+    const legacySetScene = setScene;
+
+    function renderArrowTestPath(start, animate = true) {
+      clearTimers();
+      ensurePrimaryStyles();
+
+      sequenceArea.innerHTML = "";
+      sequenceArea.dataset.mode = "test-eight";
+      delete sequenceArea.dataset.revealCount;
+
+      const rowEl = document.createElement("div");
+      rowEl.className = "sequence-row primary-sequence-row";
+
+      const label = document.createElement("div");
+      label.className = "row-label";
+      label.textContent = `START ${start}`;
+
+      const shell = document.createElement("div");
+      shell.className = "primary-svg-shell";
+
+      const svg = svgElement("svg", {
+        class: "primary-path-svg",
+        viewBox: "0 0 1000 118",
+        preserveAspectRatio: "xMidYMid meet",
+        role: "img",
+        "aria-label": `The Collatz sequence beginning at ${start}`
+      });
+
+      appendSvgSequence(svg, start, PRIMARY_Y, "gold", { visible: !animate, labelVisible: false });
+      shell.appendChild(svg);
+      rowEl.append(label, shell);
+      sequenceArea.appendChild(rowEl);
+
+      if (!animate) return;
+
+      const nodes = [...sequenceArea.querySelectorAll(`[data-row-start="${start}"].primary-node`)];
+      const segments = [...sequenceArea.querySelectorAll(`[data-row-start="${start}"].primary-segment`)];
+      nodes[0]?.classList.add("visible");
+
+      for (let nodeIndex = 1; nodeIndex < nodes.length; nodeIndex++) {
+        const offset = nodeIndex - 1;
+        const segmentDelay = offset * 280 + 80;
+        const nodeDelay = segmentDelay + 205;
+        state.timers.push(setTimeout(() => segments[nodeIndex - 1]?.classList.add("visible"), segmentDelay));
+        state.timers.push(setTimeout(() => nodes[nodeIndex]?.classList.add("visible"), nodeDelay));
+      }
+    }
+
+    renderRows = function(rows, options = {}) {
+      if (rows.length === 1 && [6, 40, 42].includes(Number(rows[0].start))) {
+        renderArrowTestPath(Number(rows[0].start), state.scene !== "refine");
+        return;
+      }
+      return legacyRenderRows(rows, options);
+    };
+
+    setScene = function(scene) {
+      if (scene === "test-conjecture" && scene !== state.scene) {
+        state.scene = scene;
+        hideTransientUI();
+        stageTitle.textContent = "Try to break the conjecture.";
+
+        if (state.tested) {
+          renderArrowTestPath(state.tested, false);
+          showStatus("8 steps");
+          showPrompt(`After one move, ${state.tested} joins the path that began at ${mergeParent[state.tested]}.`);
+        } else {
+          ensureComparisonStage();
+          makePrimaryThreeFullyVisible();
+          setComparisonRowVisible(20, false);
+          setComparisonRowVisible(21, false);
+          showStatus("Choose 6, 40, or 42");
+        }
+
+        showTestChoices();
+        return;
+      }
+
+      return legacySetScene(scene);
+    };
+
+    function triggerTestChoice(value, element) {
+      document.querySelectorAll(".test-card-choice").forEach(button => button.classList.remove("active"));
+      element?.classList.add("active");
+      const hiddenButton = document.querySelector(`#choice-panel [data-test="${value}"]`);
+      if (hiddenButton) hiddenButton.click();
+    }
+  </script>
 </body>
 </html>
