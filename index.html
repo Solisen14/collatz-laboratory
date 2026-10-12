@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07090f" />
+  <title>The Collatz Laboratory</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="The Collatz Laboratory home">
+      <span class="brand-mark"></span>
+      <span>THE COLLATZ LABORATORY</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a class="active" href="#story">STORY</a>
+      <span class="nav-placeholder" title="Coming later">VISUALIZE</span>
+      <span class="nav-placeholder" title="Coming later">EXPERIMENT</span>
+      <span class="nav-placeholder" title="Coming later">ABOUT</span>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-glow"></div>
+      <p class="eyebrow reveal-up">MATH 674-4 · GROUP 14</p>
+      <h1 id="hero-title" class="reveal-up">The Collatz<br /><span>Laboratory</span></h1>
+      <p class="hero-sub reveal-up">One number. Two rules. A question nobody has answered.</p>
+      <a class="scroll-cue" href="#story" aria-label="Begin the story">
+        <span>BEGIN</span>
+        <span class="scroll-line"></span>
+      </a>
+    </section>
+
+    <section id="story" class="story-shell">
+      <div class="sticky-stage" aria-live="polite">
+        <div class="stage-grid"></div>
+        <div class="stage-vignette"></div>
+
+        <div class="stage-heading">
+          <span class="chapter">01</span>
+          <div>
+            <p class="kicker">FOLLOW THE PATH</p>
+            <h2 id="stage-title">Start with 3.</h2>
+          </div>
+        </div>
+
+        <div id="sequence-area" class="sequence-area"></div>
+
+        <div id="floating-prompt" class="floating-prompt hidden">
+          <p id="prompt-copy"></p>
+        </div>
+
+        <div id="choice-panel" class="choice-panel hidden"></div>
+
+        <div id="status-pill" class="status-pill hidden"></div>
+      </div>
+
+      <div class="story-steps">
+        <article class="story-step" data-scene="intro">
+          <div class="step-card">
+            <p class="step-number">01.1</p>
+            <h3>Begin with a single integer.</h3>
+            <p>Scroll slowly. The path will build from left to right.</p>
+          </div>
+        </article>
+
+        <article class="story-step" data-scene="three-1">
+          <div class="step-card whisper-card">
+            <p>Watch what happens next.</p>
+          </div>
+        </article>
+
+        <article class="story-step" data-scene="three-2">
+          <div class="step-card whisper-card">
+            <p>Keep going.</p>
+          </div>
+        </article>
+
+        <article class="story-step" data-scene="three-3">
+          <div class="step-card prompt-card">
+            <p class="step-number">PAUSE</p>
+            <h3>What is the pattern you notice?</h3>
+            <p>Can you predict the next number in this sequence?</p>
+          </div>
+        </article>
+
+        <article class="story-step" data-scene="reveal-rule">
+          <div class="step-card rule-card">
+            <p class="step-number">THE RULE</p>
+            <div class="rule-lines">
+              <p><span>EVEN</span><strong>n ÷ 2</strong></p>
+              <p><span>ODD</span><strong>3n + 1</strong></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="story-step tall-step" data-scene="finish-three">
+          <div class="step-card">
+            <p class="step-number">7 STEPS</p>
+            <h3>3 reaches 1.</h3>
+            <p>Now test the same rules with two new starting values.</p>
+          </div>
+        </article>
+
+        <article class="story-step choice-step" data-scene="choose-seven">
+          <div class="step-card">
+            <p class="step-number">YOUR TURN</p>
+            <h3>Trace both paths.</h3>
+            <p>Select 20 and 21 in the stage above. Each path must be traced before the story continues.</p>
+          </div>
+        </article>
+
+        <article class="story-step tall-step" data-scene="conjecture">
+          <div class="step-card conjecture-card">
+            <p class="step-number">A FIRST CONJECTURE</p>
+            <h3>Under these rules, every positive integer reaches 1 after exactly 7 steps.</h3>
+            <p>Three examples agree. Is that enough?</p>
+          </div>
+        </article>
+
+        <article class="story-step choice-step" data-scene="test-conjecture">
+          <div class="step-card">
+            <p class="step-number">TEST IT</p>
+            <h3>Choose a new starting value.</h3>
+            <p>6, 40, and 42 each have something interesting in common with the paths you have already seen.</p>
+          </div>
+        </article>
+
+        <article class="story-step tall-step" data-scene="refine">
+          <div class="step-card conjecture-card refined-card">
+            <p class="step-number">REFINE THE CONJECTURE</p>
+            <h3>Exactly 7 steps fails.</h3>
+            <p>But every path we have tested still reaches 1.</p>
+          </div>
+        </article>
+
+        <article class="story-step writing-step" data-scene="text-placeholder">
+          <div class="step-card writing-card">
+            <p class="step-number">GROUP TEXT</p>
+            <h3>INSERT TEXT HERE</h3>
+            <p>This space is intentionally reserved for the group’s mathematical explanation.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="prototype-end">
+      <p class="eyebrow">STYLE PROTOTYPE · v0.1</p>
+      <h2>The story would continue from here.</h2>
+      <p>Visualizer, generalized <em>an+b</em> exploration, experimental laboratory, discoveries, and project text are intentionally not built yet.</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
