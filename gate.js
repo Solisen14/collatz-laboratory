@@ -1,6 +1,389 @@
+// Branching transition + interaction gates for the scroll story.
+// The reader first tests six starting values, then revisits the original three
+// paths as they collapse into one branching structure.
+
+function ensureBranchingStyles() {
+  if (document.getElementById("branching-story-styles")) return;
+
+  const style = document.createElement("style");
+  style.id = "branching-story-styles";
+  style.textContent = `
+    .branch-shell {
+      width: 100%;
+      height: 390px;
+      overflow: visible;
+    }
+
+    .branch-svg {
+      display: block;
+      width: 100%;
+      height: 390px;
+      overflow: visible;
+    }
+
+    .branch-world {
+      transform-origin: 50% 50%;
+      transform-box: view-box;
+      transition: transform 1s cubic-bezier(.18,.78,.22,1);
+    }
+
+    .branch-stage.expanded .branch-world {
+      transform: scale(.88);
+    }
+
+    .branch-node circle {
+      fill: rgba(9,14,22,.97);
+      stroke-width: 1.35;
+    }
+
+    .branch-node text {
+      fill: #f8fbff;
+      font: 500 17px Inter, ui-sans-serif, system-ui, sans-serif;
+      text-anchor: middle;
+      dominant-baseline: central;
+      font-variant-numeric: tabular-nums;
+      user-select: none;
+    }
+
+    .branch-edge {
+      fill: none;
+      stroke-width: 1.45;
+      stroke-linecap: round;
+    }
+
+    .branch-label {
+      font: 750 9px Inter, ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: .18em;
+      opacity: .72;
+    }
+
+    .branch-fade {
+      opacity: 1;
+      transition: opacity .72s ease;
+    }
+
+    .branch-stage.merged .branch-fade {
+      opacity: 0;
+    }
+
+    .branch-merge {
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      opacity: 0;
+      transition:
+        stroke-dashoffset .9s cubic-bezier(.2,.78,.25,1) .18s,
+        opacity .2s ease .18s;
+    }
+
+    .branch-stage.merged .branch-merge {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+
+    .branch-trunk circle,
+    .branch-trunk.branch-edge {
+      transition: filter .65s ease, stroke-width .65s ease;
+    }
+
+    .branch-stage.merged .branch-trunk circle {
+      filter: drop-shadow(0 0 12px rgba(122,231,255,.36));
+    }
+
+    .branch-stage.merged .branch-trunk.branch-edge {
+      stroke-width: 1.7;
+      filter: drop-shadow(0 0 5px rgba(122,231,255,.28));
+    }
+
+    .branch-outer {
+      opacity: 0;
+      transform: translateX(-20px);
+      transform-box: fill-box;
+      transform-origin: center;
+      transition: opacity .48s ease, transform .7s cubic-bezier(.18,.78,.22,1);
+    }
+
+    .branch-stage.show-outer .branch-outer {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .branch-outer-edge {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      transition: stroke-dashoffset .65s cubic-bezier(.2,.78,.25,1) .28s;
+    }
+
+    .branch-stage.show-outer .branch-outer-edge {
+      stroke-dashoffset: 0;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function makeBranchStoryStep(scene, number, title, className = "tall-step") {
+  const article = document.createElement("article");
+  article.className = `story-step ${className}`;
+  article.dataset.scene = scene;
+  article.innerHTML = `
+    <div class="step-card">
+      <p class="step-number">${number}</p>
+      <h3>${title}</h3>
+      <p>INSERT TEXT HERE</p>
+    </div>
+  `;
+  return article;
+}
+
+function installBranchStorySteps() {
+  if (storySteps.some(step => step.dataset.scene === "revisit-three")) return;
+
+  const textStep = storySteps.find(step => step.dataset.scene === "text-placeholder");
+  if (!textStep) return;
+
+  const revisit = makeBranchStoryStep("revisit-three", "REVISIT", "Let's revisit the first three paths.");
+  const merge = makeBranchStoryStep("merge-three", "BRANCHING", "Represent the three paths as one branching path.");
+  const grow = makeBranchStoryStep("grow-six", "ZOOM OUT", "Now add 6, 40, and 42.");
+
+  textStep.before(revisit, merge, grow);
+  const insertAt = storySteps.indexOf(textStep);
+  storySteps.splice(insertAt, 0, revisit, merge, grow);
+}
+
+function branchMarker(defs, id, colour) {
+  const marker = svgElement("marker", {
+    id,
+    markerWidth: 9,
+    markerHeight: 9,
+    refX: 7.6,
+    refY: 4.5,
+    orient: "auto",
+    markerUnits: "userSpaceOnUse"
+  });
+  const path = svgElement("path", { d: "M0,0 L9,4.5 L0,9 Z", fill: colour });
+  marker.appendChild(path);
+  defs.appendChild(marker);
+}
+
+function branchNode(parent, x, y, value, colour, classes = "") {
+  const group = svgElement("g", { class: `branch-node ${classes}`.trim() });
+  const circle = svgElement("circle", {
+    cx: x,
+    cy: y,
+    r: 25,
+    stroke: colour,
+    style: `filter:drop-shadow(0 0 9px ${colour}42)`
+  });
+  const text = svgElement("text", { x, y });
+  text.textContent = value;
+  group.append(circle, text);
+  parent.appendChild(group);
+  return group;
+}
+
+function branchLine(parent, x1, y1, x2, y2, colour, markerId, classes = "") {
+  const line = svgElement("line", {
+    class: `branch-edge ${classes}`.trim(),
+    x1,
+    y1,
+    x2,
+    y2,
+    stroke: colour,
+    "marker-end": `url(#${markerId})`,
+    style: `filter:drop-shadow(0 0 4px ${colour}38)`
+  });
+  parent.appendChild(line);
+  return line;
+}
+
+function addBranchLabel(parent, x, y, text, colour) {
+  const label = svgElement("text", { class: "branch-label", x, y, fill: colour });
+  label.textContent = text;
+  parent.appendChild(label);
+}
+
+function renderBranchingStage({ animateMerge = false, expanded = false } = {}) {
+  clearTimers();
+  ensureBranchingStyles();
+  sequenceArea.innerHTML = "";
+  sequenceArea.dataset.mode = "branching-story";
+
+  const shell = document.createElement("div");
+  shell.className = `branch-shell branch-stage${expanded ? " merged expanded" : ""}`;
+
+  const svg = svgElement("svg", {
+    class: "branch-svg",
+    viewBox: "0 0 1000 360",
+    preserveAspectRatio: "xMidYMid meet",
+    role: "img",
+    "aria-label": "Six Collatz starting values represented as one branching path"
+  });
+
+  const defs = svgElement("defs");
+  branchMarker(defs, "arrow-cyan", "#7ae7ff");
+  branchMarker(defs, "arrow-violet", "#9f8cff");
+  branchMarker(defs, "arrow-pink", "#ff78b8");
+  branchMarker(defs, "arrow-gold", "#ffd479");
+  svg.appendChild(defs);
+
+  const world = svgElement("g", { class: "branch-world" });
+  svg.appendChild(world);
+
+  const cyan = "#7ae7ff";
+  const violet = "#9f8cff";
+  const pink = "#ff78b8";
+  const gold = "#ffd479";
+  const xs = [130, 240, 350, 460, 570, 680, 790, 900];
+  const topY = 72;
+  const midY = 180;
+  const bottomY = 288;
+  const trunkValues = [3, 10, 5, 16, 8, 4, 2, 1];
+  const topValues = [20, 10, 5, 16, 8, 4, 2, 1];
+  const bottomValues = [21, 64, 32, 16, 8, 4, 2, 1];
+
+  addBranchLabel(world, 105, topY - 42, "START 20", violet);
+  addBranchLabel(world, 105, midY - 42, "START 3", cyan);
+  addBranchLabel(world, 105, bottomY - 42, "START 21", pink);
+
+  // Central path remains throughout the transformation.
+  trunkValues.forEach((value, index) => {
+    branchNode(world, xs[index], midY, value, cyan, "branch-trunk");
+    if (index < trunkValues.length - 1) {
+      branchLine(world, xs[index] + 27, midY, xs[index + 1] - 31, midY, cyan, "arrow-cyan", "branch-trunk");
+    }
+  });
+
+  // 20 initially appears as a complete parallel path. Everything after 20
+  // fades once the curved connection to the central 10 is revealed.
+  topValues.forEach((value, index) => {
+    branchNode(world, xs[index], topY, value, violet, index === 0 ? "" : "branch-fade");
+    if (index < topValues.length - 1) {
+      branchLine(world, xs[index] + 27, topY, xs[index + 1] - 31, topY, violet, "arrow-violet", "branch-fade");
+    }
+  });
+
+  // 21 → 64 → 32 remains unique. From 16 onward the duplicate portion fades.
+  bottomValues.forEach((value, index) => {
+    branchNode(world, xs[index], bottomY, value, pink, index >= 3 ? "branch-fade" : "");
+    if (index < bottomValues.length - 1) {
+      branchLine(
+        world,
+        xs[index] + 27,
+        bottomY,
+        xs[index + 1] - 31,
+        bottomY,
+        pink,
+        "arrow-pink",
+        index >= 2 ? "branch-fade" : ""
+      );
+    }
+  });
+
+  const topMerge = svgElement("path", {
+    class: "branch-merge",
+    d: `M ${xs[0] + 27} ${topY} C 195 ${topY}, 190 ${midY}, ${xs[1] - 31} ${midY}`,
+    pathLength: 1,
+    stroke: violet,
+    "marker-end": "url(#arrow-violet)",
+    style: `filter:drop-shadow(0 0 5px ${violet}55)`
+  });
+  world.appendChild(topMerge);
+
+  const bottomMerge = svgElement("path", {
+    class: "branch-merge",
+    d: `M ${xs[2] + 27} ${bottomY} C 415 ${bottomY}, 415 ${midY}, ${xs[3] - 31} ${midY}`,
+    pathLength: 1,
+    stroke: pink,
+    "marker-end": "url(#arrow-pink)",
+    style: `filter:drop-shadow(0 0 5px ${pink}55)`
+  });
+  world.appendChild(bottomMerge);
+
+  // The three counterexamples are already part of the same structure. They are
+  // hidden until the camera zooms out in the next scroll beat.
+  const outerSpecs = [
+    { value: 40, y: topY, targetX: xs[0], colour: violet, marker: "arrow-violet" },
+    { value: 6, y: midY, targetX: xs[0], colour: cyan, marker: "arrow-cyan" },
+    { value: 42, y: bottomY, targetX: xs[0], colour: pink, marker: "arrow-pink" }
+  ];
+
+  outerSpecs.forEach(spec => {
+    const edgeGroup = svgElement("g", { class: "branch-outer" });
+    branchLine(edgeGroup, 54, spec.y, spec.targetX - 31, spec.y, spec.colour, spec.marker, "branch-outer-edge");
+    world.appendChild(edgeGroup);
+
+    const nodeGroup = svgElement("g", { class: "branch-outer" });
+    branchNode(nodeGroup, 28, spec.y, spec.value, gold);
+    world.appendChild(nodeGroup);
+  });
+
+  shell.appendChild(svg);
+  sequenceArea.appendChild(shell);
+
+  if (expanded) {
+    shell.classList.add("show-outer");
+    return;
+  }
+
+  if (animateMerge) {
+    state.timers.push(setTimeout(() => shell.classList.add("merged"), 650));
+  } else {
+    shell.classList.add("merged");
+  }
+}
+
+function renderRevisitThree() {
+  ensureComparisonStage();
+  makePrimaryThreeFullyVisible();
+  setComparisonRowVisible(20, false);
+  setComparisonRowVisible(21, false);
+  stageTitle.textContent = "Revisit the first three paths.";
+  showStatus("3 paths · 7 steps each");
+}
+
+function renderMergeThree() {
+  stageTitle.textContent = "Watch the paths merge.";
+  renderBranchingStage({ animateMerge: true });
+  showStatus("3 starts · 1 branching path");
+}
+
+function renderGrowSix() {
+  stageTitle.textContent = "Add 6, 40, and 42.";
+
+  let shell = sequenceArea.querySelector(".branch-stage");
+  if (!shell || sequenceArea.dataset.mode !== "branching-story") {
+    renderBranchingStage({ animateMerge: false });
+    shell = sequenceArea.querySelector(".branch-stage");
+  }
+
+  shell?.classList.add("merged");
+  state.timers.push(setTimeout(() => shell?.classList.add("expanded"), 180));
+  state.timers.push(setTimeout(() => shell?.classList.add("show-outer"), 900));
+  showStatus("6 starts · 1 connected structure");
+}
+
+installBranchStorySteps();
+
+const branchingBaseSetScene = setScene;
+setScene = function(scene) {
+  if (["revisit-three", "merge-three", "grow-six"].includes(scene)) {
+    if (scene === state.scene) return;
+    state.scene = scene;
+    hideTransientUI();
+
+    if (scene === "revisit-three") renderRevisitThree();
+    if (scene === "merge-three") renderMergeThree();
+    if (scene === "grow-six") renderGrowSix();
+    return;
+  }
+
+  return branchingBaseSetScene(scene);
+};
+
 // Interaction gates for the scroll story.
 // A reader must complete each choice set before later story scenes unlock.
-
 const testedGateValues = new Set();
 const orderedScenes = storySteps.map(step => step.dataset.scene);
 const chooseSevenIndex = orderedScenes.indexOf("choose-seven");
