@@ -62,9 +62,124 @@ function colourForNode(start, index) {
   return palette[start] || "cyan";
 }
 
+/*
+ * The opening path is built once at its final width. We then reveal nodes
+ * inside that fixed geometry. Existing numbers never move when a new value
+ * appears, so the sequence grows from left to right rather than snapping.
+ */
+function buildPrimaryPath() {
+  clearTimers();
+  sequenceArea.innerHTML = "";
+  sequenceArea.dataset.mode = "primary-3";
+  sequenceArea.dataset.revealCount = "0";
+
+  const values = sequences[3];
+  const rowEl = document.createElement("div");
+  rowEl.className = "sequence-row primary-sequence-row";
+
+  const label = document.createElement("div");
+  label.className = "row-label";
+  label.textContent = "START 3";
+
+  const track = document.createElement("div");
+  track.className = "path-track primary-path-track";
+
+  values.forEach((value, index) => {
+    const wrap = document.createElement("div");
+    wrap.className = "node-wrap";
+    wrap.dataset.index = String(index);
+
+    const node = document.createElement("div");
+    node.className = "path-node colour-cyan";
+    node.textContent = value;
+
+    if (index === values.length - 1) {
+      node.classList.add("end-node");
+    }
+
+    wrap.appendChild(node);
+
+    if (index < values.length - 1) {
+      const connector = document.createElement("div");
+      connector.className = "connector colour-cyan";
+      wrap.appendChild(connector);
+    }
+
+    track.appendChild(wrap);
+  });
+
+  rowEl.append(label, track);
+  sequenceArea.appendChild(rowEl);
+}
+
+function revealPrimaryPath(targetCount) {
+  clearTimers();
+
+  if (sequenceArea.dataset.mode !== "primary-3") {
+    buildPrimaryPath();
+  }
+
+  const wraps = [...sequenceArea.querySelectorAll(".node-wrap")];
+  const previousCount = Number(sequenceArea.dataset.revealCount || 0);
+  const count = Math.max(0, Math.min(targetCount, wraps.length));
+
+  // Scrolling backwards simply rolls the reveal back while keeping geometry fixed.
+  if (count < previousCount) {
+    wraps.forEach((wrap, index) => {
+      const node = wrap.querySelector(".path-node");
+      const connector = wrap.querySelector(".connector");
+      node.classList.toggle("visible", index < count);
+      if (connector) connector.classList.toggle("visible", index < count - 1);
+    });
+    sequenceArea.dataset.revealCount = String(count);
+    return;
+  }
+
+  // Ensure everything already revealed remains visible and anchored.
+  wraps.forEach((wrap, index) => {
+    if (index < previousCount) {
+      wrap.querySelector(".path-node")?.classList.add("visible");
+      if (index < previousCount - 1) {
+        wrap.querySelector(".connector")?.classList.add("visible");
+      }
+    }
+  });
+
+  if (previousCount === 0 && count > 0) {
+    wraps[0]?.querySelector(".path-node")?.classList.add("visible");
+  }
+
+  // Each new step draws its connector first, then lets the next integer flow in.
+  const firstNewIndex = Math.max(1, previousCount);
+  for (let index = firstNewIndex; index < count; index++) {
+    const stepOffset = index - firstNewIndex;
+    const connectorDelay = stepOffset * 620 + 80;
+    const nodeDelay = connectorDelay + 360;
+
+    const previousConnector = wraps[index - 1]?.querySelector(".connector");
+    const node = wraps[index]?.querySelector(".path-node");
+
+    if (previousConnector) {
+      state.timers.push(setTimeout(() => {
+        previousConnector.classList.add("visible");
+      }, connectorDelay));
+    }
+
+    if (node) {
+      state.timers.push(setTimeout(() => {
+        node.classList.add("visible");
+      }, nodeDelay));
+    }
+  }
+
+  sequenceArea.dataset.revealCount = String(count);
+}
+
 function renderRows(rows, options = {}) {
   clearTimers();
   sequenceArea.innerHTML = "";
+  sequenceArea.dataset.mode = "standard";
+  delete sequenceArea.dataset.revealCount;
 
   rows.forEach((row, rowIndex) => {
     const values = options.limit ? row.values.slice(0, options.limit) : row.values;
@@ -206,34 +321,34 @@ function setScene(scene) {
   switch (scene) {
     case "intro":
       stageTitle.textContent = "Start with 3.";
-      renderRows([{ start: 3, values: sequences[3].slice(0, 1), label: "START" }]);
+      revealPrimaryPath(1);
       break;
 
     case "three-1":
       stageTitle.textContent = "Follow the sequence.";
-      renderRows([{ start: 3, values: sequences[3].slice(0, 2), label: "START 3" }]);
+      revealPrimaryPath(2);
       break;
 
     case "three-2":
       stageTitle.textContent = "One move at a time.";
-      renderRows([{ start: 3, values: sequences[3].slice(0, 3), label: "START 3" }]);
+      revealPrimaryPath(3);
       break;
 
     case "three-3":
       stageTitle.textContent = "Pause before the next move.";
-      renderRows([{ start: 3, values: sequences[3].slice(0, 4), label: "START 3" }]);
+      revealPrimaryPath(4);
       showPrompt("What is the pattern you notice? Can you predict the next number?");
       break;
 
     case "reveal-rule":
       stageTitle.textContent = "Two rules drive the sequence.";
-      renderRows([{ start: 3, values: sequences[3].slice(0, 4), label: "START 3" }]);
+      revealPrimaryPath(4);
       showPrompt("Even numbers are halved. Odd numbers are tripled, then increased by 1.");
       break;
 
     case "finish-three":
       stageTitle.textContent = "The path reaches 1.";
-      renderRows([{ start: 3, values: sequences[3], label: "START 3" }]);
+      revealPrimaryPath(8);
       showStatus("7 steps");
       break;
 
@@ -251,7 +366,9 @@ function setScene(scene) {
         renderRows([{ start: state.tested, values: sequences[state.tested], label: `${state.tested} → ${mergeParent[state.tested]} PATH` }]);
         showStatus("8 steps");
       } else {
+        clearTimers();
         sequenceArea.innerHTML = "";
+        sequenceArea.dataset.mode = "standard";
       }
       showTestChoices();
       break;
@@ -267,7 +384,9 @@ function setScene(scene) {
 
     case "text-placeholder":
       stageTitle.textContent = "The mathematical story continues.";
+      clearTimers();
       sequenceArea.innerHTML = "";
+      sequenceArea.dataset.mode = "standard";
       showPrompt("INSERT TEXT HERE");
       break;
   }
