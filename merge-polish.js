@@ -21,23 +21,35 @@ function ensureMergePolishStyles() {
       opacity: 0;
       transform: translateY(6px);
     }
-    .branch-top-prefix,
-    .branch-bottom-prefix {
-      transition: transform .95s cubic-bezier(.18,.78,.22,1);
-    }
-    .branch-stage.merged .branch-top-prefix {
-      transform: translateY(56px);
-    }
-    .branch-stage.merged .branch-bottom-prefix {
-      transform: translateY(-56px);
-    }
-    .branch-duplicates {
+
+    /* The unique roots remain absolutely fixed. Only the shared suffixes move. */
+    .branch-top-suffix,
+    .branch-bottom-suffix {
       opacity: 1;
-      transition: opacity .6s ease .12s;
+      transform-box: view-box;
+      transform-origin: 0 0;
+      transition:
+        transform 1s cubic-bezier(.18,.78,.22,1),
+        opacity .46s ease .84s;
     }
-    .branch-stage.merged .branch-duplicates {
+    .branch-stage.merged .branch-top-suffix {
+      transform: translateY(108px);
       opacity: 0;
     }
+    .branch-stage.merged .branch-bottom-suffix {
+      transform: translateY(-108px);
+      opacity: 0;
+    }
+
+    /* Horizontal joining arrows disappear as their diagonal replacements grow. */
+    .branch-bridge-original {
+      opacity: 1;
+      transition: opacity .24s ease .28s;
+    }
+    .branch-stage.merged .branch-bridge-original {
+      opacity: 0;
+    }
+
     .branch-merge-diagonal {
       fill: none;
       stroke-width: 1.8;
@@ -46,8 +58,8 @@ function ensureMergePolishStyles() {
       stroke-dashoffset: 1;
       opacity: 0;
       transition:
-        opacity .12s ease .54s,
-        stroke-dashoffset .72s cubic-bezier(.2,.78,.25,1) .54s;
+        opacity .14s ease .32s,
+        stroke-dashoffset .82s cubic-bezier(.2,.78,.25,1) .32s;
     }
     .branch-stage.merged .branch-merge-diagonal {
       opacity: 1;
@@ -78,9 +90,10 @@ function crossfadeSequence(renderFn) {
   }, 330);
 }
 
-// Replace the first branching prototype with a geometry that can transform in
-// place. The 20 node descends toward the trunk; 21→64→32 rises toward it.
-// Duplicate suffixes fade into the already-visible central nodes.
+// Geometry for the merge:
+// - 20 never moves. Its duplicated 10→...→1 suffix drops onto the middle path.
+// - 21→64→32 never moves. Its duplicated 16→...→1 suffix rises onto the middle path.
+// - only the joining arrows (20→10 and 32→16) change angle.
 renderBranchingStage = function({ animateMerge = false, expanded = false } = {}) {
   clearTimers();
   ensureBranchingStyles();
@@ -117,13 +130,11 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
   const topY = 72;
   const midY = 180;
   const bottomY = 288;
-  const topFinalY = topY + 56;
-  const bottomFinalY = bottomY - 56;
   const trunkValues = [3, 10, 5, 16, 8, 4, 2, 1];
   const topValues = [20, 10, 5, 16, 8, 4, 2, 1];
   const bottomValues = [21, 64, 32, 16, 8, 4, 2, 1];
 
-  // Central path is the structure the other two eventually join.
+  // Central path stays visible throughout and becomes the final shared trunk.
   addBranchLabel(world, 105, midY - 42, "START 3", cyan);
   trunkValues.forEach((value, index) => {
     branchNode(world, xs[index], midY, value, cyan, "branch-trunk");
@@ -132,48 +143,85 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
     }
   });
 
-  // The unique part of the upper path is just 20. It physically drops toward
-  // the central 10 while its duplicated suffix fades away.
-  const topPrefix = svgElement("g", { class: "branch-top-prefix" });
-  addBranchLabel(topPrefix, 105, topY - 42, "START 20", violet);
-  branchNode(topPrefix, xs[0], topY, 20, violet);
-  world.appendChild(topPrefix);
+  // Upper unique root: START 20 and the 20 node stay fixed at their original x/y.
+  addBranchLabel(world, 105, topY - 42, "START 20", violet);
+  branchNode(world, xs[0], topY, 20, violet);
 
-  const topDuplicates = svgElement("g", { class: "branch-duplicates" });
-  for (let index = 0; index < topValues.length - 1; index++) {
-    branchLine(topDuplicates, xs[index] + 27, topY, xs[index + 1] - 31, topY, violet, "polish-arrow-violet");
-  }
+  // Original 20→10 horizontal bridge. It is replaced by the diagonal bridge.
+  branchLine(
+    world,
+    xs[0] + 27,
+    topY,
+    xs[1] - 31,
+    topY,
+    violet,
+    "polish-arrow-violet",
+    "branch-bridge-original"
+  );
+
+  // Everything after 20 moves downward together. Internal geometry does not change.
+  const topSuffix = svgElement("g", { class: "branch-top-suffix" });
   for (let index = 1; index < topValues.length; index++) {
-    branchNode(topDuplicates, xs[index], topY, topValues[index], violet);
+    branchNode(topSuffix, xs[index], topY, topValues[index], violet);
+    if (index < topValues.length - 1) {
+      branchLine(
+        topSuffix,
+        xs[index] + 27,
+        topY,
+        xs[index + 1] - 31,
+        topY,
+        violet,
+        "polish-arrow-violet"
+      );
+    }
   }
-  world.appendChild(topDuplicates);
+  world.appendChild(topSuffix);
 
-  // The unique lower prefix is 21→64→32. It rises as one piece toward 16.
-  const bottomPrefix = svgElement("g", { class: "branch-bottom-prefix" });
-  addBranchLabel(bottomPrefix, 105, bottomY - 42, "START 21", pink);
+  // Lower unique prefix: START 21, 21→64→32 all remain fixed.
+  addBranchLabel(world, 105, bottomY - 42, "START 21", pink);
   [21, 64, 32].forEach((value, index) => {
-    branchNode(bottomPrefix, xs[index], bottomY, value, pink);
+    branchNode(world, xs[index], bottomY, value, pink);
     if (index < 2) {
-      branchLine(bottomPrefix, xs[index] + 27, bottomY, xs[index + 1] - 31, bottomY, pink, "polish-arrow-pink");
+      branchLine(world, xs[index] + 27, bottomY, xs[index + 1] - 31, bottomY, pink, "polish-arrow-pink");
     }
   });
-  world.appendChild(bottomPrefix);
 
-  const bottomDuplicates = svgElement("g", { class: "branch-duplicates" });
-  branchLine(bottomDuplicates, xs[2] + 27, bottomY, xs[3] - 31, bottomY, pink, "polish-arrow-pink");
+  // Original 32→16 horizontal bridge. It is replaced by the diagonal bridge.
+  branchLine(
+    world,
+    xs[2] + 27,
+    bottomY,
+    xs[3] - 31,
+    bottomY,
+    pink,
+    "polish-arrow-pink",
+    "branch-bridge-original"
+  );
+
+  // Everything after 32 moves upward together onto the central 16→...→1 suffix.
+  const bottomSuffix = svgElement("g", { class: "branch-bottom-suffix" });
   for (let index = 3; index < bottomValues.length; index++) {
-    branchNode(bottomDuplicates, xs[index], bottomY, bottomValues[index], pink);
+    branchNode(bottomSuffix, xs[index], bottomY, bottomValues[index], pink);
     if (index < bottomValues.length - 1) {
-      branchLine(bottomDuplicates, xs[index] + 27, bottomY, xs[index + 1] - 31, bottomY, pink, "polish-arrow-pink");
+      branchLine(
+        bottomSuffix,
+        xs[index] + 27,
+        bottomY,
+        xs[index + 1] - 31,
+        bottomY,
+        pink,
+        "polish-arrow-pink"
+      );
     }
   }
-  world.appendChild(bottomDuplicates);
+  world.appendChild(bottomSuffix);
 
-  // Final connections are deliberately close to 45 degrees.
+  // Final 20→10 bridge: fixed start at 20, moving endpoint represented by the
+  // final diagonal into the middle-row 10.
   const topMerge = svgElement("line", {
     class: "branch-merge-diagonal",
     x1: xs[0] + 27,
-    y1: topFinalY,
+    y1: topY,
     x2: xs[1] - 31,
     y2: midY,
     pathLength: 1,
@@ -183,10 +231,11 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
   });
   world.appendChild(topMerge);
 
+  // Final 32→16 bridge: fixed start at 32 into the central-row 16.
   const bottomMerge = svgElement("line", {
     class: "branch-merge-diagonal",
     x1: xs[2] + 27,
-    y1: bottomFinalY,
+    y1: bottomY,
     x2: xs[3] - 31,
     y2: midY,
     pathLength: 1,
@@ -196,17 +245,19 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
   });
   world.appendChild(bottomMerge);
 
-  // Counterexamples wait off-stage until the next scroll beat.
+  // Counterexamples wait off-stage until the next scroll beat. Their targets are
+  // the fixed branch roots: 40→20, 6→3, and 42→21.
   const outerSpecs = [
-    { value: 40, y: topFinalY, targetX: xs[0], colour: violet, marker: "polish-arrow-violet" },
+    { value: 40, y: topY, targetX: xs[0], colour: violet, marker: "polish-arrow-violet" },
     { value: 6, y: midY, targetX: xs[0], colour: cyan, marker: "polish-arrow-cyan" },
-    { value: 42, y: bottomFinalY, targetX: xs[0], colour: pink, marker: "polish-arrow-pink" }
+    { value: 42, y: bottomY, targetX: xs[0], colour: pink, marker: "polish-arrow-pink" }
   ];
 
   outerSpecs.forEach(spec => {
     const edgeGroup = svgElement("g", { class: "branch-outer" });
     branchLine(edgeGroup, 54, spec.y, spec.targetX - 31, spec.y, spec.colour, spec.marker, "branch-outer-edge");
     world.appendChild(edgeGroup);
+
     const nodeGroup = svgElement("g", { class: "branch-outer" });
     branchNode(nodeGroup, 28, spec.y, spec.value, gold);
     world.appendChild(nodeGroup);
@@ -219,6 +270,7 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
     shell.classList.add("show-outer");
     return;
   }
+
   if (animateMerge) {
     state.timers.push(setTimeout(() => shell.classList.add("merged"), 360));
   }
