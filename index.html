@@ -108,7 +108,11 @@
           <div class="step-card">
             <p class="step-number">YOUR TURN</p>
             <h3>Trace both paths.</h3>
-            <p>Select 20 and 21 in the stage above. Each path must be traced before the story continues.</p>
+            <p>Select 20 and 21. Each path will be added to the stage so all three seven-step examples can be compared together.</p>
+            <div style="display:flex; gap:12px; margin-top:20px;">
+              <button class="choice-button" type="button" onclick="const b=document.querySelector('#choice-panel [data-seven=\'20\']'); if(b){b.click(); this.classList.add('done'); this.textContent='20 ✓';}">20</button>
+              <button class="choice-button" type="button" onclick="const b=document.querySelector('#choice-panel [data-seven=\'21\']'); if(b){b.click(); this.classList.add('done'); this.textContent='21 ✓';}">21</button>
+            </div>
           </div>
         </article>
 
@@ -153,6 +157,6 @@
     </section>
   </main>
 
-  <script src="app.js?v=20261012-1648"></script>
+  <script src="app.js?v=20261012-1652"></script>
 </body>
 </html>
