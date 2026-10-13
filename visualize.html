@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07090f" />
+  <title>The Collatz Laboratory · Visualize</title>
+  <link rel="stylesheet" href="styles.css?v=20261012-1632" />
+  <link rel="stylesheet" href="visualizer.css?v=20261013-1" />
+</head>
+<body class="visualizer-body">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="The Collatz Laboratory home">
+      <span class="brand-mark"></span>
+      <span>THE COLLATZ LABORATORY</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="index.html#story">STORY</a>
+      <a class="active" href="visualize.html">VISUALIZE</a>
+      <span class="nav-placeholder" title="Coming later">EXPERIMENT</span>
+      <span class="nav-placeholder" title="Coming later">ABOUT</span>
+    </nav>
+  </header>
+
+  <main class="visualizer-page">
+    <section class="visualizer-hero">
+      <p class="eyebrow">COLLATZ VISUALIZER · v0.1</p>
+      <h1>Build a branching Collatz structure.</h1>
+      <p class="visualizer-sub">This workspace grows the reverse Collatz tree outward from 1. Every node always branches to <strong>2n</strong>, and some nodes also branch to <strong>(n − 1) / 3</strong>. Adjust the geometry, animate the growth, and see how the structure changes.</p>
+    </section>
+
+    <section class="visualizer-shell" aria-label="Collatz visualizer workspace">
+      <aside class="controls-panel">
+        <p class="step-number">WORKSPACE</p>
+        <h2>Reverse Collatz Tree</h2>
+        <p class="panel-copy">Use the controls below to shape the branching diagram. The mathematics happens locally in the browser.</p>
+
+        <div class="control-grid">
+          <label class="control-row" for="depthRange">
+            <span>Generations</span>
+            <output id="depthValue">11</output>
+            <input id="depthRange" type="range" min="4" max="15" step="1" value="11" />
+          </label>
+
+          <label class="control-row" for="angleRange">
+            <span>Branch angle</span>
+            <output id="angleValue">28°</output>
+            <input id="angleRange" type="range" min="10" max="65" step="1" value="28" />
+          </label>
+
+          <label class="control-row" for="lengthRange">
+            <span>Base branch length</span>
+            <output id="lengthValue">118</output>
+            <input id="lengthRange" type="range" min="72" max="160" step="1" value="118" />
+          </label>
+
+          <label class="control-row" for="decayRange">
+            <span>Length decay</span>
+            <output id="decayValue">0.73</output>
+            <input id="decayRange" type="range" min="0.62" max="0.85" step="0.01" value="0.73" />
+          </label>
+
+          <label class="control-row" for="widthRange">
+            <span>Line weight</span>
+            <output id="widthValue">2.2</output>
+            <input id="widthRange" type="range" min="1.2" max="4.2" step="0.1" value="2.2" />
+          </label>
+
+          <label class="control-row control-select" for="colourMode">
+            <span>Colour mode</span>
+            <select id="colourMode">
+              <option value="rule">By rule</option>
+              <option value="depth">By depth</option>
+              <option value="mono">Monochrome</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="toggle-group">
+          <label><input id="showLabels" type="checkbox" /> Show labels</label>
+          <label><input id="showGlow" type="checkbox" checked /> Glow</label>
+        </div>
+
+        <div class="button-row">
+          <button id="renderButton" type="button">Render</button>
+          <button id="animateButton" type="button">Animate growth</button>
+          <button id="exportButton" type="button">Save SVG</button>
+        </div>
+
+        <div class="legend-card">
+          <p class="legend-title">Legend</p>
+          <div class="legend-item"><span class="legend-swatch even"></span><span>Even predecessor: <strong>2n</strong></span></div>
+          <div class="legend-item"><span class="legend-swatch odd"></span><span>Odd predecessor: <strong>(n − 1) / 3</strong></span></div>
+          <div class="legend-item"><span class="legend-swatch root"></span><span>Root value: <strong>1</strong></span></div>
+        </div>
+      </aside>
+
+      <section class="visualizer-stage">
+        <div class="visualizer-stage-grid"></div>
+        <div class="stage-toolbar">
+          <div>
+            <p class="eyebrow toolbar-label">LIVE STRUCTURE</p>
+            <p id="statsLine" class="stats-line">Nodes: 0 · Branches: 0 · Max value: 0</p>
+          </div>
+          <p id="statusMessage" class="status-message">Ready.</p>
+        </div>
+
+        <div id="treeWrapper" class="tree-wrapper">
+          <svg id="treeSvg" class="tree-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet" aria-label="Reverse Collatz tree visualization"></svg>
+          <div id="treeTooltip" class="tree-tooltip hidden"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="visualizer.js?v=20261013-1"></script>
+</body>
+</html>
