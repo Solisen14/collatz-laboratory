@@ -1,9 +1,13 @@
 const DEG_TO_RAD = Math.PI / 180;
+const SVG_NS = 'http://www.w3.org/2000/svg';
 
 const svg = document.getElementById('treeSvg');
+const treeWrapper = document.getElementById('treeWrapper');
 const tooltip = document.getElementById('treeTooltip');
 const statsLine = document.getElementById('statsLine');
 const statusMessage = document.getElementById('statusMessage');
+const pathInfo = document.getElementById('pathInfo');
+const visualizerShell = document.getElementById('visualizerShell');
 
 const controls = {
   depth: document.getElementById('depthRange'),
@@ -12,11 +16,16 @@ const controls = {
   decay: document.getElementById('decayRange'),
   width: document.getElementById('widthRange'),
   colourMode: document.getElementById('colourMode'),
-  showLabels: document.getElementById('showLabels'),
+  labelMode: document.getElementById('labelMode'),
   showGlow: document.getElementById('showGlow'),
   renderButton: document.getElementById('renderButton'),
   animateButton: document.getElementById('animateButton'),
-  exportButton: document.getElementById('exportButton')
+  exportButton: document.getElementById('exportButton'),
+  toggleControls: document.getElementById('toggleControls'),
+  zoomInButton: document.getElementById('zoomInButton'),
+  zoomOutButton: document.getElementById('zoomOutButton'),
+  fitButton: document.getElementById('fitButton'),
+  clearPathButton: document.getElementById('clearPathButton')
 };
 
 const outputs = {
@@ -29,6 +38,14 @@ const outputs = {
 
 let animationTimers = [];
 let renderDebounce = null;
+let currentModel = null;
+let currentElements = null;
+let fitViewBox = null;
+let cameraViewBox = null;
+let cameraTouched = false;
+let highlightedValue = null;
+let dragState = null;
+let suppressNextNodeClick = false;
 
 function clearAnimationTimers() {
   animationTimers.forEach((timer) => window.clearTimeout(timer));
@@ -49,7 +66,7 @@ function readOptions() {
     decay: Number(controls.decay.value),
     width: Number(controls.width.value),
     colourMode: controls.colourMode.value,
-    showLabels: controls.showLabels.checked,
+    labelMode: controls.labelMode.value,
     showGlow: controls.showGlow.checked
   };
 }
@@ -81,11 +98,6 @@ function buildTree(options) {
 
     const length = options.length * Math.pow(options.decay, depth);
     const odd = oddPredecessor(value);
-
-    // Build the mathematical predecessor list first, then discard values already
-    // in the tree (most importantly the trivial 1 -> 4 -> 2 -> 1 cycle).
-    // Only the children that will actually be drawn are allowed to influence
-    // the branch geometry.
     const candidates = [{ value: value * 2, type: 'even' }];
     if (odd !== null) candidates.push({ value: odd, type: 'odd' });
     const children = candidates.filter((child) => !seen.has(child.value));
@@ -163,6 +175,13 @@ function formatRuleLabel(type) {
   return 'root value';
 }
 
+function shouldShowSmartLabel(node, options) {
+  if (node.depth === 0) return true;
+  if (node.depth <= 7) return true;
+  if (node.incomingType === 'odd' && node.depth <= 10) return true;
+  return options.depth <= 9 && node.depth <= options.depth;
+}
+
 function showTooltip(html) {
   tooltip.innerHTML = html;
   tooltip.classList.remove('hidden');
@@ -172,26 +191,164 @@ function hideTooltip() {
   tooltip.classList.add('hidden');
 }
 
-function renderTree({ animate = false } = {}) {
+function makeViewBox(bounds) {
+  const padding = 58;
+  return {
+    x: bounds.minX - padding,
+    y: bounds.minY - padding,
+    width: Math.max(880, bounds.width + padding * 2),
+    height: Math.max(560, bounds.height + padding * 2)
+  };
+}
+
+function applyViewBox(viewBox) {
+  cameraViewBox = { ...viewBox };
+  svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
+}
+
+function fitCamera() {
+  if (!fitViewBox) return;
+  cameraTouched = false;
+  applyViewBox(fitViewBox);
+  statusMessage.textContent = 'Fit to screen.';
+}
+
+function zoomCamera(factor, clientX = null, clientY = null) {
+  if (!cameraViewBox) return;
+  const rect = svg.getBoundingClientRect();
+  const px = clientX == null ? rect.left + rect.width / 2 : clientX;
+  const py = clientY == null ? rect.top + rect.height / 2 : clientY;
+  const rx = Math.min(1, Math.max(0, (px - rect.left) / rect.width));
+  const ry = Math.min(1, Math.max(0, (py - rect.top) / rect.height));
+  const anchorX = cameraViewBox.x + rx * cameraViewBox.width;
+  const anchorY = cameraViewBox.y + ry * cameraViewBox.height;
+
+  const minWidth = fitViewBox ? fitViewBox.width * 0.06 : 40;
+  const maxWidth = fitViewBox ? fitViewBox.width * 8 : cameraViewBox.width * 8;
+  const newWidth = Math.min(maxWidth, Math.max(minWidth, cameraViewBox.width * factor));
+  const aspect = cameraViewBox.height / cameraViewBox.width;
+  const newHeight = newWidth * aspect;
+
+  cameraTouched = true;
+  applyViewBox({
+    x: anchorX - rx * newWidth,
+    y: anchorY - ry * newHeight,
+    width: newWidth,
+    height: newHeight
+  });
+}
+
+function svgPointFromClient(clientX, clientY) {
+  const rect = svg.getBoundingClientRect();
+  return {
+    x: cameraViewBox.x + ((clientX - rect.left) / rect.width) * cameraViewBox.width,
+    y: cameraViewBox.y + ((clientY - rect.top) / rect.height) * cameraViewBox.height
+  };
+}
+
+function clearPathHighlight({ silent = false } = {}) {
+  highlightedValue = null;
+  controls.clearPathButton.disabled = true;
+  pathInfo.classList.add('hidden');
+  pathInfo.textContent = '';
+
+  if (!currentElements) return;
+
+  currentElements.nodes.forEach(({ group, circle, label, baseStroke }) => {
+    group.classList.remove('path-muted', 'path-highlight', 'path-selected');
+    circle.setAttribute('stroke', baseStroke);
+    if (label) label.classList.remove('path-label-force');
+  });
+
+  currentElements.edges.forEach(({ line, glowLine, baseStroke }) => {
+    line.classList.remove('path-muted', 'path-highlight');
+    line.setAttribute('stroke', baseStroke);
+    if (glowLine) {
+      glowLine.classList.remove('path-muted', 'path-highlight');
+      glowLine.setAttribute('stroke', baseStroke);
+    }
+  });
+
+  if (!silent) statusMessage.textContent = 'Path cleared.';
+}
+
+function highlightPathToRoot(value) {
+  if (!currentModel || !currentElements) return;
+  const byValue = new Map(currentModel.nodes.map((node) => [node.value, node]));
+  const byId = new Map(currentModel.nodes.map((node) => [node.id, node]));
+  const edgeByTo = new Map(currentModel.edges.map((edge) => [edge.to, edge]));
+  const start = byValue.get(value);
+  if (!start) return;
+
+  const pathNodes = [];
+  const pathEdges = [];
+  let cursor = start;
+
+  while (cursor) {
+    pathNodes.push(cursor);
+    if (!cursor.parentId) break;
+    const edge = edgeByTo.get(cursor.id);
+    if (edge) pathEdges.push(edge);
+    cursor = byId.get(cursor.parentId) || null;
+  }
+
+  const pathNodeIds = new Set(pathNodes.map((node) => node.id));
+  const pathEdgeIds = new Set(pathEdges.map((edge) => edge.id));
+  const selectedId = start.id;
+  highlightedValue = value;
+
+  currentElements.nodes.forEach(({ node, group, circle, label, baseStroke }) => {
+    const isPath = pathNodeIds.has(node.id);
+    group.classList.toggle('path-muted', !isPath);
+    group.classList.toggle('path-highlight', isPath);
+    group.classList.toggle('path-selected', node.id === selectedId);
+    circle.setAttribute('stroke', isPath ? '#ffe09a' : baseStroke);
+    if (label) label.classList.toggle('path-label-force', isPath);
+  });
+
+  currentElements.edges.forEach(({ edge, line, glowLine, baseStroke }) => {
+    const isPath = pathEdgeIds.has(edge.id);
+    line.classList.toggle('path-muted', !isPath);
+    line.classList.toggle('path-highlight', isPath);
+    line.setAttribute('stroke', isPath ? '#ffe09a' : baseStroke);
+    if (glowLine) {
+      glowLine.classList.toggle('path-muted', !isPath);
+      glowLine.classList.toggle('path-highlight', isPath);
+      glowLine.setAttribute('stroke', isPath ? '#ffe09a' : baseStroke);
+    }
+  });
+
+  const sequence = pathNodes.map((node) => node.value);
+  const display = sequence.length > 14
+    ? `${sequence.slice(0, 10).join(' → ')} → … → ${sequence[sequence.length - 1]}`
+    : sequence.join(' → ');
+
+  pathInfo.innerHTML = `<strong>${value}</strong> to 1: ${display}`;
+  pathInfo.classList.remove('hidden');
+  controls.clearPathButton.disabled = false;
+  statusMessage.textContent = `${sequence.length - 1} Collatz steps to 1.`;
+}
+
+function renderTree({ animate = false, fit = false } = {}) {
   clearAnimationTimers();
   hideTooltip();
   updateOutputs();
 
   const options = readOptions();
   const model = buildTree(options);
-  const { bounds } = model;
-  const padding = 58;
-  const viewBoxWidth = Math.max(880, bounds.width + padding * 2);
-  const viewBoxHeight = Math.max(560, bounds.height + padding * 2);
+  currentModel = model;
+  fitViewBox = makeViewBox(model.bounds);
 
-  svg.setAttribute(
-    'viewBox',
-    `${bounds.minX - padding} ${bounds.minY - padding} ${viewBoxWidth} ${viewBoxHeight}`
-  );
+  if (fit || !cameraViewBox) {
+    applyViewBox(fitViewBox);
+  } else {
+    applyViewBox(cameraViewBox);
+  }
+
   svg.innerHTML = '';
 
-  const nodeGlowDefs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  nodeGlowDefs.innerHTML = `
+  const defs = document.createElementNS(SVG_NS, 'defs');
+  defs.innerHTML = `
     <filter id="vizNodeGlow" x="-80%" y="-80%" width="260%" height="260%">
       <feGaussianBlur stdDeviation="2.8" result="blur"></feGaussianBlur>
       <feMerge>
@@ -200,17 +357,15 @@ function renderTree({ animate = false } = {}) {
       </feMerge>
     </filter>
   `;
-  svg.appendChild(nodeGlowDefs);
+  svg.appendChild(defs);
 
-  // Edge glow is drawn as a second, wider translucent line instead of an SVG
-  // filter. This avoids browser-specific disappearing horizontal lines caused by
-  // a zero-height object bounding box on perfectly horizontal <line> elements.
-  const edgeGlowLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  const edgeLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  const nodeLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const edgeGlowLayer = document.createElementNS(SVG_NS, 'g');
+  const edgeLayer = document.createElementNS(SVG_NS, 'g');
+  const nodeLayer = document.createElementNS(SVG_NS, 'g');
   svg.append(edgeGlowLayer, edgeLayer, nodeLayer);
 
   const nodeElements = new Map();
+  const nodeElementList = [];
   const edgeElements = [];
   const depthDenominator = Math.max(options.depth, 1);
 
@@ -221,7 +376,7 @@ function renderTree({ animate = false } = {}) {
 
     let glowLine = null;
     if (options.showGlow) {
-      glowLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      glowLine = document.createElementNS(SVG_NS, 'line');
       glowLine.setAttribute('x1', edge.x1);
       glowLine.setAttribute('y1', edge.y1);
       glowLine.setAttribute('x2', edge.x2);
@@ -230,11 +385,11 @@ function renderTree({ animate = false } = {}) {
       glowLine.setAttribute('stroke-width', Math.max(4.5, strokeWidth * 3.2).toFixed(2));
       glowLine.setAttribute('stroke-opacity', '0.16');
       glowLine.setAttribute('stroke-linecap', 'round');
-      glowLine.setAttribute('class', animate ? 'tree-hidden' : '');
+      glowLine.setAttribute('class', `tree-edge-glow${animate ? ' tree-hidden' : ''}`);
       edgeGlowLayer.appendChild(glowLine);
     }
 
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    const line = document.createElementNS(SVG_NS, 'line');
     line.setAttribute('x1', edge.x1);
     line.setAttribute('y1', edge.y1);
     line.setAttribute('x2', edge.x2);
@@ -242,6 +397,7 @@ function renderTree({ animate = false } = {}) {
     line.setAttribute('stroke', stroke);
     line.setAttribute('stroke-width', strokeWidth.toFixed(2));
     line.setAttribute('class', `tree-edge interactive${animate ? ' tree-hidden' : ''}`);
+    line.dataset.edgeId = edge.id;
 
     line.addEventListener('mouseenter', () => {
       showTooltip(`<p class="tooltip-title">${edge.childValue}</p><p class="tooltip-meta">${formatRuleLabel(edge.type)} · generation ${edge.depth}</p>`);
@@ -249,15 +405,17 @@ function renderTree({ animate = false } = {}) {
     line.addEventListener('mouseleave', hideTooltip);
 
     edgeLayer.appendChild(line);
-    edgeElements.push({ edge, element: line, glowElement: glowLine });
+    edgeElements.push({ edge, line, glowLine, baseStroke: stroke });
   });
 
   model.nodes.forEach((node) => {
     const stroke = colourFor(node.incomingType, node.depth, options.depth, options.colourMode);
-    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    const group = document.createElementNS(SVG_NS, 'g');
     group.setAttribute('class', `tree-node-group interactive${animate && node.depth > 0 ? ' tree-hidden' : ''}`);
+    group.dataset.nodeValue = String(node.value);
+    group.dataset.nodeId = node.id;
 
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    const circle = document.createElementNS(SVG_NS, 'circle');
     circle.setAttribute('cx', node.x);
     circle.setAttribute('cy', node.y);
     circle.setAttribute('r', node.depth === 0 ? 7.5 : 4.8);
@@ -266,26 +424,48 @@ function renderTree({ animate = false } = {}) {
     if (options.showGlow) circle.setAttribute('filter', 'url(#vizNodeGlow)');
     group.appendChild(circle);
 
-    if (options.showLabels || node.depth === 0) {
-      const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      label.setAttribute('x', node.x + 8);
-      label.setAttribute('y', node.y - 8);
-      label.setAttribute('class', `tree-node-label${animate && node.depth > 0 ? ' tree-hidden' : ''}`);
-      label.textContent = String(node.value);
-      group.appendChild(label);
-    }
+    const label = document.createElementNS(SVG_NS, 'text');
+    label.setAttribute('x', node.x + 8);
+    label.setAttribute('y', node.y - 8);
+    label.textContent = String(node.value);
+
+    const labelAlways = options.labelMode === 'all'
+      || (options.labelMode === 'smart' && shouldShowSmartLabel(node, options))
+      || node.depth === 0;
+    label.setAttribute(
+      'class',
+      `tree-node-label ${labelAlways ? 'label-always' : 'label-hover'}${animate && node.depth > 0 ? ' tree-hidden' : ''}`
+    );
+    group.appendChild(label);
 
     group.addEventListener('mouseenter', () => {
       showTooltip(`<p class="tooltip-title">${node.value}</p><p class="tooltip-meta">${formatRuleLabel(node.incomingType)} · generation ${node.depth}</p>`);
     });
     group.addEventListener('mouseleave', hideTooltip);
+    group.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (suppressNextNodeClick) {
+        suppressNextNodeClick = false;
+        return;
+      }
+      highlightPathToRoot(node.value);
+    });
 
     nodeLayer.appendChild(group);
     nodeElements.set(node.id, group);
+    nodeElementList.push({ node, group, circle, label, baseStroke: stroke });
   });
+
+  currentElements = { nodes: nodeElementList, edges: edgeElements };
 
   statsLine.textContent = `Nodes: ${model.nodes.length.toLocaleString()} · Branches: ${model.edges.length.toLocaleString()} · Max value: ${model.maxValue.toLocaleString()}`;
   statusMessage.textContent = animate ? 'Animating growth…' : 'Rendered.';
+
+  if (highlightedValue != null) {
+    const stillExists = model.nodes.some((node) => node.value === highlightedValue);
+    if (stillExists) highlightPathToRoot(highlightedValue);
+    else clearPathHighlight({ silent: true });
+  }
 
   if (!animate) return;
 
@@ -293,11 +473,11 @@ function renderTree({ animate = false } = {}) {
   rootGroup?.classList.remove('tree-hidden');
 
   const sortedEdges = [...edgeElements].sort((a, b) => a.edge.depth - b.edge.depth || a.edge.childValue - b.edge.childValue);
-  sortedEdges.forEach(({ edge, element, glowElement }, index) => {
-    const delay = index * 55;
+  sortedEdges.forEach(({ edge, line, glowLine }, index) => {
+    const delay = index * 48;
     animationTimers.push(window.setTimeout(() => {
-      glowElement?.classList.remove('tree-hidden');
-      element.classList.remove('tree-hidden');
+      glowLine?.classList.remove('tree-hidden');
+      line.classList.remove('tree-hidden');
       const childGroup = nodeElements.get(edge.to);
       childGroup?.classList.remove('tree-hidden');
       childGroup?.querySelectorAll('.tree-node-label').forEach((label) => label.classList.remove('tree-hidden'));
@@ -306,7 +486,7 @@ function renderTree({ animate = false } = {}) {
 
   animationTimers.push(window.setTimeout(() => {
     statusMessage.textContent = 'Animation complete.';
-  }, sortedEdges.length * 55 + 180));
+  }, sortedEdges.length * 48 + 180));
 }
 
 function downloadSvg() {
@@ -324,21 +504,87 @@ function downloadSvg() {
   statusMessage.textContent = 'SVG downloaded.';
 }
 
-function scheduleRender() {
+function scheduleRender({ fit = false } = {}) {
   window.clearTimeout(renderDebounce);
-  renderDebounce = window.setTimeout(() => renderTree({ animate: false }), 130);
+  renderDebounce = window.setTimeout(() => renderTree({ animate: false, fit }), 130);
 }
 
-['depth', 'angle', 'length', 'decay', 'width'].forEach((key) => {
-  controls[key].addEventListener('input', scheduleRender);
+['angle', 'length', 'decay', 'width'].forEach((key) => {
+  controls[key].addEventListener('input', () => scheduleRender({ fit: false }));
 });
-controls.colourMode.addEventListener('change', () => renderTree({ animate: false }));
-controls.showLabels.addEventListener('change', () => renderTree({ animate: false }));
-controls.showGlow.addEventListener('change', () => renderTree({ animate: false }));
-controls.renderButton.addEventListener('click', () => renderTree({ animate: false }));
-controls.animateButton.addEventListener('click', () => renderTree({ animate: true }));
+controls.depth.addEventListener('input', () => scheduleRender({ fit: true }));
+controls.colourMode.addEventListener('change', () => renderTree({ animate: false, fit: false }));
+controls.labelMode.addEventListener('change', () => renderTree({ animate: false, fit: false }));
+controls.showGlow.addEventListener('change', () => renderTree({ animate: false, fit: false }));
+controls.renderButton.addEventListener('click', () => renderTree({ animate: false, fit: false }));
+controls.animateButton.addEventListener('click', () => renderTree({ animate: true, fit: false }));
 controls.exportButton.addEventListener('click', downloadSvg);
-window.addEventListener('resize', scheduleRender);
+controls.fitButton.addEventListener('click', fitCamera);
+controls.zoomInButton.addEventListener('click', () => zoomCamera(0.82));
+controls.zoomOutButton.addEventListener('click', () => zoomCamera(1.22));
+controls.clearPathButton.addEventListener('click', () => clearPathHighlight());
+
+controls.toggleControls.addEventListener('click', () => {
+  const collapsed = visualizerShell.classList.toggle('controls-collapsed');
+  controls.toggleControls.textContent = collapsed ? '›' : '‹';
+  controls.toggleControls.setAttribute('aria-expanded', String(!collapsed));
+  controls.toggleControls.setAttribute('aria-label', collapsed ? 'Show controls' : 'Hide controls');
+  statusMessage.textContent = collapsed ? 'Controls hidden.' : 'Controls shown.';
+});
+
+svg.addEventListener('wheel', (event) => {
+  event.preventDefault();
+  zoomCamera(event.deltaY > 0 ? 1.12 : 0.89, event.clientX, event.clientY);
+}, { passive: false });
+
+svg.addEventListener('pointerdown', (event) => {
+  if (event.button !== 0 || !cameraViewBox) return;
+  if (event.target.closest?.('.tree-node-group')) return;
+  dragState = {
+    pointerId: event.pointerId,
+    startClientX: event.clientX,
+    startClientY: event.clientY,
+    startViewBox: { ...cameraViewBox },
+    moved: false
+  };
+  svg.setPointerCapture(event.pointerId);
+  svg.classList.add('is-panning');
+});
+
+svg.addEventListener('pointermove', (event) => {
+  if (!dragState || event.pointerId !== dragState.pointerId) return;
+  const rect = svg.getBoundingClientRect();
+  const dxPixels = event.clientX - dragState.startClientX;
+  const dyPixels = event.clientY - dragState.startClientY;
+  if (Math.hypot(dxPixels, dyPixels) > 3) dragState.moved = true;
+  const dx = (dxPixels / rect.width) * dragState.startViewBox.width;
+  const dy = (dyPixels / rect.height) * dragState.startViewBox.height;
+  cameraTouched = true;
+  applyViewBox({
+    x: dragState.startViewBox.x - dx,
+    y: dragState.startViewBox.y - dy,
+    width: dragState.startViewBox.width,
+    height: dragState.startViewBox.height
+  });
+});
+
+function endPan(event) {
+  if (!dragState || event.pointerId !== dragState.pointerId) return;
+  try { svg.releasePointerCapture(event.pointerId); } catch (_) {}
+  dragState = null;
+  svg.classList.remove('is-panning');
+}
+
+svg.addEventListener('pointerup', endPan);
+svg.addEventListener('pointercancel', endPan);
+svg.addEventListener('dblclick', (event) => {
+  if (event.target.closest?.('.tree-node-group')) return;
+  fitCamera();
+});
+
+window.addEventListener('resize', () => {
+  if (!cameraTouched) fitCamera();
+});
 
 updateOutputs();
-renderTree({ animate: true });
+renderTree({ animate: true, fit: true });
