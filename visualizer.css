@@ -29,6 +29,11 @@
   grid-template-columns: minmax(320px, 360px) minmax(0, 1fr);
   gap: 1.5rem;
   align-items: start;
+  transition: grid-template-columns 260ms ease;
+}
+
+.visualizer-shell.controls-collapsed {
+  grid-template-columns: 58px minmax(0, 1fr);
 }
 
 .controls-panel,
@@ -44,6 +49,47 @@
   padding: 1.4rem 1.3rem 1.3rem;
   position: sticky;
   top: 5.8rem;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.controls-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.controls-title-block {
+  min-width: 0;
+}
+
+.panel-toggle {
+  flex: none;
+  inline-size: 2rem;
+  block-size: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(122, 231, 255, 0.18);
+  background: rgba(8, 15, 28, 0.95);
+  color: var(--text-main);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.visualizer-shell.controls-collapsed .controls-panel {
+  padding: 1.1rem 0.75rem;
+}
+
+.visualizer-shell.controls-collapsed .controls-title-block,
+.visualizer-shell.controls-collapsed .controls-content {
+  display: none;
+}
+
+.visualizer-shell.controls-collapsed .controls-header {
+  justify-content: center;
 }
 
 .panel-copy {
@@ -114,7 +160,8 @@
   margin-bottom: 1.2rem;
 }
 
-.button-row button {
+.button-row button,
+.camera-toolbar button {
   border: 1px solid rgba(122, 231, 255, 0.18);
   background: rgba(8, 15, 28, 0.95);
   color: var(--text-main);
@@ -122,14 +169,25 @@
   padding: 0.8rem 1rem;
   font: inherit;
   cursor: pointer;
-  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease, opacity 160ms ease;
 }
 
 .button-row button:hover,
-.button-row button:focus-visible {
+.button-row button:focus-visible,
+.camera-toolbar button:hover,
+.camera-toolbar button:focus-visible,
+.panel-toggle:hover,
+.panel-toggle:focus-visible {
   transform: translateY(-1px);
   border-color: rgba(122, 231, 255, 0.4);
   box-shadow: 0 0 0 1px rgba(122, 231, 255, 0.12), 0 14px 28px rgba(0, 0, 0, 0.24);
+}
+
+.camera-toolbar button:disabled {
+  opacity: 0.38;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
 }
 
 .legend-card {
@@ -206,7 +264,7 @@
   gap: 1rem;
   padding: 1.25rem 1.35rem 0;
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .toolbar-label {
@@ -221,6 +279,50 @@
 
 .status-message {
   padding-top: 0.1rem;
+  text-align: right;
+}
+
+.camera-toolbar {
+  position: absolute;
+  top: 4.35rem;
+  right: 1.2rem;
+  z-index: 4;
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.camera-toolbar button {
+  padding: 0.55rem 0.8rem;
+  min-width: 2.45rem;
+  background: rgba(5, 10, 20, 0.86);
+  backdrop-filter: blur(10px);
+}
+
+.stage-hint {
+  position: absolute;
+  left: 1.35rem;
+  top: 4.7rem;
+  z-index: 3;
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+}
+
+.path-info {
+  position: absolute;
+  left: 1.35rem;
+  bottom: 1.25rem;
+  z-index: 5;
+  max-width: min(72%, 56rem);
+  padding: 0.75rem 0.95rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 224, 154, 0.22);
+  background: rgba(8, 11, 20, 0.9);
+  color: rgba(255, 236, 194, 0.95);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.3);
+  font-size: 0.88rem;
 }
 
 .tree-wrapper {
@@ -233,18 +335,31 @@
   display: block;
   width: 100%;
   height: 100%;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.tree-svg.is-panning {
+  cursor: grabbing;
+}
+
+.tree-edge,
+.tree-edge-glow,
+.tree-node-group {
+  transition: opacity 220ms ease;
 }
 
 .tree-edge {
   opacity: 0.92;
   fill: none;
   stroke-linecap: round;
-  transition: opacity 240ms ease;
 }
 
 .tree-node-circle {
   stroke-width: 1.5;
   fill: rgba(6, 10, 20, 0.9);
+  transition: stroke 180ms ease, r 180ms ease, opacity 180ms ease;
 }
 
 .tree-node-label {
@@ -255,6 +370,17 @@
   stroke: rgba(3, 5, 10, 0.9);
   stroke-width: 4px;
   stroke-linejoin: round;
+  transition: opacity 150ms ease, fill 150ms ease;
+  pointer-events: none;
+}
+
+.tree-node-label.label-hover {
+  opacity: 0;
+}
+
+.tree-node-group:hover .tree-node-label.label-hover,
+.tree-node-label.path-label-force {
+  opacity: 1;
 }
 
 .tree-node-group.interactive,
@@ -262,13 +388,41 @@
   cursor: pointer;
 }
 
+.tree-node-group.path-muted,
+.tree-edge.path-muted,
+.tree-edge-glow.path-muted {
+  opacity: 0.09;
+}
+
+.tree-node-group.path-highlight,
+.tree-edge.path-highlight,
+.tree-edge-glow.path-highlight {
+  opacity: 1;
+}
+
+.tree-node-group.path-highlight .tree-node-label {
+  fill: #ffe7ad;
+}
+
+.tree-node-group.path-selected .tree-node-circle {
+  stroke-width: 3;
+}
+
+.tree-edge.path-highlight {
+  stroke-width: 3.2;
+}
+
+.tree-edge-glow.path-highlight {
+  opacity: 0.4;
+}
+
 .tree-hidden {
-  opacity: 0;
+  opacity: 0 !important;
 }
 
 .tree-tooltip {
   position: absolute;
-  left: 1rem;
+  right: 1rem;
   bottom: 1rem;
   max-width: 18rem;
   padding: 0.8rem 0.9rem;
@@ -302,12 +456,17 @@
 }
 
 @media (max-width: 1100px) {
-  .visualizer-shell {
+  .visualizer-shell,
+  .visualizer-shell.controls-collapsed {
     grid-template-columns: 1fr;
   }
 
   .controls-panel {
     position: static;
+  }
+
+  .visualizer-shell.controls-collapsed .controls-panel {
+    padding: 0.8rem;
   }
 
   .visualizer-stage {
@@ -316,5 +475,9 @@
 
   .tree-wrapper {
     block-size: 620px;
+  }
+
+  .stage-hint {
+    display: none;
   }
 }
