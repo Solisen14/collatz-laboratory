@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#07090f" />
   <title>The Collatz Laboratory · Visualize</title>
   <link rel="stylesheet" href="styles.css?v=20261012-1632" />
-  <link rel="stylesheet" href="visualizer.css?v=20261013-1" />
+  <link rel="stylesheet" href="visualizer.css?v=20261013-2" />
 </head>
 <body class="visualizer-body">
   <header class="site-header">
@@ -24,74 +24,90 @@
 
   <main class="visualizer-page">
     <section class="visualizer-hero">
-      <p class="eyebrow">COLLATZ VISUALIZER · v0.1</p>
+      <p class="eyebrow">COLLATZ VISUALIZER · v0.2</p>
       <h1>Build a branching Collatz structure.</h1>
-      <p class="visualizer-sub">This workspace grows the reverse Collatz tree outward from 1. Every node always branches to <strong>2n</strong>, and some nodes also branch to <strong>(n − 1) / 3</strong>. Adjust the geometry, animate the growth, and see how the structure changes.</p>
+      <p class="visualizer-sub">Grow the reverse Collatz tree outward from 1, reshape its geometry, zoom into the branches, and click any node to trace its forward path back to 1.</p>
     </section>
 
-    <section class="visualizer-shell" aria-label="Collatz visualizer workspace">
+    <section id="visualizerShell" class="visualizer-shell" aria-label="Collatz visualizer workspace">
       <aside class="controls-panel">
-        <p class="step-number">WORKSPACE</p>
-        <h2>Reverse Collatz Tree</h2>
-        <p class="panel-copy">Use the controls below to shape the branching diagram. The mathematics happens locally in the browser.</p>
-
-        <div class="control-grid">
-          <label class="control-row" for="depthRange">
-            <span>Generations</span>
-            <output id="depthValue">11</output>
-            <input id="depthRange" type="range" min="4" max="15" step="1" value="11" />
-          </label>
-
-          <label class="control-row" for="angleRange">
-            <span>Branch angle</span>
-            <output id="angleValue">28°</output>
-            <input id="angleRange" type="range" min="10" max="65" step="1" value="28" />
-          </label>
-
-          <label class="control-row" for="lengthRange">
-            <span>Base branch length</span>
-            <output id="lengthValue">118</output>
-            <input id="lengthRange" type="range" min="72" max="160" step="1" value="118" />
-          </label>
-
-          <label class="control-row" for="decayRange">
-            <span>Length decay</span>
-            <output id="decayValue">0.73</output>
-            <input id="decayRange" type="range" min="0.62" max="0.85" step="0.01" value="0.73" />
-          </label>
-
-          <label class="control-row" for="widthRange">
-            <span>Line weight</span>
-            <output id="widthValue">2.2</output>
-            <input id="widthRange" type="range" min="1.2" max="4.2" step="0.1" value="2.2" />
-          </label>
-
-          <label class="control-row control-select" for="colourMode">
-            <span>Colour mode</span>
-            <select id="colourMode">
-              <option value="rule">By rule</option>
-              <option value="depth">By depth</option>
-              <option value="mono">Monochrome</option>
-            </select>
-          </label>
+        <div class="controls-header">
+          <div class="controls-title-block">
+            <p class="step-number">WORKSPACE</p>
+            <h2>Reverse Collatz Tree</h2>
+          </div>
+          <button id="toggleControls" class="panel-toggle" type="button" aria-expanded="true" aria-label="Hide controls">‹</button>
         </div>
 
-        <div class="toggle-group">
-          <label><input id="showLabels" type="checkbox" /> Show labels</label>
-          <label><input id="showGlow" type="checkbox" checked /> Glow</label>
-        </div>
+        <div class="controls-content">
+          <p class="panel-copy">Use the controls below to shape the branching diagram. The mathematics happens locally in the browser.</p>
 
-        <div class="button-row">
-          <button id="renderButton" type="button">Render</button>
-          <button id="animateButton" type="button">Animate growth</button>
-          <button id="exportButton" type="button">Save SVG</button>
-        </div>
+          <div class="control-grid">
+            <label class="control-row" for="depthRange">
+              <span>Generations</span>
+              <output id="depthValue">11</output>
+              <input id="depthRange" type="range" min="4" max="15" step="1" value="11" />
+            </label>
 
-        <div class="legend-card">
-          <p class="legend-title">Legend</p>
-          <div class="legend-item"><span class="legend-swatch even"></span><span>Even predecessor: <strong>2n</strong></span></div>
-          <div class="legend-item"><span class="legend-swatch odd"></span><span>Odd predecessor: <strong>(n − 1) / 3</strong></span></div>
-          <div class="legend-item"><span class="legend-swatch root"></span><span>Root value: <strong>1</strong></span></div>
+            <label class="control-row" for="angleRange">
+              <span>Branch angle</span>
+              <output id="angleValue">28°</output>
+              <input id="angleRange" type="range" min="10" max="65" step="1" value="28" />
+            </label>
+
+            <label class="control-row" for="lengthRange">
+              <span>Base branch length</span>
+              <output id="lengthValue">118</output>
+              <input id="lengthRange" type="range" min="72" max="160" step="1" value="118" />
+            </label>
+
+            <label class="control-row" for="decayRange">
+              <span>Length decay</span>
+              <output id="decayValue">0.73</output>
+              <input id="decayRange" type="range" min="0.62" max="0.85" step="0.01" value="0.73" />
+            </label>
+
+            <label class="control-row" for="widthRange">
+              <span>Line weight</span>
+              <output id="widthValue">2.2</output>
+              <input id="widthRange" type="range" min="1.2" max="4.2" step="0.1" value="2.2" />
+            </label>
+
+            <label class="control-row control-select" for="colourMode">
+              <span>Colour mode</span>
+              <select id="colourMode">
+                <option value="depth" selected>By depth</option>
+                <option value="rule">By rule</option>
+                <option value="mono">Monochrome</option>
+              </select>
+            </label>
+
+            <label class="control-row control-select" for="labelMode">
+              <span>Labels</span>
+              <select id="labelMode">
+                <option value="smart" selected>Smart</option>
+                <option value="all">All</option>
+                <option value="hover">Hover only</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="toggle-group">
+            <label><input id="showGlow" type="checkbox" checked /> Glow</label>
+          </div>
+
+          <div class="button-row">
+            <button id="renderButton" type="button">Render</button>
+            <button id="animateButton" type="button">Animate growth</button>
+            <button id="exportButton" type="button">Save SVG</button>
+          </div>
+
+          <div class="legend-card">
+            <p class="legend-title">Legend</p>
+            <div class="legend-item"><span class="legend-swatch even"></span><span>Even predecessor: <strong>2n</strong></span></div>
+            <div class="legend-item"><span class="legend-swatch odd"></span><span>Odd predecessor: <strong>(n − 1) / 3</strong></span></div>
+            <div class="legend-item"><span class="legend-swatch root"></span><span>Root value: <strong>1</strong></span></div>
+          </div>
         </div>
       </aside>
 
@@ -105,6 +121,16 @@
           <p id="statusMessage" class="status-message">Ready.</p>
         </div>
 
+        <div class="camera-toolbar" aria-label="View controls">
+          <button id="zoomOutButton" type="button" aria-label="Zoom out">−</button>
+          <button id="zoomInButton" type="button" aria-label="Zoom in">+</button>
+          <button id="fitButton" type="button">Fit</button>
+          <button id="clearPathButton" type="button" disabled>Clear path</button>
+        </div>
+
+        <div class="stage-hint">Drag to pan · Scroll to zoom · Click a node to trace its path to 1</div>
+        <div id="pathInfo" class="path-info hidden"></div>
+
         <div id="treeWrapper" class="tree-wrapper">
           <svg id="treeSvg" class="tree-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet" aria-label="Reverse Collatz tree visualization"></svg>
           <div id="treeTooltip" class="tree-tooltip hidden"></div>
@@ -113,6 +139,6 @@
     </section>
   </main>
 
-  <script src="visualizer.js?v=20261013-1"></script>
+  <script src="visualizer.js?v=20261013-2"></script>
 </body>
 </html>
