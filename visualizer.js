@@ -81,12 +81,16 @@ function buildTree(options) {
 
     const length = options.length * Math.pow(options.decay, depth);
     const odd = oddPredecessor(value);
-    const children = [{ value: value * 2, type: 'even' }];
-    if (odd !== null) children.push({ value: odd, type: 'odd' });
+
+    // Build the mathematical predecessor list first, then discard values already
+    // in the tree (most importantly the trivial 1 -> 4 -> 2 -> 1 cycle).
+    // Only the children that will actually be drawn are allowed to influence
+    // the branch geometry.
+    const candidates = [{ value: value * 2, type: 'even' }];
+    if (odd !== null) candidates.push({ value: odd, type: 'odd' });
+    const children = candidates.filter((child) => !seen.has(child.value));
 
     children.forEach((child) => {
-      if (seen.has(child.value)) return;
-
       const spread = options.angle * 0.5 * DEG_TO_RAD;
       const childAngle = children.length === 1
         ? angle
@@ -186,9 +190,9 @@ function renderTree({ animate = false } = {}) {
   );
   svg.innerHTML = '';
 
-  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  defs.innerHTML = `
-    <filter id="vizGlow" x="-60%" y="-60%" width="220%" height="220%">
+  const nodeGlowDefs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  nodeGlowDefs.innerHTML = `
+    <filter id="vizNodeGlow" x="-80%" y="-80%" width="260%" height="260%">
       <feGaussianBlur stdDeviation="2.8" result="blur"></feGaussianBlur>
       <feMerge>
         <feMergeNode in="blur"></feMergeNode>
@@ -196,11 +200,15 @@ function renderTree({ animate = false } = {}) {
       </feMerge>
     </filter>
   `;
-  svg.appendChild(defs);
+  svg.appendChild(nodeGlowDefs);
 
+  // Edge glow is drawn as a second, wider translucent line instead of an SVG
+  // filter. This avoids browser-specific disappearing horizontal lines caused by
+  // a zero-height object bounding box on perfectly horizontal <line> elements.
+  const edgeGlowLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   const edgeLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   const nodeLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  svg.append(edgeLayer, nodeLayer);
+  svg.append(edgeGlowLayer, edgeLayer, nodeLayer);
 
   const nodeElements = new Map();
   const edgeElements = [];
@@ -211,6 +219,21 @@ function renderTree({ animate = false } = {}) {
     const taper = 1 - edge.depth / (depthDenominator + 2);
     const strokeWidth = Math.max(0.85, options.width * (0.55 + taper * 0.6));
 
+    let glowLine = null;
+    if (options.showGlow) {
+      glowLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      glowLine.setAttribute('x1', edge.x1);
+      glowLine.setAttribute('y1', edge.y1);
+      glowLine.setAttribute('x2', edge.x2);
+      glowLine.setAttribute('y2', edge.y2);
+      glowLine.setAttribute('stroke', stroke);
+      glowLine.setAttribute('stroke-width', Math.max(4.5, strokeWidth * 3.2).toFixed(2));
+      glowLine.setAttribute('stroke-opacity', '0.16');
+      glowLine.setAttribute('stroke-linecap', 'round');
+      glowLine.setAttribute('class', animate ? 'tree-hidden' : '');
+      edgeGlowLayer.appendChild(glowLine);
+    }
+
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.setAttribute('x1', edge.x1);
     line.setAttribute('y1', edge.y1);
@@ -219,7 +242,6 @@ function renderTree({ animate = false } = {}) {
     line.setAttribute('stroke', stroke);
     line.setAttribute('stroke-width', strokeWidth.toFixed(2));
     line.setAttribute('class', `tree-edge interactive${animate ? ' tree-hidden' : ''}`);
-    if (options.showGlow) line.setAttribute('filter', 'url(#vizGlow)');
 
     line.addEventListener('mouseenter', () => {
       showTooltip(`<p class="tooltip-title">${edge.childValue}</p><p class="tooltip-meta">${formatRuleLabel(edge.type)} · generation ${edge.depth}</p>`);
@@ -227,7 +249,7 @@ function renderTree({ animate = false } = {}) {
     line.addEventListener('mouseleave', hideTooltip);
 
     edgeLayer.appendChild(line);
-    edgeElements.push({ edge, element: line });
+    edgeElements.push({ edge, element: line, glowElement: glowLine });
   });
 
   model.nodes.forEach((node) => {
@@ -241,7 +263,7 @@ function renderTree({ animate = false } = {}) {
     circle.setAttribute('r', node.depth === 0 ? 7.5 : 4.8);
     circle.setAttribute('stroke', stroke);
     circle.setAttribute('class', 'tree-node-circle');
-    if (options.showGlow) circle.setAttribute('filter', 'url(#vizGlow)');
+    if (options.showGlow) circle.setAttribute('filter', 'url(#vizNodeGlow)');
     group.appendChild(circle);
 
     if (options.showLabels || node.depth === 0) {
@@ -271,9 +293,10 @@ function renderTree({ animate = false } = {}) {
   rootGroup?.classList.remove('tree-hidden');
 
   const sortedEdges = [...edgeElements].sort((a, b) => a.edge.depth - b.edge.depth || a.edge.childValue - b.edge.childValue);
-  sortedEdges.forEach(({ edge, element }, index) => {
+  sortedEdges.forEach(({ edge, element, glowElement }, index) => {
     const delay = index * 55;
     animationTimers.push(window.setTimeout(() => {
+      glowElement?.classList.remove('tree-hidden');
       element.classList.remove('tree-hidden');
       const childGroup = nodeElements.get(edge.to);
       childGroup?.classList.remove('tree-hidden');
