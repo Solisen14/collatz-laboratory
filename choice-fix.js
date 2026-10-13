@@ -1,9 +1,9 @@
-// Scene 3 interaction: keep only the three starting anchors on the left,
-// then let the reader trace 20 and 21 directly from those start nodes.
-// This deliberately does not show the path from 3 in this scene.
+// Scene 3 interaction: keep the full path from 3 visible as a reference,
+// while the reader traces 20 and 21 directly from the start nodes above and below it.
 
 (function () {
   const SVG_NS_LOCAL = "http://www.w3.org/2000/svg";
+  const TRACE_XS = [110, 225, 340, 455, 570, 685, 800, 915];
 
   function ensureTraceChoiceStyles() {
     if (document.getElementById("trace-choice-styles")) return;
@@ -75,13 +75,13 @@
       }
 
       .trace-choice-node circle,
-      .trace-choice-anchor circle {
+      .trace-reference-node circle {
         fill: rgba(9,14,22,.97);
         stroke-width: 1.4;
       }
 
       .trace-choice-node text,
-      .trace-choice-anchor text,
+      .trace-reference-node text,
       .trace-choice-start text {
         fill: #f8fbff;
         font: 500 17px Inter, ui-sans-serif, system-ui, sans-serif;
@@ -91,22 +91,24 @@
         user-select: none;
       }
 
-      .trace-choice-anchor {
-        opacity: .52;
-      }
-
       .trace-choice-segment {
         opacity: 0;
         transition: opacity .34s ease;
       }
 
-      .trace-choice-segment.visible {
+      .trace-choice-segment.visible,
+      .trace-reference-segment {
         opacity: 1;
       }
 
-      .trace-choice-segment line {
+      .trace-choice-segment line,
+      .trace-reference-segment line {
         stroke-width: 1.45;
         stroke-linecap: round;
+      }
+
+      .trace-reference-row {
+        opacity: .92;
       }
 
       .trace-choice-start-label {
@@ -179,12 +181,20 @@
     return group;
   }
 
+  function addStartLabel(svg, start, y, colour) {
+    const label = el("text", {
+      class: "trace-choice-start-label",
+      x: TRACE_XS[0],
+      y: y - 46,
+      fill: colour
+    });
+    label.textContent = `START ${start}`;
+    svg.appendChild(label);
+  }
+
   function addTraceRow(svg, start, y, colour, markerId, alreadyTraced) {
     const values = sequences[start];
-    const xs = [110, 225, 340, 455, 570, 685, 800, 915];
 
-    // Clickable starting node. It occupies the same x-position as the quiet 3
-    // anchor so the eventual 20 / 3 / 21 branching geometry is established now.
     const startGroup = el("g", {
       class: `trace-choice-start${alreadyTraced ? " done" : ""}`,
       tabindex: "0",
@@ -195,48 +205,48 @@
 
     startGroup.appendChild(el("circle", {
       class: "trace-hit-ring",
-      cx: xs[0], cy: y, r: 34, stroke: colour
+      cx: TRACE_XS[0], cy: y, r: 34, stroke: colour
     }));
     startGroup.appendChild(el("circle", {
-      cx: xs[0], cy: y, r: 25, fill: "rgba(9,14,22,.97)", stroke: colour, "stroke-width": 1.6,
+      cx: TRACE_XS[0], cy: y, r: 25,
+      fill: "rgba(9,14,22,.97)",
+      stroke: colour,
+      "stroke-width": 1.6,
       style: `filter:drop-shadow(0 0 12px ${colour}55)`
     }));
-    const number = el("text", { x: xs[0], y });
+
+    const number = el("text", { x: TRACE_XS[0], y });
     number.textContent = start;
     startGroup.appendChild(number);
 
     const instruction = el("text", {
       class: "trace-choice-instruction",
-      x: xs[0], y: y + 48, fill: colour
+      x: TRACE_XS[0], y: y + 48, fill: colour
     });
     instruction.textContent = "CLICK TO TRACE";
     startGroup.appendChild(instruction);
 
     const check = el("text", {
       class: "trace-choice-check",
-      x: xs[0] + 30, y: y - 29, fill: colour
+      x: TRACE_XS[0] + 30, y: y - 29, fill: colour
     });
     check.textContent = "✓";
     startGroup.appendChild(check);
     svg.appendChild(startGroup);
 
-    const label = el("text", {
-      class: "trace-choice-start-label",
-      x: xs[0], y: y - 46, fill: colour
-    });
-    label.textContent = `START ${start}`;
-    svg.appendChild(label);
+    addStartLabel(svg, start, y, colour);
 
     for (let index = 0; index < values.length - 1; index++) {
-      const x1 = xs[index] + 28;
-      const x2 = xs[index + 1] - 31;
       const segment = el("g", {
         class: `trace-choice-segment${alreadyTraced ? " visible" : ""}`,
         "data-trace-row": start,
         "data-trace-segment": index
       });
       segment.appendChild(el("line", {
-        x1, y1: y, x2, y2: y,
+        x1: TRACE_XS[index] + 28,
+        y1: y,
+        x2: TRACE_XS[index + 1] - 31,
+        y2: y,
         stroke: colour,
         "marker-end": `url(#${markerId})`,
         style: `filter:drop-shadow(0 0 4px ${colour}38)`
@@ -244,18 +254,44 @@
       svg.appendChild(segment);
     }
 
-    // Node zero is the interactive startGroup above. Only create the suffix here.
     values.slice(1).forEach((value, suffixIndex) => {
       const index = suffixIndex + 1;
       addCircleNode(
         svg,
-        xs[index],
+        TRACE_XS[index],
         y,
         value,
         colour,
         `trace-choice-node${alreadyTraced ? " visible" : ""}`
       ).setAttribute("data-trace-row", start);
     });
+  }
+
+  function addReferenceRow(svg, start, y, colour, markerId) {
+    const values = sequences[start];
+    const row = el("g", { class: "trace-reference-row" });
+
+    addStartLabel(row, start, y, colour);
+
+    for (let index = 0; index < values.length - 1; index++) {
+      const segment = el("g", { class: "trace-reference-segment" });
+      segment.appendChild(el("line", {
+        x1: TRACE_XS[index] + 28,
+        y1: y,
+        x2: TRACE_XS[index + 1] - 31,
+        y2: y,
+        stroke: colour,
+        "marker-end": `url(#${markerId})`,
+        style: `filter:drop-shadow(0 0 4px ${colour}38)`
+      }));
+      row.appendChild(segment);
+    }
+
+    values.forEach((value, index) => {
+      addCircleNode(row, TRACE_XS[index], y, value, colour, "trace-reference-node");
+    });
+
+    svg.appendChild(row);
   }
 
   function revealTraceRow(start) {
@@ -295,24 +331,17 @@
       viewBox: "0 0 1000 360",
       preserveAspectRatio: "xMidYMid meet",
       role: "img",
-      "aria-label": "Choose 20 and 21 to trace their Collatz paths. The starting value 3 remains between them as a reference."
+      "aria-label": "The full path from 3 remains visible while the reader chooses 20 and 21 to trace their Collatz paths above and below it."
     });
 
     const defs = el("defs");
     addArrowMarker(defs, "trace-arrow-violet", "#9f8cff");
+    addArrowMarker(defs, "trace-arrow-cyan", "#7ae7ff");
     addArrowMarker(defs, "trace-arrow-pink", "#ff78b8");
     svg.appendChild(defs);
 
     addTraceRow(svg, 20, 72, "#9f8cff", "trace-arrow-violet", state.tracedSeven.has(20));
-
-    const middleLabel = el("text", {
-      class: "trace-choice-start-label",
-      x: 110, y: 180 - 46, fill: "#7ae7ff"
-    });
-    middleLabel.textContent = "START 3";
-    svg.appendChild(middleLabel);
-    addCircleNode(svg, 110, 180, 3, "#7ae7ff", "trace-choice-anchor");
-
+    addReferenceRow(svg, 3, 180, "#7ae7ff", "trace-arrow-cyan");
     addTraceRow(svg, 21, 288, "#ff78b8", "trace-arrow-pink", state.tracedSeven.has(21));
 
     shell.appendChild(svg);
@@ -352,8 +381,6 @@
     }
   }
 
-  // The source script card should contain instructions only. The interaction now
-  // lives in the visual stage itself, where 20 and 21 sit above and below 3.
   const chooseCard = document.querySelector('.story-step[data-scene="choose-seven"] .step-card');
   if (chooseCard) {
     chooseCard.innerHTML = `
@@ -363,9 +390,6 @@
     `;
   }
 
-  // Override the original renderer rather than just wrapping setScene. The gate
-  // calls the original scene dispatcher directly when it snaps a reader back,
-  // and that dispatcher resolves this function dynamically.
   renderSevenChoiceScene = function () {
     renderTraceChoiceStage();
     stageTitle.textContent = "Trace both paths.";
@@ -378,8 +402,6 @@
     }
   };
 
-  // No floating 20 / 21 controls in this scene. Selection happens on the left
-  // side of the stage through the start nodes themselves.
   showSevenChoices = function () {
     choicePanel.classList.add("hidden");
   };
