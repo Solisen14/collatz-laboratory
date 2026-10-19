@@ -66,6 +66,14 @@ function ensureMergePolishStyles() {
       stroke-dashoffset: 0;
     }
 
+    /* The extra predecessors live to the left of the established values.
+       Zoom the entire branching world down and shift it RIGHT so every
+       circle stays inside the standard viewBox at any viewport size.
+       No off-canvas SVG coordinates or viewBox swaps are needed. */
+    .branch-stage.show-predecessors .branch-world {
+      transform: translateX(85px) scale(.76);
+    }
+
     /* The new scene asks visitors to trace the structure backward. */
     .branch-stage .branch-label {
       transition: opacity .4s ease;
@@ -309,7 +317,7 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
   // The question marks are one step BEFORE 40, 6, and 42, so each new
   // unknown sits on the LEFT of the corresponding value, along its row.
   // Each arrow points rightward into the existing number's circle.
-  // The reverse-question scene widens its viewBox to include x < 0.
+  // The reverse-question scene scales and shifts the branching world right.
   const predecessorQuestions = [
     { target: 40, nodeY: topY, questionX: -100, questionY: topY, colour: violet, marker: "polish-arrow-violet" },
     { target: 6, nodeY: midY, questionX: -100, questionY: midY, colour: cyan, marker: "polish-arrow-cyan" },
@@ -368,7 +376,6 @@ renderMergeThree = function() {
     shell = sequenceArea.querySelector(".branch-stage");
   }
   shell?.classList.remove("show-predecessors");
-  shell?.querySelector(".branch-svg")?.setAttribute("viewBox", "0 0 1000 360");
   // No redraw here: the same elements from the revisit scene transform in place.
   state.timers.push(setTimeout(() => shell?.classList.add("merged"), 260));
   showStatus("3 starts · 1 branching path");
@@ -383,7 +390,6 @@ renderGrowSix = function() {
   }
   // Rewinding from the next scene hides the question marks again.
   shell?.classList.remove("show-predecessors");
-  shell?.querySelector(".branch-svg")?.setAttribute("viewBox", "0 0 1000 360");
   shell?.classList.add("merged");
   state.timers.push(setTimeout(() => shell?.classList.add("expanded"), 180));
   state.timers.push(setTimeout(() => shell?.classList.add("show-outer"), 850));
