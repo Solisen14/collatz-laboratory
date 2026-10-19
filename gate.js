@@ -123,7 +123,7 @@ function ensureBranchingStyles() {
   document.head.appendChild(style);
 }
 
-function makeBranchStoryStep(scene, number, title, className = "tall-step") {
+function makeBranchStoryStep(scene, number, title, className = "tall-step", description = "INSERT TEXT HERE") {
   const article = document.createElement("article");
   article.className = `story-step ${className}`;
   article.dataset.scene = scene;
@@ -131,7 +131,7 @@ function makeBranchStoryStep(scene, number, title, className = "tall-step") {
     <div class="step-card">
       <p class="step-number">${number}</p>
       <h3>${title}</h3>
-      <p>INSERT TEXT HERE</p>
+      <p>${description}</p>
     </div>
   `;
   return article;
@@ -144,8 +144,20 @@ function installBranchStorySteps() {
   if (!textStep) return;
 
   const revisit = makeBranchStoryStep("revisit-three", "REVISIT", "Let's revisit the first three paths.");
-  const merge = makeBranchStoryStep("merge-three", "BRANCHING", "Represent the three paths as one branching path.");
-  const grow = makeBranchStoryStep("grow-six", "ZOOM OUT", "Now add 6, 40, and 42.");
+  const merge = makeBranchStoryStep(
+    "merge-three",
+    "BRANCHING",
+    "We can think of these three sequences as one branching path",
+    "tall-step",
+    "Although they begin at different numbers, their sequences eventually meet. From that point onward, they follow the same steps to reach 1."
+  );
+  const grow = makeBranchStoryStep(
+    "grow-six",
+    "ZOOM OUT",
+    "Now add 6, 40, and 42.",
+    "tall-step",
+    "These numbers join the branching path, extending it to 8 steps."
+  );
 
   textStep.before(revisit, merge, grow);
   const insertAt = storySteps.indexOf(textStep);
