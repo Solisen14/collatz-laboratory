@@ -306,14 +306,14 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
     world.appendChild(nodeGroup);
   });
 
-  // Put three unknown predecessors a little above and to the RIGHT of
-  // 40, 6, and 42. The diagonal back-arrows point into the existing nodes,
-  // deliberately opposite to the forward Collatz direction on the main path.
-  // Offsetting them vertically keeps the established arrows and nodes legible.
+  // The question marks are one step BEFORE 40, 6, and 42, so each new
+  // unknown sits on the LEFT of the corresponding value, along its row.
+  // Each arrow points rightward into the existing number's circle.
+  // The reverse-question scene widens its viewBox to include x < 0.
   const predecessorQuestions = [
-    { target: 40, nodeY: topY, questionX: 112, questionY: 8, colour: violet, marker: "polish-arrow-violet" },
-    { target: 6, nodeY: midY, questionX: 112, questionY: 125, colour: cyan, marker: "polish-arrow-cyan" },
-    { target: 42, nodeY: bottomY, questionX: 112, questionY: 352, colour: pink, marker: "polish-arrow-pink" }
+    { target: 40, nodeY: topY, questionX: -100, questionY: topY, colour: violet, marker: "polish-arrow-violet" },
+    { target: 6, nodeY: midY, questionX: -100, questionY: midY, colour: cyan, marker: "polish-arrow-cyan" },
+    { target: 42, nodeY: bottomY, questionX: -100, questionY: bottomY, colour: pink, marker: "polish-arrow-pink" }
   ];
 
   predecessorQuestions.forEach(spec => {
@@ -367,6 +367,8 @@ renderMergeThree = function() {
     renderBranchingStage({ animateMerge: false });
     shell = sequenceArea.querySelector(".branch-stage");
   }
+  shell?.classList.remove("show-predecessors");
+  shell?.querySelector(".branch-svg")?.setAttribute("viewBox", "0 0 1000 360");
   // No redraw here: the same elements from the revisit scene transform in place.
   state.timers.push(setTimeout(() => shell?.classList.add("merged"), 260));
   showStatus("3 starts · 1 branching path");
@@ -381,6 +383,7 @@ renderGrowSix = function() {
   }
   // Rewinding from the next scene hides the question marks again.
   shell?.classList.remove("show-predecessors");
+  shell?.querySelector(".branch-svg")?.setAttribute("viewBox", "0 0 1000 360");
   shell?.classList.add("merged");
   state.timers.push(setTimeout(() => shell?.classList.add("expanded"), 180));
   state.timers.push(setTimeout(() => shell?.classList.add("show-outer"), 850));
