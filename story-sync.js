@@ -300,8 +300,8 @@ function installScriptScenes() {
     if (finish) {
       const rules = createScriptStep("collatz-rules", "tall-step", `
         <div class="step-card rule-card script-rule-card">
-          <p class="step-number">THE COLLATZ RULES</p>
-          <h3>Two rules drive the sequence.</h3>
+          <p class="step-number">RULES</p>
+          <h3>The Sequence Rules</h3>
           <div class="rule-lines">
             <p><span>EVEN</span><strong>n ÷ 2</strong></p>
             <p><span>ODD</span><strong>3n + 1</strong></p>
@@ -317,8 +317,11 @@ function installScriptScenes() {
   if (!storySteps.some(step => step.dataset.scene === "conjecture-big")) {
     const conjecture = storySteps.find(step => step.dataset.scene === "conjecture");
     if (conjecture) {
-      const big = createScriptStep("conjecture-big", "tall-step story-cinematic-trigger", `
-        <div class="step-card" aria-hidden="true"><p>Conjecture visual</p></div>
+      const big = createScriptStep("conjecture-big", "tall-step", `
+        <div class="step-card">
+          <p class="step-number">WHAT IS A CONJECTURE?</p>
+          <h3>A conjecture is a statement we think is true because of patterns or examples, but haven't proved yet.</h3>
+        </div>
       `);
       conjecture.after(big);
       const index = storySteps.indexOf(conjecture);
@@ -479,7 +482,7 @@ setScene = function(scene) {
   if (scene === "collatz-rules") {
     state.scene = scene;
     hideTransientUI();
-    stageTitle.textContent = "The Collatz rules.";
+    stageTitle.textContent = "The Sequence Rules";
     renderRuleExplanation();
     showStatus("Odd: 3n + 1 · Even: n ÷ 2");
     return;
