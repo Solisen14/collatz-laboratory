@@ -26,7 +26,8 @@
     "merge-three": { chapter: "08", kicker: "MERGE THE PATHS" },
     "grow-six": { chapter: "09", kicker: "ZOOM OUT / ADD THE COUNTEREXAMPLES" },
     "reverse-question": { chapter: "10", kicker: "WHAT COMES NEXT?" },
-    "text-placeholder": { chapter: "11", kicker: "GROUP MATHEMATICAL TEXT" }
+    "reverse-reveal": { chapter: "11", kicker: "REVEAL THE PREDECESSORS" },
+    "text-placeholder": { chapter: "12", kicker: "GROUP MATHEMATICAL TEXT" }
   };
 
   function applySceneMeta(scene) {
