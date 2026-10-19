@@ -248,7 +248,7 @@ function syncStoryCopy() {
 
   setStoryCard("finish-three", `
     <p class="step-number">7 STEPS</p>
-    <h3>The initial value of 3 reaches 1.</h3>
+    <h3>My sequence reaches a value of 1, given an initial value of 3.</h3>
     <p>Was your rule correct?</p>
   `);
 
