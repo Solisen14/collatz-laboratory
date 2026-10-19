@@ -38,17 +38,20 @@
     if (kicker) kicker.textContent = meta.kicker;
   }
 
-  // Scene 1 is one continuous scene in the script. The two middle scroll beats
-  // exist only to advance the animation, so remove the old prototype copy from
-  // those cards rather than showing text that is no longer in the source doc.
-  ["three-1", "three-2"].forEach(scene => {
+  // Each reveal gets a visible narrative caption while retaining its
+  // existing scroll-driven sequence animation.
+  const sequenceCaptions = {
+    "three-1": "The next number in the sequence is 10",
+    "three-2": "Followed by 5"
+  };
+  Object.entries(sequenceCaptions).forEach(([scene, caption]) => {
     const step = document.querySelector(`.story-step[data-scene="${scene}"]`);
     if (!step) return;
-    step.classList.add("story-cinematic-trigger");
+    step.classList.remove("story-cinematic-trigger");
     const card = step.querySelector(".step-card");
     if (card) {
-      card.setAttribute("aria-hidden", "true");
-      card.innerHTML = "<p>Animation beat</p>";
+      card.removeAttribute("aria-hidden");
+      card.innerHTML = `<p>${caption}</p>`;
     }
   });
 
