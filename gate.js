@@ -159,9 +159,17 @@ function installBranchStorySteps() {
     "These numbers join the branching path, extending it to 8 steps."
   );
 
-  textStep.before(revisit, merge, grow);
+  const reverseQuestion = makeBranchStoryStep(
+    "reverse-question",
+    "EXPLORE BACKWARD",
+    "What comes next?",
+    "tall-step",
+    "Can you determine what number comes before 6, 40 or 42? Is there only one number or are more numbers possible?"
+  );
+
+  textStep.before(revisit, merge, grow, reverseQuestion);
   const insertAt = storySteps.indexOf(textStep);
-  storySteps.splice(insertAt, 0, revisit, merge, grow);
+  storySteps.splice(insertAt, 0, revisit, merge, grow, reverseQuestion);
 }
 
 function branchMarker(defs, id, colour) {
@@ -376,11 +384,31 @@ function renderGrowSix() {
   showStatus("6 starts · 1 connected structure");
 }
 
+function renderReverseQuestion() {
+  smoothStageTitle("What comes next?");
+
+  let shell = sequenceArea.querySelector(".branch-stage");
+  if (!shell || sequenceArea.dataset.mode !== "branching-story") {
+    renderBranchingStage({ expanded: true });
+    shell = sequenceArea.querySelector(".branch-stage");
+  }
+
+  // Keep the six-number structure visible. Reveal unknown predecessors
+  // on the same SVG rather than replacing the diagram between scroll beats.
+  shell?.classList.add("merged", "expanded", "show-outer");
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (state.scene === "reverse-question") {
+      shell?.classList.add("show-predecessors");
+    }
+  }));
+  showStatus("Look for the numbers that could come before these three.");
+}
+
 installBranchStorySteps();
 
 const branchingBaseSetScene = setScene;
 setScene = function(scene) {
-  if (["revisit-three", "merge-three", "grow-six"].includes(scene)) {
+  if (["revisit-three", "merge-three", "grow-six", "reverse-question"].includes(scene)) {
     if (scene === state.scene) return;
     state.scene = scene;
     hideTransientUI();
@@ -388,6 +416,7 @@ setScene = function(scene) {
     if (scene === "revisit-three") renderRevisitThree();
     if (scene === "merge-three") renderMergeThree();
     if (scene === "grow-six") renderGrowSix();
+    if (scene === "reverse-question") renderReverseQuestion();
     return;
   }
 
