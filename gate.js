@@ -167,9 +167,17 @@ function installBranchStorySteps() {
     "Can you determine what number comes before 6, 40 or 42? Is there only one number or are more numbers possible?"
   );
 
-  textStep.before(revisit, merge, grow, reverseQuestion);
+  const reverseReveal = makeBranchStoryStep(
+    "reverse-reveal",
+    "REVEAL",
+    "The branches grow.",
+    "tall-step",
+    "12 leads to 6. Both 80 and 13 lead to 40. And 84 leads to 42."
+  );
+
+  textStep.before(revisit, merge, grow, reverseQuestion, reverseReveal);
   const insertAt = storySteps.indexOf(textStep);
-  storySteps.splice(insertAt, 0, revisit, merge, grow, reverseQuestion);
+  storySteps.splice(insertAt, 0, revisit, merge, grow, reverseQuestion, reverseReveal);
 }
 
 function branchMarker(defs, id, colour) {
@@ -393,8 +401,9 @@ function renderReverseQuestion() {
     shell = sequenceArea.querySelector(".branch-stage");
   }
 
-  // Keep the six-number structure visible. Reveal unknown predecessors
-  // on the same SVG rather than replacing the diagram between scroll beats.
+  // Keep the same SVG and camera when scrolling BACK from the answer scene.
+  // Only fade out the answers; the three question circles stay in place.
+  shell?.classList.remove("revealed-predecessors");
   shell?.classList.add("merged", "expanded", "show-outer");
   // All the question marks are brought on screen by a smooth world transform.
   requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -405,11 +414,46 @@ function renderReverseQuestion() {
   showStatus("Look for the numbers that could come before these three.");
 }
 
+function renderReverseReveal() {
+  smoothStageTitle("The branches grow.");
+
+  let shell = sequenceArea.querySelector(".branch-stage");
+  const needsStage = !shell || sequenceArea.dataset.mode !== "branching-story";
+  if (needsStage) {
+    // Jumping straight to this scroll scene still builds the SAME branching SVG,
+    // with the three questions ready for their answer animation.
+    renderBranchingStage({ expanded: true });
+    shell = sequenceArea.querySelector(".branch-stage");
+  }
+
+  // There is no redraw when advancing from 'What comes next?': the exact same
+  // circles and arrows stay where they were as their labels are revealed.
+  shell?.classList.add("merged", "expanded", "show-outer", "show-predecessors");
+  shell?.querySelector(".branch-svg")?.setAttribute(
+    "aria-label",
+    "Backward Collatz branches: 12 to 6, 80 and 13 to 40, and 84 to 42"
+  );
+
+  const showAnswers = () => {
+    if (state.scene === "reverse-reveal" && shell?.isConnected) {
+      shell.classList.add("revealed-predecessors");
+    }
+  };
+  if (needsStage) {
+    // Give the camera time to pull back before drawing the answers.
+    state.timers.push(setTimeout(showAnswers, 850));
+  } else {
+    requestAnimationFrame(() => requestAnimationFrame(showAnswers));
+  }
+
+  showStatus("Four possible predecessors · two lead to 40");
+}
+
 installBranchStorySteps();
 
 const branchingBaseSetScene = setScene;
 setScene = function(scene) {
-  if (["revisit-three", "merge-three", "grow-six", "reverse-question"].includes(scene)) {
+  if (["revisit-three", "merge-three", "grow-six", "reverse-question", "reverse-reveal"].includes(scene)) {
     if (scene === state.scene) return;
     state.scene = scene;
     hideTransientUI();
@@ -418,6 +462,7 @@ setScene = function(scene) {
     if (scene === "merge-three") renderMergeThree();
     if (scene === "grow-six") renderGrowSix();
     if (scene === "reverse-question") renderReverseQuestion();
+    if (scene === "reverse-reveal") renderReverseReveal();
     return;
   }
 
