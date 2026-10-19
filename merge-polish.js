@@ -110,8 +110,60 @@ function ensureMergePolishStyles() {
       font-weight: 750;
       fill: #fff1bc;
     }
+
+    /* Resolve each existing ? in place. Both text layers share the exact
+       same SVG circle, so no node is removed or re-created between scenes. */
+    .branch-question-mark,
+    .branch-question-answer {
+      transition: opacity .37s ease, transform .5s ease;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .branch-question-mark { opacity: 1; }
+    .branch-question-answer {
+      opacity: 0;
+      transform: translateY(7px);
+    }
+    .branch-stage.revealed-predecessors .branch-question-mark {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    .branch-stage.revealed-predecessors .branch-question-answer {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .branch-question[data-target="6"] .branch-question-answer {
+      transition-delay: .14s;
+    }
+    .branch-question[data-target="42"] .branch-question-answer {
+      transition-delay: .27s;
+    }
+
+    /* A second valid predecessor appears above 80 and joins the SAME 40.
+       13 is odd: 3(13) + 1 = 40. The gold branch draws toward 40. */
+    .branch-second-predecessor {
+      opacity: 0;
+      transform: translate(-12px, -9px);
+      transition:
+        opacity .55s ease .45s,
+        transform .75s cubic-bezier(.18,.78,.22,1) .45s;
+    }
+    .branch-stage.revealed-predecessors .branch-second-predecessor {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+    .branch-second-predecessor-arrow {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      transition: stroke-dashoffset .82s cubic-bezier(.2,.78,.25,1) .62s;
+    }
+    .branch-stage.revealed-predecessors .branch-second-predecessor-arrow {
+      stroke-dashoffset: 0;
+    }
     @media (prefers-reduced-motion: reduce) {
-      .branch-question, .branch-question-arrow, .branch-stage .branch-label {
+      .branch-question, .branch-question-arrow, .branch-stage .branch-label,
+      .branch-question-mark, .branch-question-answer,
+      .branch-second-predecessor, .branch-second-predecessor-arrow {
         transition-duration: .01ms !important;
         transition-delay: 0ms !important;
       }
@@ -319,9 +371,9 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
   // Each arrow points rightward into the existing number's circle.
   // The reverse-question scene scales and shifts the branching world right.
   const predecessorQuestions = [
-    { target: 40, nodeY: topY, questionX: -100, questionY: topY, colour: violet, marker: "polish-arrow-violet" },
-    { target: 6, nodeY: midY, questionX: -100, questionY: midY, colour: cyan, marker: "polish-arrow-cyan" },
-    { target: 42, nodeY: bottomY, questionX: -100, questionY: bottomY, colour: pink, marker: "polish-arrow-pink" }
+    { target: 40, answer: 80, nodeY: topY, questionX: -100, questionY: topY, colour: violet, marker: "polish-arrow-violet" },
+    { target: 6, answer: 12, nodeY: midY, questionX: -100, questionY: midY, colour: cyan, marker: "polish-arrow-cyan" },
+    { target: 42, answer: 84, nodeY: bottomY, questionX: -100, questionY: bottomY, colour: pink, marker: "polish-arrow-pink" }
   ];
 
   predecessorQuestions.forEach(spec => {
@@ -345,9 +397,48 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
       style: `filter:drop-shadow(0 0 5px ${spec.colour}66)`
     });
     group.appendChild(arrow);
-    branchNode(group, spec.questionX, spec.questionY, "?", gold, "branch-question-node");
+    const unknown = branchNode(
+      group, spec.questionX, spec.questionY, "?", gold, "branch-question-node"
+    );
+    unknown.querySelector("text").classList.add("branch-question-mark");
+    const revealedNumber = svgElement("text", {
+      class: "branch-question-answer", x: spec.questionX, y: spec.questionY
+    });
+    revealedNumber.textContent = String(spec.answer);
+    unknown.appendChild(revealedNumber);
     world.appendChild(group);
   });
+
+  // 40 has one extra predecessor from the odd rule. Keep 80 in the original
+  // question-circle position; grow 13 slightly above it, then curve into 40.
+  const oddX = -100;
+  const oddY = topY - 64;
+  const fortyX = 28;
+  const vectorX = fortyX - oddX;
+  const vectorY = topY - oddY;
+  const distance = Math.hypot(vectorX, vectorY);
+  const ux = vectorX / distance;
+  const uy = vectorY / distance;
+  const fromX = oddX + ux * 27;
+  const fromY = oddY + uy * 27;
+  const toX = fortyX - ux * 29;
+  const toY = topY - uy * 29;
+
+  const extraBranch = svgElement("g", {
+    class: "branch-second-predecessor",
+    "data-target": "40"
+  });
+  const extraArrow = svgElement("path", {
+    class: "branch-edge branch-second-predecessor-arrow",
+    d: `M ${fromX} ${fromY} C ${fromX + 34} ${fromY}, ${toX - 34} ${toY}, ${toX} ${toY}`,
+    pathLength: 1,
+    stroke: gold,
+    "marker-end": "url(#polish-arrow-gold)",
+    style: `filter:drop-shadow(0 0 5px ${gold}66)`
+  });
+  extraBranch.appendChild(extraArrow);
+  branchNode(extraBranch, oddX, oddY, 13, gold);
+  world.appendChild(extraBranch);
 
   shell.appendChild(svg);
   sequenceArea.appendChild(shell);
@@ -375,7 +466,7 @@ renderMergeThree = function() {
     renderBranchingStage({ animateMerge: false });
     shell = sequenceArea.querySelector(".branch-stage");
   }
-  shell?.classList.remove("show-predecessors");
+  shell?.classList.remove("show-predecessors", "revealed-predecessors");
   // No redraw here: the same elements from the revisit scene transform in place.
   state.timers.push(setTimeout(() => shell?.classList.add("merged"), 260));
   showStatus("3 starts · 1 branching path");
@@ -389,7 +480,7 @@ renderGrowSix = function() {
     shell = sequenceArea.querySelector(".branch-stage");
   }
   // Rewinding from the next scene hides the question marks again.
-  shell?.classList.remove("show-predecessors");
+  shell?.classList.remove("show-predecessors", "revealed-predecessors");
   shell?.classList.add("merged");
   state.timers.push(setTimeout(() => shell?.classList.add("expanded"), 180));
   state.timers.push(setTimeout(() => shell?.classList.add("show-outer"), 850));
