@@ -396,6 +396,8 @@ function renderReverseQuestion() {
   // Keep the six-number structure visible. Reveal unknown predecessors
   // on the same SVG rather than replacing the diagram between scroll beats.
   shell?.classList.add("merged", "expanded", "show-outer");
+  // Allow space to the left of 40, 6 and 42 for the unknown predecessors.
+  shell?.querySelector(".branch-svg")?.setAttribute("viewBox", "-150 0 1150 360");
   requestAnimationFrame(() => requestAnimationFrame(() => {
     if (state.scene === "reverse-question") {
       shell?.classList.add("show-predecessors");
