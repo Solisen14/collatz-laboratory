@@ -673,3 +673,10 @@ nav a.active {
   .sequence-area { top: 46%; }
   .choice-panel, .floating-prompt { bottom: 7vh; }
 }
+
+/* On the test-the-conjecture screen, the floating 6/40/42 controls
+   otherwise overlap the explanation at the bottom-left on short viewports.
+   Lift just this set of controls, leaving the prompt at its original spot. */
+#choice-panel:has(button[data-test]) {
+  bottom: clamp(122px, 25vh, 230px);
+}
