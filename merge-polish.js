@@ -65,6 +65,49 @@ function ensureMergePolishStyles() {
       opacity: 1;
       stroke-dashoffset: 0;
     }
+
+    /* The new scene asks visitors to trace the structure backward. */
+    .branch-stage .branch-label {
+      transition: opacity .4s ease;
+    }
+    .branch-stage.show-predecessors .branch-label {
+      opacity: 0;
+    }
+    .branch-question {
+      opacity: 0;
+      transform: translateY(10px);
+      transform-box: fill-box;
+      transform-origin: center;
+      transition:
+        opacity .45s ease,
+        transform .65s cubic-bezier(.18,.78,.22,1);
+    }
+    .branch-question[data-target="6"] { transition-delay: .13s; }
+    .branch-question[data-target="42"] { transition-delay: .26s; }
+    .branch-stage.show-predecessors .branch-question {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .branch-question-arrow {
+      stroke-width: 2;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      transition: stroke-dashoffset .72s cubic-bezier(.18,.78,.22,1) .28s;
+    }
+    .branch-stage.show-predecessors .branch-question-arrow {
+      stroke-dashoffset: 0;
+    }
+    .branch-question-node text {
+      font-size: 23px;
+      font-weight: 750;
+      fill: #fff1bc;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .branch-question, .branch-question-arrow, .branch-stage .branch-label {
+        transition-duration: .01ms !important;
+        transition-delay: 0ms !important;
+      }
+    }
   `;
   document.head.appendChild(style);
 }
@@ -263,6 +306,41 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
     world.appendChild(nodeGroup);
   });
 
+  // Put three unknown predecessors a little above and to the RIGHT of
+  // 40, 6, and 42. The diagonal back-arrows point into the existing nodes,
+  // deliberately opposite to the forward Collatz direction on the main path.
+  // Offsetting them vertically keeps the established arrows and nodes legible.
+  const predecessorQuestions = [
+    { target: 40, nodeY: topY, questionX: 112, questionY: 8, colour: violet, marker: "polish-arrow-violet" },
+    { target: 6, nodeY: midY, questionX: 112, questionY: 125, colour: cyan, marker: "polish-arrow-cyan" },
+    { target: 42, nodeY: bottomY, questionX: 112, questionY: 352, colour: pink, marker: "polish-arrow-pink" }
+  ];
+
+  predecessorQuestions.forEach(spec => {
+    const targetX = 28;
+    const dx = targetX - spec.questionX;
+    const dy = spec.nodeY - spec.questionY;
+    const distance = Math.hypot(dx, dy);
+    const ux = dx / distance;
+    const uy = dy / distance;
+
+    const group = svgElement("g", {
+      class: "branch-question",
+      "data-target": spec.target
+    });
+    const arrow = svgElement("path", {
+      class: "branch-edge branch-question-arrow",
+      d: `M ${spec.questionX + ux * 27} ${spec.questionY + uy * 27} L ${targetX - ux * 30} ${spec.nodeY - uy * 30}`,
+      pathLength: 1,
+      stroke: spec.colour,
+      "marker-end": `url(#${spec.marker})`,
+      style: `filter:drop-shadow(0 0 5px ${spec.colour}66)`
+    });
+    group.appendChild(arrow);
+    branchNode(group, spec.questionX, spec.questionY, "?", gold, "branch-question-node");
+    world.appendChild(group);
+  });
+
   shell.appendChild(svg);
   sequenceArea.appendChild(shell);
 
@@ -301,6 +379,8 @@ renderGrowSix = function() {
     renderBranchingStage({ animateMerge: false });
     shell = sequenceArea.querySelector(".branch-stage");
   }
+  // Rewinding from the next scene hides the question marks again.
+  shell?.classList.remove("show-predecessors");
   shell?.classList.add("merged");
   state.timers.push(setTimeout(() => shell?.classList.add("expanded"), 180));
   state.timers.push(setTimeout(() => shell?.classList.add("show-outer"), 850));
