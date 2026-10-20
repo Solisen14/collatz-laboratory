@@ -66,12 +66,12 @@ function ensureMergePolishStyles() {
       stroke-dashoffset: 0;
     }
 
-    /* The extra predecessors live to the left of the established values.
-       Zoom the entire branching world down and shift it RIGHT so every
-       circle stays inside the standard viewBox at any viewport size.
-       No off-canvas SVG coordinates or viewBox swaps are needed. */
+    /* Keep every predecessor inside the existing stage without changing
+       the viewBox. The world eases right and slightly downward to give
+       the topmost 13 space beneath the heading. This SAME camera position
+       remains in the question and reveal scenes, so there is no jump. */
     .branch-stage.show-predecessors .branch-world {
-      transform: translateX(85px) scale(.76);
+      transform: translate(85px, 26px) scale(.76);
     }
 
     /* The new scene asks visitors to trace the structure backward. */
@@ -410,7 +410,8 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
   });
 
   // 40 has one extra predecessor from the odd rule. Keep 80 in the original
-  // question-circle position; grow 13 slightly above it, then curve into 40.
+  // question-circle position; grow 13 slightly above it, then connect to 40
+  // with a single straight diagonal, matching every other branch in this tree.
   const oddX = -100;
   const oddY = topY - 64;
   const fortyX = 28;
@@ -430,7 +431,7 @@ renderBranchingStage = function({ animateMerge = false, expanded = false } = {})
   });
   const extraArrow = svgElement("path", {
     class: "branch-edge branch-second-predecessor-arrow",
-    d: `M ${fromX} ${fromY} C ${fromX + 34} ${fromY}, ${toX - 34} ${toY}, ${toX} ${toY}`,
+    d: `M ${fromX} ${fromY} L ${toX} ${toY}`,
     pathLength: 1,
     stroke: gold,
     "marker-end": "url(#polish-arrow-gold)",
