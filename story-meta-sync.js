@@ -27,7 +27,11 @@
     "grow-six": { chapter: "09", kicker: "ZOOM OUT / ADD THE COUNTEREXAMPLES" },
     "reverse-question": { chapter: "10", kicker: "WHAT COMES NEXT?" },
     "reverse-reveal": { chapter: "11", kicker: "REVEAL THE PREDECESSORS" },
-    "text-placeholder": { chapter: "12", kicker: "GROUP MATHEMATICAL TEXT" }
+    "tree-rise": { chapter: "12", kicker: "A LARGER COLLATZ TREE" },
+    "tree-converge": { chapter: "13", kicker: "FOLLOW THE PATHS TO 1" },
+    "tree-loop": { chapter: "14", kicker: "THE 4–2–1 CYCLE" },
+    "tree-formal": { chapter: "15", kicker: "THE MATHEMATICAL QUESTION" },
+    "text-placeholder": { chapter: "16", kicker: "GROUP MATHEMATICAL TEXT" }
   };
 
   function applySceneMeta(scene) {
