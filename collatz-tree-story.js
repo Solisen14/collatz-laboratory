@@ -230,16 +230,22 @@
   function enterScene(scene) {
     window.clearTimeout(exitTimer);
     window.clearTimeout(convergeTimer);
-    if (!drawing || !drawing.isConnected) {
-      drawing=makeDrawing();
+    const newlyCreated = !drawing || !drawing.isConnected;
+    if (newlyCreated) drawing=makeDrawing();
+    drawing.classList.remove("outgoing");
+    if (newlyCreated) {
+      // A fresh SVG must first paint below the viewport. On the next
+      // rendered frame it can visibly travel upward into position.
       requestAnimationFrame(function(){
         requestAnimationFrame(function(){
-          if (SCENES.includes(state.scene)) drawing.classList.add("visible");
+          if (drawing && SCENES.includes(state.scene)) {
+            drawing.classList.add("visible");
+          }
         });
       });
+    } else {
+      drawing.classList.add("visible");
     }
-    drawing.classList.remove("outgoing");
-    drawing.classList.add("visible");
     drawing.classList.remove("phase-converge", "phase-loop", "phase-formal", "is-collapsed");
     document.getElementById("sequence-area").classList.add("tree-story-underlay");
     if (scene==="tree-converge") {
