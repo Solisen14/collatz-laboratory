@@ -175,9 +175,39 @@ function installBranchStorySteps() {
     "12 leads to 6. Both 80 and 13 lead to 40. And 84 leads to 42."
   );
 
-  textStep.before(revisit, merge, grow, reverseQuestion, reverseReveal);
+  // The next four cards remain part of the scroll sequence. Their SVG is
+  // rendered by collatz-tree-story.js, but their cards belong in the same
+  // storySteps array so the existing interaction gates still apply.
+  const treeRise = makeBranchStoryStep(
+    "tree-rise", "EXPAND THE VIEW", "The tree keeps growing.",
+    "tall-step",
+    "Eight starting values connect to one larger structure. Straight downward arrows represent division by 2; angled arrows represent the odd rule."
+  );
+  const treeConverge = makeBranchStoryStep(
+    "tree-converge", "FOLLOW THE ARROWS", "Many paths. One destination.",
+    "tall-step",
+    "The branches look different, but every path shown here eventually joins the middle line. From a power of 2, repeated halving leads to 1."
+  );
+  const treeLoop = makeBranchStoryStep(
+    "tree-loop", "THE REPEATING CYCLE", "What happens after 1?",
+    "tall-step",
+    "The sequence doesn't stop at 1. Because 1 is odd, the next value is 4, followed by 2 and 1 again. The cycle is 1 → 4 → 2 → 1."
+  );
+  const treeFormal = makeBranchStoryStep(
+    "tree-formal", "THE CONJECTURE", "The Collatz Conjecture",
+    "tall-step",
+    "Starting from ANY positive integer, repeatedly divide even numbers by 2 and apply 3n + 1 to odd numbers. The Collatz conjecture states that this process will eventually reach 1 (and then repeat 1 → 4 → 2 → 1). Nobody has proved it for every positive integer."
+  );
+
+  textStep.before(
+    revisit, merge, grow, reverseQuestion, reverseReveal,
+    treeRise, treeConverge, treeLoop, treeFormal
+  );
   const insertAt = storySteps.indexOf(textStep);
-  storySteps.splice(insertAt, 0, revisit, merge, grow, reverseQuestion, reverseReveal);
+  storySteps.splice(
+    insertAt, 0, revisit, merge, grow, reverseQuestion, reverseReveal,
+    treeRise, treeConverge, treeLoop, treeFormal
+  );
 }
 
 function branchMarker(defs, id, colour) {
