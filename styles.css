@@ -680,3 +680,163 @@ nav a.active {
 #choice-panel:has(button[data-test]) {
   bottom: clamp(122px, 25vh, 230px);
 }
+
+
+/* The story's final chapter is a full-screen typographic reveal, not a
+   floating step card. Earlier scenes and their geometry remain unchanged. */
+.story-step.finale-trigger { min-height: 125vh; }
+.sticky-stage.conjecture-is-visible .stage-heading,
+.sticky-stage.conjecture-is-visible .status-pill,
+.sticky-stage.conjecture-is-visible .floating-prompt {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity .45s ease;
+}
+.conjecture-finale {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--header-h) + 36px) 7vw 36px;
+  background:
+    radial-gradient(ellipse 52% 53% at 47% 40%, rgba(35,60,95,.21), transparent 75%),
+    radial-gradient(ellipse 25% 29% at 78% 68%, rgba(159,140,255,.07), transparent 90%),
+    linear-gradient(180deg, rgba(7,9,15,.96), rgba(7,9,15,.985));
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(30px);
+  pointer-events: none;
+  transition: opacity .9s ease, transform 1.05s cubic-bezier(.18,.78,.22,1),
+              visibility 0s linear 1.05s;
+}
+.conjecture-finale.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition: opacity .9s ease .24s, transform 1.05s cubic-bezier(.18,.78,.22,1) .13s,
+              visibility 0s;
+}
+.conjecture-finale-inner { width: min(100%, 1000px); margin-inline: auto; }
+.finale-eyebrow, .finale-journey-label, .finale-rule-name {
+  color: #98a7bd;
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: .22em;
+}
+.finale-eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 20px; }
+.finale-spark {
+  flex: none;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #7ae7ff; box-shadow: 0 0 20px rgba(122,231,255,.75);
+}
+.finale-title {
+  margin: 0 0 22px;
+  max-width: 1000px;
+  font-size: clamp(56px, 6.8vw, 108px);
+  font-weight: 550;
+  letter-spacing: -.065em;
+  line-height: 1.03;
+}
+.finale-title span {
+  color: #89eaff;
+  text-shadow: 0 0 64px rgba(122,231,255,.22);
+}
+.finale-intro {
+  margin: 0 0 18px;
+  font-size: clamp(18px, 2vw, 25px);
+  color: #afb9cc;
+  letter-spacing: -.02em;
+}
+.finale-intro strong { color: #f6faff; font-weight: 550; }
+.finale-rules { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 22px; }
+.finale-rule {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-width: 285px;
+  padding: 14px 20px;
+  border: 1px solid rgba(122,231,255,.14);
+  border-radius: 13px;
+  background: rgba(11,20,34,.63);
+}
+.finale-rule:nth-child(2) { border-color: rgba(255,212,121,.16); }
+.finale-rule-name { color: #80def3; font-size: 9px; }
+.finale-rule:nth-child(2) .finale-rule-name { color: #ffd479; }
+.finale-rule strong { color: #eef4fd; font-size: 16px; font-weight: 520; }
+.finale-rule-symbol { color: #8c99ae; font-size: 14px; }
+.finale-statement {
+  max-width: 990px;
+  margin: 0 0 12px;
+  color: #c8d1df;
+  font-size: clamp(18px, 1.8vw, 24px);
+  line-height: 1.48;
+  letter-spacing: -.014em;
+}
+.finale-statement strong { color: #f7faff; font-weight: 610; }
+.finale-footnote {
+  margin: 0 0 30px;
+  color: #9caabe;
+  font-size: clamp(14px, 1.2vw, 16px);
+  line-height: 1.6;
+}
+.finale-cycle { color: #ffd479; white-space: nowrap; }
+.finale-journey { border-top: 1px solid rgba(255,255,255,.12); padding-top: 25px; }
+.finale-journey-label { margin: 0 0 17px; font-size: 10px; }
+.finale-pathways { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.finale-path {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 20px 22px;
+  min-height: 69px;
+  background: linear-gradient(135deg, rgba(25,35,58,.82), rgba(10,15,27,.85));
+  border: 1px solid rgba(122,231,255,.22);
+  border-radius: 13px;
+  color: #eff7fc;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 570;
+  letter-spacing: -.01em;
+  transition: transform .25s ease, border-color .25s ease, background .25s ease, box-shadow .25s ease;
+}
+.finale-path:nth-child(2) { border-color: rgba(159,140,255,.3); }
+.finale-path:nth-child(3) { border-color: rgba(255,212,121,.27); }
+.finale-path > span:last-child { color: #7ae7ff; font-size: 19px; }
+.finale-path:nth-child(2) > span:last-child { color: #b7a7ff; }
+.finale-path:nth-child(3) > span:last-child { color: #ffd479; }
+.finale-path:hover, .finale-path:focus-visible {
+  transform: translateY(-4px);
+  border-color: #7ae7ff;
+  box-shadow: 0 12px 42px rgba(31,106,143,.19);
+  outline: none;
+}
+.finale-path:focus-visible { outline: 2px solid #7ae7ff; outline-offset: 3px; }
+@media (max-width: 900px) {
+  .conjecture-finale { padding-left: 5vw; padding-right: 5vw; }
+  .finale-title { font-size: clamp(46px, 8vw, 78px); }
+  .finale-path { padding: 17px 15px; font-size: 15px; }
+}
+@media (max-height: 790px) {
+  .conjecture-finale { padding-top: calc(var(--header-h) + 20px); padding-bottom: 12px; }
+  .finale-eyebrow { margin-bottom: 11px; }
+  .finale-title { font-size: clamp(46px, 5.7vw, 73px); margin-bottom: 12px; }
+  .finale-intro { margin-bottom: 10px; }
+  .finale-rules { margin-bottom: 12px; }
+  .finale-rule { padding: 11px 15px; }
+  .finale-footnote { margin-bottom: 16px; }
+  .finale-journey { padding-top: 14px; }
+  .finale-journey-label { margin-bottom: 10px; }
+  .finale-path { min-height: 52px; padding: 13px 17px; }
+}
+@media (max-width: 700px) {
+  .finale-pathways { grid-template-columns: 1fr; gap: 8px; }
+  .finale-path { min-height: 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .conjecture-finale, .finale-path { transition-duration: .01ms !important; transition-delay: 0s !important; }
+}
