@@ -193,11 +193,12 @@ function installBranchStorySteps() {
     "tall-step",
     "The sequence doesn't stop at 1. Because 1 is odd, the next value is 4, followed by 2 and 1 again. The cycle is 1 → 4 → 2 → 1."
   );
-  const treeFormal = makeBranchStoryStep(
-    "tree-formal", "THE CONJECTURE", "The Collatz Conjecture",
-    "tall-step",
-    "Starting from ANY positive integer, repeatedly divide even numbers by 2 and apply 3n + 1 to odd numbers. The Collatz conjecture states that this process will eventually reach 1 (and then repeat 1 → 4 → 2 → 1). Nobody has proved it for every positive integer."
-  );
+  // The final chapter is presented across the entire stage, not in a card.
+  // Keep a full-height scroll trigger so it follows the existing loop scene.
+  const treeFormal = document.createElement("article");
+  treeFormal.className = "story-step tall-step finale-trigger";
+  treeFormal.dataset.scene = "tree-formal";
+  treeFormal.setAttribute("aria-label", "The Collatz Conjecture and where to explore next");
 
   textStep.before(
     revisit, merge, grow, reverseQuestion, reverseReveal,
