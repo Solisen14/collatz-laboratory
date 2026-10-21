@@ -109,3 +109,56 @@ body.chapter-page {
   .chapter-page .site-header nav {gap:12px;}
   .chapter-page .site-header nav a {font-size:9px;}
 }
+
+
+/* Digging Deeper is an editorial mathematics article, without animations. */
+.digging-page .digging-shell { padding-top: clamp(112px, 14vh, 155px); padding-bottom: 110px; }
+.digging-page .chapter-content { width: min(100%, 1050px); }
+.digging-hero { max-width: 920px; padding-bottom: 70px; }
+.digging-page .chapter-number {font-size:11px; font-weight:730; letter-spacing:.19em;}
+.digging-page .chapter-title { margin:18px 0 25px; font-size:clamp(56px,7.4vw,104px); }
+.digging-page .chapter-deck { max-width:800px; margin:0; font-size:clamp(19px,2.2vw,27px); }
+.digging-article { max-width:900px; padding-top:44px; border-top:1px solid rgba(122,231,255,.2); }
+.article-heading { max-width:795px; margin-bottom:34px; }
+.article-overline { display:flex; align-items:center; gap:15px; margin:0 0 18px; color:#98adbd; font-size:11px; font-weight:750; letter-spacing:.18em; }
+.article-overline span {color:#7ae7ff; font-size:15px; letter-spacing:0;}
+.article-heading h2 {margin:0 0 22px; color:#f4f8fd; font-size:clamp(36px,4.7vw,58px); font-weight:570; line-height:1.13; letter-spacing:-.048em;}
+.article-lede {max-width:740px; font-size:clamp(18px,2vw,23px); line-height:1.65; color:#b6c6d8;}
+.article-prose { max-width:735px; color:#becbdb; font-size:18px; line-height:1.86; }
+.article-prose p {margin:0 0 22px;}
+.article-prose strong {color:#f2f8fd; font-weight:625;}
+.article-prose em {color:#e5eef8;}
+.article-prose h3 {margin:50px 0 19px; font-size:clamp(26px,3vw,33px); font-weight:580; color:#ecf5ff; letter-spacing:-.03em;}
+.inline-math {color:#f4f9ff; font-family:"Cambria Math","STIX Two Math","Times New Roman",serif; font-size:1.1em; white-space:nowrap;}
+.definition-figure, .definition-diagram { max-width:795px; margin:45px 0; border:1px solid rgba(122,231,255,.17); border-radius:14px; background:linear-gradient(135deg,rgba(17,31,48,.78),rgba(8,14,26,.78)); }
+.definition-figure { padding:31px 38px 27px; }
+.definition-figure > figcaption, .diagram-topline {margin:0; color:#95b9c8; font-size:11px; font-weight:750; letter-spacing:.19em;}
+.definition-formula {display:flex; justify-content:center; overflow-x:auto; padding:29px 0 27px; color:#f4f9ff;}
+.definition-formula math {font-size:clamp(21px,2.8vw,35px); white-space:nowrap;}
+.definition-formula mtext {font-size:.65em; font-family:Inter,ui-sans-serif,system-ui,sans-serif; color:#b2c1d2;}
+.definition-domain { margin:0; padding-top:17px; border-top:1px solid rgba(255,255,255,.08); color:#a4b3c5; font-size:14px; line-height:1.7;}
+.definition-domain span { color:#f2f8ff; }
+.definition-diagram {padding:27px 30px 24px; border-color:rgba(255,255,255,.09); background:rgba(9,16,27,.7);}
+.definition-diagram svg {display:block; width:100%; height:auto; margin:13px 0 8px;}
+.diagram-label {font:750 15px Inter,ui-sans-serif,system-ui,sans-serif; letter-spacing:.13em;}
+.diagram-node {fill:#0c1521; stroke-width:2.5;}
+.diagram-value {fill:#f5faff; font:650 23px Inter,ui-sans-serif,system-ui,sans-serif; text-anchor:middle;}
+.diagram-path {stroke-width:2.5; fill:none; stroke-linecap:round;}
+.diagram-rule {fill:#bfcedd; font:530 15px Inter,ui-sans-serif,system-ui,sans-serif; text-anchor:middle;}
+.definition-diagram figcaption {padding-top:16px; border-top:1px solid rgba(255,255,255,.08); color:#9eafc2; font-size:14px; line-height:1.6;}
+.article-next-topic {max-width:795px; margin:56px 0 40px; padding:27px 0 30px; border-top:1px solid rgba(122,231,255,.21); border-bottom:1px solid rgba(255,255,255,.09);}
+.next-index {display:block; margin-bottom:12px; color:#7ae7ff; font-size:10px; font-weight:750; letter-spacing:.19em;}
+.article-next-topic strong {display:block; font-size:28px; font-weight:550; letter-spacing:-.02em; color:#f0f7fd;}
+.article-next-topic p {margin:8px 0 0; color:#a0aec0; font-size:16px; line-height:1.6;}
+.digging-bottom-nav {max-width:900px; margin-top:40px;}
+@media(max-width:690px) {
+  .digging-page .digging-shell {padding:115px 22px 66px;}
+  .digging-hero {padding-bottom:48px;}
+  .digging-article {padding-top:32px;}
+  .article-prose {font-size:16px; line-height:1.8;}
+  .article-lede {font-size:18px;}
+  .definition-figure {padding:24px 15px;}
+  .definition-formula {justify-content:flex-start;}
+  .definition-formula math {font-size:22px;}
+  .definition-diagram {padding:22px 12px;}
+}
