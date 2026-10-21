@@ -1,0 +1,111 @@
+
+/* Collatz Laboratory next chapters. Sections are intentionally blank until
+   the collaborators supply substantive mathematics in the Story Script. */
+html { min-height:100%; }
+body.chapter-page {
+  min-width: 0;
+  min-height: 100vh;
+  background: #07090f;
+}
+.chapter-page .site-header nav a { text-decoration:none; }
+.chapter-page .site-header nav a:hover { color:#7ae7ff; }
+.chapter-shell {
+  position:relative;
+  isolation:isolate;
+  min-height:100vh;
+  padding: min(19vh, 170px) max(7vw, 30px) 100px;
+  overflow:hidden;
+}
+.chapter-shell::before {
+  content:"";
+  position:absolute;
+  inset:-15vh -15vw;
+  z-index:-1;
+  background:
+    radial-gradient(ellipse 35% 50% at 18% 42%, rgba(44,91,119,.22), transparent 77%),
+    radial-gradient(ellipse 30% 38% at 78% 25%, rgba(159,140,255,.11), transparent 88%),
+    linear-gradient(180deg,#090d17,#07090f 64%,#05070b);
+}
+.chapter-shell::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.17;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:linear-gradient(to bottom,transparent 2%,black 20%,transparent 85%);
+}
+.chapter-content { margin:0 auto; width:min(100%,1100px); }
+.chapter-crumb, .chapter-placeholder-tag, .chapter-next-label {
+  color:#89a4b5;
+  font-size:11px;
+  font-weight:740;
+  letter-spacing:.2em;
+}
+.chapter-crumb { display:flex; align-items:center; gap:12px; margin:0 0 30px; }
+.chapter-crumb::before {
+  content:""; width:7px; height:7px; background:#7ae7ff; border-radius:50%;
+  box-shadow:0 0 20px rgba(122,231,255,.8);
+}
+.chapter-number { color:#7ae7ff; font-size:13px; letter-spacing:.18em; }
+.chapter-title {
+  margin:14px 0 18px;
+  font-size:clamp(65px,10vw,140px);
+  font-weight:540;
+  line-height:1.02;
+  letter-spacing:-.067em;
+}
+.chapter-title span {color:#89eaff;}
+.chapter-deck {max-width:780px;color:#aebacc;font-size:clamp(18px,2.5vw,29px);line-height:1.5;}
+.chapter-placeholder {
+  margin:64px 0 42px;
+  padding:38px 42px;
+  border:1px solid rgba(122,231,255,.18);
+  border-radius:16px;
+  background:linear-gradient(135deg,rgba(12,22,38,.75),rgba(10,13,24,.72));
+}
+.chapter-placeholder h2 {
+  margin:18px 0 12px;
+  font-size:clamp(26px,4vw,41px);
+  font-weight:530;
+  letter-spacing:-.04em;
+}
+.chapter-placeholder p:last-child {max-width:690px;color:#a0acbf;font-size:16px;line-height:1.7;}
+.chapter-next {
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+  justify-content:space-between;
+  align-items:center;
+  padding-top:24px;
+  border-top:1px solid rgba(255,255,255,.12);
+}
+.chapter-next a {
+  display:inline-flex;
+  gap:12px;
+  align-items:center;
+  padding:17px 22px;
+  color:#f0f6fc;
+  text-decoration:none;
+  background:rgba(16,27,44,.7);
+  border:1px solid rgba(122,231,255,.22);
+  border-radius:12px;
+  font-weight:580;
+  transition:transform .2s ease,border-color .2s ease;
+}
+.chapter-next a:hover,.chapter-next a:focus-visible {
+  transform:translateY(-3px);border-color:#7ae7ff;
+  outline-offset:3px;
+}
+@media(max-width:690px) {
+  .chapter-shell {padding:125px 24px 55px;}
+  .chapter-placeholder {padding:24px;}
+  .chapter-next {align-items:stretch;}
+  .chapter-next a {justify-content:center;}
+  .chapter-page .site-header {padding-inline:18px;}
+  .chapter-page .site-header nav {gap:12px;}
+  .chapter-page .site-header nav a {font-size:9px;}
+}
