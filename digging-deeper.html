@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#07090f" />
   <title>Digging Deeper | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
-  <link rel="stylesheet" href="chapters.css?v=20261021-digging-1" />
+  <link rel="stylesheet" href="chapters.css?v=20261021-piecewise-2" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -29,79 +29,81 @@
         <p class="chapter-crumb">THE COLLATZ LABORATORY · MATHEMATICAL EXPLORATIONS</p>
         <p class="chapter-number">BEYOND THE CONJECTURE</p>
         <h1 id="chapter-heading" class="chapter-title"><span>Digging Deeper</span>.</h1>
-        <p class="chapter-deck">Exploring Collatz through the language of discrete dynamical systems.</p>
+        <p class="chapter-deck">Looking more closely at how a simple piecewise rule creates complex iterative behaviour.</p>
       </header>
 
-      <article class="digging-article" aria-labelledby="definition-heading">
+      <article class="digging-article" aria-labelledby="piecewise-heading">
         <header class="article-heading">
-          <p class="article-overline"><span>01</span> THE FOUNDATIONS</p>
-          <h2 id="definition-heading">Defining the Collatz Function</h2>
-          <p class="article-lede">Before we investigate orbits, cycles, or other dynamical behaviour, we need to specify precisely what happens to a number at each step.</p>
+          <p class="article-overline"><span>01</span> DISCRETE DYNAMICAL SYSTEMS</p>
+          <h2 id="piecewise-heading">Why Does Piecewise Matter?</h2>
+          <p class="article-lede">The Collatz function has two rules, but it is still a single function. What makes its behaviour so interesting is that the rule applied next depends on the number produced by the previous step.</p>
         </header>
 
         <div class="article-prose">
-          <p>Begin with any <strong>positive integer</strong>. If the number is even, divide it by 2. If it is odd, multiply it by 3 and add 1. Because the rule depends on the input, we describe the process with a <em>piecewise-defined function</em>.</p>
+          <p>The Collatz function selects a rule according to whether the current positive integer is <strong>even or odd</strong>. If the number is even, we divide by 2. If it is odd, we apply <span class="inline-math">3n + 1</span>. The output becomes the input for the following step, when the function chooses again.</p>
+          <p>This is why the piecewise definition matters. We are not following two independent sequences. We are repeatedly applying <strong>one function</strong>, while the orbit can move from one branch of its definition to the other.</p>
         </div>
 
-        <figure class="definition-figure">
-          <figcaption>THE COLLATZ FUNCTION</figcaption>
-          <div class="definition-formula">
-            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="C of n equals n over 2 for even n, and 3 n plus 1 for odd n">
-              <mrow>
-                <mi>C</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo>
-                <mo fence="true" stretchy="true">{</mo>
-                <mtable columnalign="left left" columnspacing="1.1em" rowspacing=".7em">
-                  <mtr><mtd><mfrac><mi>n</mi><mn>2</mn></mfrac></mtd><mtd><mtext>if&nbsp;</mtext><mi>n</mi><mtext>&nbsp;is even,</mtext></mtd></mtr>
-                  <mtr><mtd><mrow><mn>3</mn><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mtd><mtd><mtext>if&nbsp;</mtext><mi>n</mi><mtext>&nbsp;is odd.</mtext></mtd></mtr>
-                </mtable>
-              </mrow>
-            </math>
+        <figure class="piecewise-orbit-figure">
+          <div class="diagram-topline">ONE ORBIT · TWO RULES</div>
+          <div class="piecewise-orbit-scroll">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 934 150" role="img" aria-labelledby="piecewise-diagram-title piecewise-diagram-desc">
+<title id="piecewise-diagram-title">The orbit of 3 through the two Collatz rules</title>
+<desc id="piecewise-diagram-desc">The sequence 3 to 10 to 5 to 16 to 8 to 4 to 2 to 1. Odd steps are gold and even steps are cyan. Three of the steps are upward in size and the rest downward.</desc>
+<defs><marker id="pw-odd" markerWidth="8" markerHeight="8" refX="6.3" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8Z" fill="#ffd479"/></marker><marker id="pw-even" markerWidth="8" markerHeight="8" refX="6.3" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8Z" fill="#7ae7ff"/></marker></defs>
+<line x1="95" y1="74" x2="146" y2="74" stroke="#ffd479" stroke-width="2.5" stroke-linecap="round" marker-end="url(#pw-odd)"/>
+<text x="123" y="46" text-anchor="middle" fill="#ffd479" font-size="12" font-weight="650">3n + 1</text>
+<circle cx="66" cy="74" r="26" fill="#0b1824" stroke="#ffd479" stroke-width="2.4"/>
+<text x="66" y="81" text-anchor="middle" fill="#f2f9ff" font-weight="650" font-size="21">3</text>
+<line x1="209" y1="74" x2="260" y2="74" stroke="#7ae7ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#pw-even)"/>
+<text x="237" y="46" text-anchor="middle" fill="#83a9bb" font-size="12" font-weight="650">÷ 2</text>
+<circle cx="180" cy="74" r="26" fill="#0b1824" stroke="#7ae7ff" stroke-width="2.4"/>
+<text x="180" y="81" text-anchor="middle" fill="#f2f9ff" font-weight="650" font-size="21">10</text>
+<line x1="323" y1="74" x2="374" y2="74" stroke="#ffd479" stroke-width="2.5" stroke-linecap="round" marker-end="url(#pw-odd)"/>
+<text x="351" y="46" text-anchor="middle" fill="#ffd479" font-size="12" font-weight="650">3n + 1</text>
+<circle cx="294" cy="74" r="26" fill="#0b1824" stroke="#ffd479" stroke-width="2.4"/>
+<text x="294" y="81" text-anchor="middle" fill="#f2f9ff" font-weight="650" font-size="21">5</text>
+<line x1="437" y1="74" x2="488" y2="74" stroke="#7ae7ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#pw-even)"/>
+<text x="465" y="46" text-anchor="middle" fill="#83a9bb" font-size="12" font-weight="650">÷ 2</text>
+<circle cx="408" cy="74" r="26" fill="#0b1824" stroke="#7ae7ff" stroke-width="2.4"/>
+<text x="408" y="81" text-anchor="middle" fill="#f2f9ff" font-weight="650" font-size="21">16</text>
+<line x1="551" y1="74" x2="602" y2="74" stroke="#7ae7ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#pw-even)"/>
+<text x="579" y="46" text-anchor="middle" fill="#83a9bb" font-size="12" font-weight="650">÷ 2</text>
+<circle cx="522" cy="74" r="26" fill="#0b1824" stroke="#7ae7ff" stroke-width="2.4"/>
+<text x="522" y="81" text-anchor="middle" fill="#f2f9ff" font-weight="650" font-size="21">8</text>
+<line x1="665" y1="74" x2="716" y2="74" stroke="#7ae7ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#pw-even)"/>
+<text x="693" y="46" text-anchor="middle" fill="#83a9bb" font-size="12" font-weight="650">÷ 2</text>
+<circle cx="636" cy="74" r="26" fill="#0b1824" stroke="#7ae7ff" stroke-width="2.4"/>
+<text x="636" y="81" text-anchor="middle" fill="#f2f9ff" font-weight="650" font-size="21">4</text>
+<line x1="779" y1="74" x2="830" y2="74" stroke="#7ae7ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#pw-even)"/>
+<text x="807" y="46" text-anchor="middle" fill="#83a9bb" font-size="12" font-weight="650">÷ 2</text>
+<circle cx="750" cy="74" r="26" fill="#0b1824" stroke="#7ae7ff" stroke-width="2.4"/>
+<text x="750" y="81" text-anchor="middle" fill="#f2f9ff" font-weight="650" font-size="21">2</text>
+<circle cx="864" cy="74" r="26" fill="#0b1824" stroke="#86f0bd" stroke-width="2.4"/>
+<text x="864" y="81" text-anchor="middle" fill="#f2f9ff" font-weight="650" font-size="21">1</text>
+</svg>
           </div>
-          <p class="definition-domain">We write <span> C : ℤ<sup>+</sup> → ℤ<sup>+</sup></span>, where ℤ<sup>+</sup> denotes the set of positive integers.</p>
+          <figcaption>Starting at 3, the rule switches as the numbers change. Gold arrows represent the odd rule; cyan arrows represent division by 2.</figcaption>
         </figure>
 
         <div class="article-prose">
-          <p>The notation <span class="inline-math">C(n)</span> means the result of applying the Collatz rule once to <span class="inline-math">n</span>. Every positive integer is either odd or even, so exactly one case applies.</p>
-          <p>For example, starting at 8 gives <span class="inline-math">C(8) = 8 ÷ 2 = 4</span>. Starting at 3 gives <span class="inline-math">C(3) = 3(3) + 1 = 10</span>.</p>
-        </div>
+          <h3>The output determines the next rule</h3>
+          <p>There is an immediate consequence of the odd-number rule. If <span class="inline-math">n</span> is odd, then <span class="inline-math">3n + 1</span> is always <strong>even</strong>. So every odd step must be followed by at least one even step.</p>
+          <p>However, dividing an even number by 2 can produce either another even number or an odd number. For example, <span class="inline-math">8 → 4</span> stays even, while <span class="inline-math">10 → 5</span> becomes odd. Consequently, the two rules need not alternate in a predictable pattern.</p>
 
-        <figure class="definition-diagram">
-          <p class="diagram-topline">ONE FUNCTION · TWO POSSIBLE RULES</p>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 240" role="img" aria-labelledby="rules-diagram-title rules-diagram-desc">
-            <title id="rules-diagram-title">Examples of the two Collatz rules</title>
-            <desc id="rules-diagram-desc">An even input of 8 leads to 4 by division by 2. An odd input of 3 leads to 10 by multiplying by 3 and adding 1.</desc>
-            <defs>
-              <marker id="even-tip" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7ae7ff"/></marker>
-              <marker id="odd-tip" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#ffd479"/></marker>
-            </defs>
-            <text x="38" y="73" class="diagram-label" fill="#7ae7ff">EVEN</text>
-            <text x="38" y="183" class="diagram-label" fill="#ffd479">ODD</text>
-            <circle cx="230" cy="65" r="28" class="diagram-node" stroke="#7ae7ff"/>
-            <circle cx="635" cy="65" r="28" class="diagram-node" stroke="#7ae7ff"/>
-            <text x="230" y="73" class="diagram-value">8</text>
-            <text x="635" y="73" class="diagram-value">4</text>
-            <path d="M 263 65 H 598" class="diagram-path" stroke="#7ae7ff" marker-end="url(#even-tip)"/>
-            <text x="430" y="46" class="diagram-rule">Divide by 2</text>
-            <circle cx="230" cy="178" r="28" class="diagram-node" stroke="#ffd479"/>
-            <circle cx="635" cy="178" r="28" class="diagram-node" stroke="#ffd479"/>
-            <text x="230" y="186" class="diagram-value">3</text>
-            <text x="635" y="186" class="diagram-value">10</text>
-            <path d="M 263 178 H 598" class="diagram-path" stroke="#ffd479" marker-end="url(#odd-tip)"/>
-            <text x="430" y="160" class="diagram-rule">Multiply by 3, then add 1</text>
-          </svg>
-          <figcaption>Each arrow represents one application of the same function, <span class="inline-math">C</span>.</figcaption>
-        </figure>
+          <h3>Increasing here, decreasing there</h3>
+          <p>For every positive odd integer, <span class="inline-math">3n + 1 &gt; n</span>, so the odd step increases the value. For every positive even integer, <span class="inline-math">n/2 &lt; n</span>, so the even step decreases it. An individual step is easy to understand. What happens over <em>many</em> steps is far less obvious.</p>
+          <p>In the orbit above, <span class="inline-math">3 → 10</span> increases, <span class="inline-math">10 → 5</span> decreases, and <span class="inline-math">5 → 16</span> increases again. Knowing the direction of a single step does not tell us the long-term behaviour of the sequence.</p>
 
-        <div class="article-prose">
-          <h3>Why does “piecewise” matter?</h3>
-          <p>These are not two separate processes. Collatz is <strong>one function</strong> whose rule is selected by the parity of the current number. Its output is always another positive integer: halving a positive even integer gives a positive integer, and <span class="inline-math">3n + 1</span> is a positive integer whenever <span class="inline-math">n</span> is positive.</p>
-          <p>That means we can feed the output back into the function, again and again. This repeated application is what makes Collatz a <strong>discrete dynamical system</strong>, and it gives us our next connection to the course.</p>
+          <h3>One function, applied repeatedly</h3>
+          <p>Both rules map positive integers to positive integers. In symbols, <span class="inline-math">C : ℤ⁺ → ℤ⁺</span>. Because every output remains in the function’s domain, it makes sense to apply <span class="inline-math">C</span> again and again.</p>
+          <p>That brings us to a central idea from our fractals course: a <strong>discrete dynamical system</strong> evolves by repeatedly applying a function. The Collatz function provides the rule; an orbit describes what happens to a particular starting number.</p>
         </div>
 
         <div class="article-next-topic">
           <span class="next-index">COMING NEXT · 02</span>
           <strong>Iterates and Orbits</strong>
-          <p>How do we describe what happens when the function is applied repeatedly?</p>
+          <p>What can we learn by studying successive applications of the Collatz function?</p>
         </div>
       </article>
 
