@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#07090f" />
   <title>The Collatz Laboratory</title>
-  <link rel="stylesheet" href="styles.css?v=20261019-4" />
+  <link rel="stylesheet" href="styles.css?v=20261021-finale-1" />
 </head>
 <body>
   <header class="site-header">
@@ -55,6 +55,28 @@
         <div id="choice-panel" class="choice-panel hidden"></div>
 
         <div id="status-pill" class="status-pill hidden"></div>
+
+        <section id="conjecture-finale" class="conjecture-finale" aria-labelledby="conjecture-finale-title" aria-hidden="true" inert>
+          <div class="conjecture-finale-inner">
+            <p class="finale-eyebrow"><span class="finale-spark" aria-hidden="true"></span> THE MATHEMATICAL QUESTION · CHAPTER 15</p>
+            <h2 id="conjecture-finale-title" class="finale-title">The Collatz <span>Conjecture.</span></h2>
+            <p class="finale-intro">Begin with <strong>any positive integer.</strong></p>
+            <div class="finale-rules" aria-label="The two Collatz sequence rules">
+              <div class="finale-rule"><span class="finale-rule-name">IF EVEN</span><strong>Divide by 2</strong><span class="finale-rule-symbol">n ÷ 2</span></div>
+              <div class="finale-rule"><span class="finale-rule-name">IF ODD</span><strong>Triple it, then add 1</strong><span class="finale-rule-symbol">3n + 1</span></div>
+            </div>
+            <p class="finale-statement">Repeat these rules. <strong>The conjecture is that every positive integer will eventually reach 1.</strong></p>
+            <p class="finale-footnote">From there, the sequence cycles through <span class="finale-cycle">1 → 4 → 2 → 1</span>. No one has proved this happens for every positive starting value.</p>
+            <div class="finale-journey">
+              <p class="finale-journey-label">WHERE WILL YOU EXPLORE NEXT?</p>
+              <nav class="finale-pathways" aria-label="Explore the Collatz Laboratory">
+                <a class="finale-path" href="history.html"><span>History</span><span aria-hidden="true">↗</span></a>
+                <a class="finale-path" href="digging-deeper.html"><span>Digging Deeper</span><span aria-hidden="true">↗</span></a>
+                <a class="finale-path" href="fractals.html"><span>Fractals</span><span aria-hidden="true">↗</span></a>
+              </nav>
+            </div>
+          </div>
+        </section>
       </div>
 
       <div class="story-steps">
