@@ -1074,3 +1074,61 @@ nav a.active {
   .finale-tree-caption { display: none; }
   .finale-tree-reminder > svg { height: 100%; }
 }
+
+
+/* All seven chapter destinations are always available in the top navigation.
+   At narrower widths the nav can scroll independently instead of colliding
+   with the site brand or pushing links outside the viewport. */
+.site-header {
+  gap: clamp(12px, 2vw, 26px);
+  padding-inline: clamp(16px, 2.2vw, 34px);
+}
+.site-header .brand {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.site-header nav[aria-label="Primary navigation"] {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  gap: clamp(9px, 1.45vw, 23px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  font-size: 10px;
+  letter-spacing: .13em;
+}
+.site-header nav[aria-label="Primary navigation"]::-webkit-scrollbar { display: none; }
+.site-header nav[aria-label="Primary navigation"] a {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+}
+.site-header nav[aria-label="Primary navigation"] a[aria-current="page"] {
+  color: #f4f7fb;
+}
+@media (max-width: 1100px) {
+  .site-header nav[aria-label="Primary navigation"] {
+    gap: clamp(8px, 1.05vw, 15px);
+    font-size: 9px;
+    letter-spacing: .095em;
+  }
+  .site-header .brand { font-size: 10px; letter-spacing: .12em; }
+}
+@media (max-width: 760px) {
+  .site-header { gap: 10px; padding-inline: 12px; }
+  .site-header .brand { font-size: 9px; gap: 6px; letter-spacing: .08em; }
+  .site-header nav[aria-label="Primary navigation"] {
+    justify-content: flex-start;
+    flex: 1 1 auto;
+    gap: 14px;
+    font-size: 9px;
+  }
+  .site-header .brand-mark { width: 7px; height: 7px; }
+}
