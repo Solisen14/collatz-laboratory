@@ -198,12 +198,24 @@
     // extended vertical branches fit within the established tree scale.
     putWorld("translate(320 68) scale(0.42)");
   }
+  function setFinale(active) {
+    const finale = document.getElementById("conjecture-finale");
+    const stage = document.querySelector(".sticky-stage");
+    if (!finale || !stage) return;
+    stage.classList.toggle("conjecture-is-visible", active);
+    finale.classList.toggle("is-visible", active);
+    finale.setAttribute("aria-hidden", String(!active));
+    if (active) finale.removeAttribute("inert");
+    else finale.setAttribute("inert", "");
+  }
+
   function enter(scene,previous){
     window.clearTimeout(exitTimer);
     cancelLoop();
     if(!drawing||!drawing.isConnected)drawing=makeTree();
     drawing.classList.remove("outgoing");
     document.getElementById("sequence-area").classList.add("tree-story-underlay");
+    setFinale(scene === "tree-formal");
     if(scene==="tree-rise"||scene==="tree-converge"){
       drawing.classList.remove("tree-faded","tree-show-loop","tree-formal-view");
       putWorld("translate(0 "+cameraPosition().toFixed(2)+")");
@@ -228,14 +240,17 @@
       },180);
     }
     if(scene==="tree-formal"){
-      fullTree();
-      drawing.classList.remove("tree-faded");
-      drawing.classList.add("tree-show-loop","tree-formal-view");
+      // The full-screen conjecture replaces the graphic, rather than
+      // shrinking the entire tree into a tiny distracting illustration.
+      // Let the close-up cycle fade away under the new statement.
+      drawing.classList.remove("tree-formal-view");
+      drawing.classList.add("tree-faded");
     }
     header(scene);
   }
   function leave(){
     cancelLoop();
+    setFinale(false);
     if(!drawing||!drawing.isConnected)return;
     drawing.classList.add("outgoing");
     document.getElementById("sequence-area").classList.remove("tree-story-underlay");
