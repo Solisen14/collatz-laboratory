@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#07090f" />
   <title>The Collatz Laboratory</title>
-  <link rel="stylesheet" href="styles.css?v=20261021-finale-2" />
+  <link rel="stylesheet" href="styles.css?v=20261021-finale-3" />
 </head>
 <body>
   <header class="site-header">
@@ -15,9 +15,9 @@
     </a>
     <nav aria-label="Primary navigation">
       <a class="active" href="#story">STORY</a>
-      <span class="nav-placeholder" title="Coming later">VISUALIZE</span>
-      <span class="nav-placeholder" title="Coming later">EXPERIMENT</span>
-      <span class="nav-placeholder" title="Coming later">ABOUT</span>
+      <a href="visualize.html">VISUALIZE</a>
+      <a href="experiment.html">EXPERIMENT</a>
+      <a href="about.html">ABOUT</a>
     </nav>
   </header>
 
@@ -58,9 +58,17 @@
 
         <section id="conjecture-finale" class="conjecture-finale" aria-labelledby="conjecture-finale-title" aria-hidden="true" inert>
           <div class="conjecture-finale-inner">
-            <p class="finale-eyebrow"><span class="finale-spark" aria-hidden="true"></span> THE MATHEMATICAL QUESTION · CHAPTER 15</p>
-            <h2 id="conjecture-finale-title" class="finale-title">The Collatz <span>Conjecture.</span></h2>
-            <p class="finale-intro">Begin with <strong>any positive integer.</strong></p>
+            <div class="finale-opening">
+              <div class="finale-tree-reminder" id="conjecture-tree-reminder"
+                   role="img" aria-label="A miniature of the complete branching Collatz tree, with the powers of two running down the middle">
+                <p class="finale-tree-caption">A SINGLE CONNECTED TREE</p>
+              </div>
+              <div class="finale-opening-copy">
+                <p class="finale-eyebrow"><span class="finale-spark" aria-hidden="true"></span> THE MATHEMATICAL QUESTION · CHAPTER 15</p>
+                <h2 id="conjecture-finale-title" class="finale-title">The Collatz <span>Conjecture.</span></h2>
+                <p class="finale-intro">Begin with <strong>any positive integer.</strong></p>
+              </div>
+            </div>
             <div class="finale-rules" aria-label="The two Collatz sequence rules">
               <div class="finale-rule"><span class="finale-rule-name">IF EVEN</span><strong>Divide by 2</strong><span class="finale-rule-symbol">n ÷ 2</span></div>
               <div class="finale-rule"><span class="finale-rule-name">IF ODD</span><strong>Triple it, then add 1</strong><span class="finale-rule-symbol">3n + 1</span></div>
@@ -73,6 +81,9 @@
                 <a class="finale-path" href="history.html"><span>History</span><span aria-hidden="true">↗</span></a>
                 <a class="finale-path" href="digging-deeper.html"><span>Digging Deeper</span><span aria-hidden="true">↗</span></a>
                 <a class="finale-path" href="fractals.html"><span>Fractals</span><span aria-hidden="true">↗</span></a>
+                <a class="finale-path" href="visualize.html"><span>Visualize</span><span aria-hidden="true">↗</span></a>
+                <a class="finale-path" href="experiment.html"><span>Experiment</span><span aria-hidden="true">↗</span></a>
+                <a class="finale-path" href="about.html"><span>About</span><span aria-hidden="true">↗</span></a>
               </nav>
             </div>
           </div>
@@ -283,6 +294,6 @@
   <script src="merge-arrow-polish.js?v=20261012-1649"></script>
   <script src="story-meta-sync.js?v=20261020-1"></script>
   <script src="choice-fix.js?v=20261013-1324"></script>
-  <script src="collatz-tree-story.js?v=20261021-2"></script>
+  <script src="collatz-tree-story.js?v=20261021-finale-3"></script>
 </body>
 </html>
