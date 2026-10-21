@@ -984,3 +984,93 @@ nav a.active {
   .finale-tree-caption { display: none; }
   .finale-pathways { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+
+/* Chapter 15 polishing: place the complete miniature tree to the RIGHT of
+   “Conjecture.” Keep a reserved column so the tree cannot cover the title,
+   rule pills, definition or six navigation buttons. */
+.finale-opening {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(155px, 18vw, 225px);
+  align-items: center;
+  column-gap: clamp(14px, 2vw, 30px);
+  min-height: 0;
+  margin-bottom: 13px;
+}
+.finale-opening-copy {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+.finale-opening .finale-title {
+  max-width: 100%;
+  font-size: clamp(43px, 4.75vw, 74px);
+  text-wrap: balance;
+}
+.finale-tree-reminder {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
+  width: 100%;
+  max-width: 225px;
+  min-height: 0;
+  height: clamp(154px, 24vh, 233px);
+  overflow: hidden;
+  margin: 0;
+}
+.finale-tree-reminder > svg {
+  width: 100%;
+  height: calc(100% - 18px);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+.finale-tree-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  white-space: nowrap;
+  font-size: 8px;
+  line-height: 12px;
+  pointer-events: none;
+}
+@media (max-height: 820px) {
+  .finale-opening { min-height: 0; margin-bottom: 8px; }
+  .finale-tree-reminder {
+    height: clamp(127px, 21vh, 184px);
+    min-height: 0;
+  }
+  .finale-opening .finale-title { font-size: clamp(42px, 4.4vw, 66px); }
+}
+@media (max-height: 650px) {
+  .finale-opening {
+    grid-template-columns: minmax(0, 1fr) clamp(118px, 15vw, 154px);
+    min-height: 0;
+  }
+  .finale-tree-reminder {
+    height: 125px;
+    min-height: 0;
+  }
+  .finale-opening .finale-title { font-size: clamp(36px, 4vw, 58px); }
+  .finale-tree-caption { display: none; }
+  .finale-tree-reminder > svg { height: 100%; }
+}
+@media (max-width: 900px) {
+  .finale-opening {
+    grid-template-columns: minmax(0, 1fr) clamp(115px, 18vw, 173px);
+    column-gap: 12px;
+  }
+  .finale-opening .finale-title { font-size: clamp(35px, 4.7vw, 59px); }
+}
+@media (max-width: 680px) {
+  .finale-opening {
+    grid-template-columns: minmax(0, 1fr) 105px;
+    gap: 8px;
+  }
+  .finale-tree-reminder { height: 124px; }
+  .finale-opening .finale-title { font-size: clamp(32px, 6vw, 44px); }
+  .finale-tree-caption { display: none; }
+  .finale-tree-reminder > svg { height: 100%; }
+}
