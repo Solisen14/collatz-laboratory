@@ -596,11 +596,17 @@ let ticking = false;
 function updateActiveStep() {
   ticking = false;
   const targetY = window.innerHeight * 0.52;
-  let active = storySteps[0];
+  let active = null;
   let bestDistance = Infinity;
 
   storySteps.forEach(step => {
     const rect = step.getBoundingClientRect();
+
+    // Ignore invisible author placeholders and any other display:none steps.
+    // Their zero-size boxes otherwise appear at (0,0), causing the hidden
+    // final scene to win when the reader scrolls just below the title.
+    if (rect.width <= 0 || rect.height <= 0) return;
+
     const centre = rect.top + rect.height / 2;
     const distance = Math.abs(centre - targetY);
     if (distance < bestDistance) {
@@ -609,6 +615,7 @@ function updateActiveStep() {
     }
   });
 
+  if (!active) return;
   storySteps.forEach(step => step.classList.toggle("is-active", step === active));
   setScene(active.dataset.scene);
 }
