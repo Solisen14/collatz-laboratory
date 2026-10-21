@@ -112,9 +112,10 @@
           <p>For every positive odd integer, <span class="inline-math">3n + 1 &gt; n</span>, so the odd step increases the value. For every positive even integer, <span class="inline-math">n/2 &lt; n</span>, so the even step decreases it. An individual step is easy to understand. What happens over <em>many</em> steps is far less obvious.</p>
           <p>In the orbit above, <span class="inline-math">3 → 10</span> increases, <span class="inline-math">10 → 5</span> decreases, and <span class="inline-math">5 → 16</span> increases again. Knowing the direction of a single step does not tell us the long-term behaviour of the sequence.</p>
 
-          <h3>One function, applied repeatedly</h3>
-          <p>Both rules map positive integers to positive integers. In symbols, <span class="inline-math">C : ℤ⁺ → ℤ⁺</span>. Because every output remains in the function’s domain, it makes sense to apply <span class="inline-math">C</span> again and again.</p>
-          <p>That brings us to a central idea from our fractals course: a <strong>discrete dynamical system</strong> evolves by repeatedly applying a function. The Collatz function provides the rule; an orbit describes what happens to a particular starting number.</p>
+          <h3>Collatz as a Discrete Dynamical System</h3>
+          <p>A <strong>discrete dynamical system</strong> is a mathematical process in which a function is applied repeatedly, with each output becoming the next input. The word <em>discrete</em> means that the process advances in individual steps rather than continuously.</p>
+          <p>The Collatz function is one example. Both of its rules produce another positive integer, so the function maps positive integers back to positive integers: <span class="inline-math">C : ℤ⁺ → ℤ⁺</span>. Starting with any positive integer, we apply the appropriate rule to find the next number, then repeat.</p>
+          <p>The sequence of values generated from a particular starting number is called its <strong>orbit</strong>. Each individual step is straightforward, but predicting the long-term behaviour of an orbit is surprisingly difficult.</p>
         </div>
 
         <div class="article-next-topic">
