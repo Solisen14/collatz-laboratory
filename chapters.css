@@ -232,3 +232,145 @@ body.chapter-page {
   .history-placeholder-note { padding: 23px 19px; }
   .piecewise-orbit-figure { padding: 22px 12px; }
 }
+
+
+/* Section 02: Iterates and Orbits. Editorial illustrations, no JavaScript. */
+.digging-article-followup {
+  margin-top: 54px;
+  padding-top: 65px;
+  border-top: 1px solid rgba(122,231,255,.23);
+}
+.digging-article-followup .article-heading { margin-bottom: 29px; }
+.digging-article-followup .article-prose h3:first-child { margin-top: 0; }
+.iterate-math {
+  font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+  color: #f3f8fd;
+  font-size: 1.08em;
+  font-style: italic;
+  white-space: nowrap;
+}
+.iterate-math sup { font-style: normal; font-size: .67em; }
+.iterate-equations {
+  max-width: 735px;
+  margin: 25px 0 35px;
+  padding: 21px 28px;
+  border-left: 3px solid rgba(122,231,255,.75);
+  background: rgba(16,31,46,.6);
+  border-radius: 0 12px 12px 0;
+}
+.iterate-equations p {
+  margin: 0;
+  padding: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 18px;
+  border-bottom: 1px solid rgba(255,255,255,.065);
+}
+.iterate-equations p:last-child { border: none; }
+.iterate-equations .iterate-math { font-size: clamp(20px,2.3vw,26px); }
+.iterate-equation-note {
+  color: #9facbd;
+  font-size: 12px;
+  letter-spacing: .025em;
+  white-space: nowrap;
+}
+.iterates-figure {
+  max-width: 900px;
+  margin: 44px 0 48px;
+  padding: 26px 25px 22px;
+  border: 1px solid rgba(122,231,255,.19);
+  border-radius: 15px;
+  background: linear-gradient(125deg,rgba(14,29,45,.78),rgba(8,14,25,.86));
+}
+.iterates-figure-viewport {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  padding: 10px 0 0;
+}
+.iterates-figure-viewport svg {
+  width: 100%;
+  height: auto;
+  min-width: 780px;
+  display: block;
+}
+.iterates-node-text {
+  fill: #f4faff;
+  font: 650 23px Inter, ui-sans-serif, system-ui, sans-serif;
+  text-anchor: middle;
+}
+.iterates-node-label {
+  fill: #afbfd2;
+  font: 530 17px "Cambria Math","STIX Two Math",serif;
+  text-anchor: middle;
+}
+.iterates-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  color: #9aaec1;
+  font-size: 12px;
+  margin: 0 0 16px;
+}
+.iterates-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.iterates-legend-dot { height: 8px; width: 8px; display: inline-block; border-radius: 50%; }
+.iterates-legend-dot.odd-dot { background: #ffd479; }
+.iterates-legend-dot.even-dot { background: #7ae7ff; }
+.iterates-legend-dot.arrived-dot { background: #86f0bd; }
+.iterates-figure figcaption {
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 15px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #9fb2c5;
+}
+.orbit-chain-panel {
+  max-width: 900px;
+  padding: 26px 25px 23px;
+  margin: 26px 0 37px;
+  border-radius: 14px;
+  border: 1px solid rgba(159,140,255,.25);
+  background: rgba(21,22,42,.72);
+}
+.orbit-chain-kicker {
+  margin: 0 0 21px;
+  color: #b2a7e9;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .17em;
+}
+.orbit-chain-viewport { overflow-x: auto; scrollbar-width: thin; }
+.orbit-chain {
+  margin: 0 0 7px;
+  font-family: "Cambria Math","STIX Two Math",serif;
+  font-size: clamp(20px,2.6vw,31px);
+  letter-spacing: .004em;
+  line-height: 1.7;
+  white-space: nowrap;
+  color: #f2f8ff;
+}
+.orbit-chain span, .cycle-equation span { color: #7ae7ff; margin: 0 .09em; }
+.orbit-chain strong { color: #ffd479; font-weight: 600; }
+.orbit-chain strong span { color: #ffd479; }
+.cycle-equation {
+  display: inline-block;
+  margin: 3px 0 36px;
+  padding: 17px 28px;
+  color: #ffd479;
+  font: 580 clamp(23px,3vw,34px) "Cambria Math","STIX Two Math",serif;
+  border-radius: 11px;
+  border: 1px solid rgba(255,212,121,.23);
+  background: rgba(55,40,22,.23);
+}
+.cycle-equation span { color: #ffd479; }
+@media (max-width:690px) {
+  .digging-article-followup { margin-top: 35px; padding-top: 46px; }
+  .iterate-equations { padding: 13px 18px; }
+  .iterate-equations p { display: block; }
+  .iterate-equation-note { display: block; margin-top: 3px; font-size: 11px; }
+  .iterates-figure { padding: 21px 13px; }
+  .orbit-chain-panel { padding: 20px 15px; }
+  .cycle-equation { padding: 13px 18px; font-size: 25px; }
+}
