@@ -550,7 +550,9 @@ function snapBackToGate(scene) {
 
   gateSnapPending = true;
   requestAnimationFrame(() => {
-    step.scrollIntoView({ block: "center", behavior: "auto" });
+    // Gate redirects are instant. Using 'auto' inherits smooth scrolling
+    // from the page and makes the story look like it flies past.
+    step.scrollIntoView({ block: "center", behavior: "instant" });
     requestAnimationFrame(() => {
       gateSnapPending = false;
     });
