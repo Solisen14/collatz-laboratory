@@ -283,23 +283,24 @@
       putWorld("translate(0 "+cameraPosition().toFixed(2)+")");
     }
     if(scene==="tree-loop"){
-      // Keep the close-up of 4 → 2 → 1 from the preceding scene. Do not
-      // fade the tree or pull the camera back while the loop is drawn.
-      drawing.classList.remove("tree-formal-view");
-      drawing.classList.remove("tree-show-loop");
+      // The tree must remain visible and stationary as the visitor passes
+      // the last number and enters the 4 → 2 → 1 cycle scene. Only the
+      // RETURN ARC animates. No opacity changes, SVG rebuilds, or zoom-out.
+      drawing.classList.remove("tree-formal-view","outgoing","tree-faded");
       if(previous!=="tree-converge"){
-        // Entering directly or scrolling back from the formal statement:
-        // reframe on 1 rather than retaining the later full-tree view.
+        // Return visits enter at the same close-up framing.
         putWorld("translate(0 "+ONE+")");
       }
-      drawing.classList.remove("tree-faded");
-      // A new painted frame ensures the gold arc visibly grows, rather
-      // than appearing already completed with the scene's text card.
-      queue(function(){
-        if(state.scene==="tree-loop"&&drawing&&drawing.isConnected){
-          drawing.classList.add("tree-show-loop");
-        }
-      },180);
+      drawing.classList.remove("tree-show-loop");
+      // Give the browser a frame with the untouched tree visible, then
+      // draw the single smooth oval arrow from 1 back to 4.
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          if(state.scene==="tree-loop"&&drawing&&drawing.isConnected){
+            drawing.classList.add("tree-show-loop");
+          }
+        });
+      });
     }
     if(scene==="tree-formal"){
       // The full-screen conjecture replaces the graphic, rather than
