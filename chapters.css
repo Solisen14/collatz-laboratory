@@ -162,3 +162,73 @@ body.chapter-page {
   .definition-formula math {font-size:22px;}
   .definition-diagram {padding:22px 12px;}
 }
+
+
+/* History is a draft holding area for the earlier mathematical introduction. */
+.history-page .digging-hero { padding-bottom: 32px; }
+.history-placeholder-note {
+  max-width: 900px;
+  margin: 5px 0 55px;
+  padding: 26px 30px;
+  border: 1px dashed rgba(255, 212, 121, .42);
+  border-radius: 15px;
+  background: rgba(48, 35, 20, .17);
+}
+.history-placeholder-tag {
+  display: inline-block;
+  padding: 5px 9px;
+  color: #ffd479;
+  border: 1px solid rgba(255, 212, 121, .32);
+  border-radius: 5px;
+  font: 780 11px Inter, ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: .16em;
+}
+.history-placeholder-note h2 {
+  margin: 17px 0 9px;
+  font-size: clamp(25px, 3vw, 32px);
+  line-height: 1.2;
+  font-weight: 580;
+  color: #f3f6fb;
+  letter-spacing: -.03em;
+}
+.history-placeholder-note p {
+  max-width: 690px;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #b6c3d1;
+}
+.history-page .history-draft { opacity: .92; }
+
+/* Static visual linking the two branches into one Collatz orbit. */
+.piecewise-orbit-figure {
+  max-width: 900px;
+  margin: 45px 0 53px;
+  padding: 25px 26px 23px;
+  border: 1px solid rgba(122, 231, 255, .17);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(16, 32, 47, .82), rgba(8, 14, 25, .8));
+}
+.piecewise-orbit-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  padding: 8px 0 2px;
+}
+.piecewise-orbit-scroll svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-width: 710px;
+}
+.piecewise-orbit-figure figcaption {
+  padding-top: 15px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  color: #9aafc2;
+  font-size: 14px;
+  line-height: 1.65;
+}
+@media (max-width: 690px) {
+  .history-placeholder-note { padding: 23px 19px; }
+  .piecewise-orbit-figure { padding: 22px 12px; }
+}
