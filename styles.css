@@ -840,3 +840,9 @@ nav a.active {
 @media (prefers-reduced-motion: reduce) {
   .conjecture-finale, .finale-path { transition-duration: .01ms !important; transition-delay: 0s !important; }
 }
+
+
+/* Retain the original writing placeholder in source for collaboration,
+   but let the new conjecture navigation be the public story's ending. */
+.story-steps > .story-step[data-scene="text-placeholder"],
+.prototype-end { display: none !important; }
