@@ -693,9 +693,11 @@ nav a.active {
   transition: opacity .45s ease;
 }
 .conjecture-finale {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 30;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -822,7 +824,7 @@ nav a.active {
   .finale-path { padding: 17px 15px; font-size: 15px; }
 }
 @media (max-height: 790px) {
-  .conjecture-finale { padding-top: calc(var(--header-h) + 20px); padding-bottom: 12px; }
+  .conjecture-finale { padding-top: calc(var(--header-h) + 20px); padding-bottom: 12px; align-items: flex-start; }
   .finale-eyebrow { margin-bottom: 11px; }
   .finale-title { font-size: clamp(46px, 5.7vw, 73px); margin-bottom: 12px; }
   .finale-intro { margin-bottom: 10px; }
@@ -846,3 +848,17 @@ nav a.active {
    but let the new conjecture navigation be the public story's ending. */
 .story-steps > .story-step[data-scene="text-placeholder"],
 .prototype-end { display: none !important; }
+
+@media (max-height: 600px) {
+  .conjecture-finale { padding-top: calc(var(--header-h) + 10px); }
+  .finale-eyebrow { margin-bottom: 7px; }
+  .finale-title { font-size: clamp(39px, 5vw, 60px); margin-bottom: 9px; }
+  .finale-intro { font-size: 17px; margin-bottom: 8px; }
+  .finale-rule { padding: 8px 13px; }
+  .finale-rule strong { font-size: 14px; }
+  .finale-statement { font-size: 17px; margin-bottom: 7px; }
+  .finale-footnote { font-size: 13px; margin-bottom: 10px; }
+  .finale-journey { padding-top: 10px; }
+  .finale-journey-label { margin-bottom: 8px; }
+  .finale-path { min-height: 45px; padding: 10px 15px; }
+}
