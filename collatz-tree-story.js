@@ -4,16 +4,16 @@
 (function () {
   "use strict";
   const SCENES = ["tree-rise", "tree-converge", "tree-loop", "tree-formal"];
-  const SEEDS = [48, 68, 69, 640, 53, 168, 113, 256];
-  const SPINE = new Set([256,128,64,32,16,8,4,2,1]);
+  const SEEDS = [48, 68, 69, 640, 106, 168, 113, 512];
+  const SPINE = new Set([512,256,128,64,32,16,8,4,2,1]);
   const COLUMNS = [
     [[48,24,12,6,3],70],
     [[68,34,17],170],
     [[208,104,52,26,13],270],
     [[69],330],
     [[640,320,160,80,40,20,10,5],380],
-    [[256,128,64,32,16,8,4,2,1],520],
-    [[53],620],
+    [[512,256,128,64,32,16,8,4,2,1],520],
+    [[106,53],620],
     [[340,170,85],850],
     [[113],960],
     [[168,84,42,21],1020]
@@ -187,9 +187,9 @@
   window.addEventListener("scroll",onScroll,{passive:true});
   window.addEventListener("resize",onScroll);
   function fullTree(){
-    // Highest node 69 is at -200. Node 1 is at 1000. All 1200 units
-    // fit inside the 520-high viewport at this scale, without a cut.
-    putWorld("translate(320 92) scale(0.42)");
+    // Highest branch tips are at y=-120; 1 sits at y=1000. Both newly
+    // extended vertical branches fit within the established tree scale.
+    putWorld("translate(320 68) scale(0.42)");
   }
   function enter(scene,previous){
     window.clearTimeout(exitTimer);
