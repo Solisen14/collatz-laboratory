@@ -108,20 +108,27 @@
       element("circle",{cx:p.x,cy:p.y,r:RADIUS},g);
       element("text",{x:p.x,y:p.y+1},g,n);
     });
-    // 1 → 4 is the odd-rule return. Two straight segments avoid the 2 node.
+    // The odd rule sends 1 back to 4. Draw ONE continuous cubic arc,
+    // bowing to the right of the 4 → 2 → 1 spine. Its shallow, oval
+    // profile keeps the stroke clear of the 2 node and the text card.
     const loop=element("g",{class:"tree-loop"},world);
     const one=pos(1),four=pos(4);
+    const startX=one.x+RADIUS, startY=one.y-3;
+    const endX=four.x+RADIUS-1, endY=four.y+6;
+    const curveX=one.x+158;
+    const loopArc="M "+startX+" "+startY+
+      " C "+curveX+" "+(one.y+16)+
+      " "+curveX+" "+(four.y+28)+
+      " "+endX+" "+endY;
     element("path",{
-      d:"M "+(one.x+RADIUS)+" "+(one.y-4)+
-       " L "+(one.x+112)+" "+(one.y-45)+
-       " L "+(four.x+RADIUS+8)+" "+(four.y+7),
-      class:"tree-loop-arrow",pathLength:1,
-      "marker-end":"url(#story-tree-marker-odd)"
+      d:loopArc,class:"tree-loop-arrow",pathLength:1,
+      "marker-end":"url(#story-tree-marker-odd)",
+      "aria-label":"Odd rule: 1 goes to 4"
     },loop);
     element("text",{
-      x:one.x+113,y:one.y-90,fill:"#ffd479",
+      x:one.x+198,y:one.y-80,fill:"#ffd479",
       "text-anchor":"middle",
-      style:"font:700 17px Inter,system-ui,sans-serif"
+      style:"font:700 17px Inter,ui-sans-serif,system-ui,sans-serif"
     },loop,"1 → 4");
     document.querySelector(".sticky-stage").appendChild(container);
     return container;
@@ -202,25 +209,23 @@
       putWorld("translate(0 "+cameraPosition().toFixed(2)+")");
     }
     if(scene==="tree-loop"){
+      // Keep the close-up of 4 → 2 → 1 from the preceding scene. Do not
+      // fade the tree or pull the camera back while the loop is drawn.
       drawing.classList.remove("tree-formal-view");
-      if(previous==="tree-formal"){
-        fullTree();
-        drawing.classList.remove("tree-faded");
-        drawing.classList.add("tree-show-loop");
-      }else{
-        // A deliberate cinematic beat: fade out at 1, restore the
-        // whole tree while invisible, fade in, then draw 1 → 4.
-        drawing.classList.remove("tree-show-loop");
-        drawing.classList.add("tree-faded");
-        queue(function(){
-          if(state.scene!=="tree-loop")return;
-          fullTree();
-          drawing.classList.remove("tree-faded");
-        },650);
-        queue(function(){
-          if(state.scene==="tree-loop")drawing.classList.add("tree-show-loop");
-        },1570);
+      drawing.classList.remove("tree-show-loop");
+      if(previous!=="tree-converge"){
+        // Entering directly or scrolling back from the formal statement:
+        // reframe on 1 rather than retaining the later full-tree view.
+        putWorld("translate(0 "+ONE+")");
       }
+      drawing.classList.remove("tree-faded");
+      // A new painted frame ensures the gold arc visibly grows, rather
+      // than appearing already completed with the scene's text card.
+      queue(function(){
+        if(state.scene==="tree-loop"&&drawing&&drawing.isConnected){
+          drawing.classList.add("tree-show-loop");
+        }
+      },180);
     }
     if(scene==="tree-formal"){
       fullTree();
