@@ -198,10 +198,72 @@
     // extended vertical branches fit within the established tree scale.
     putWorld("translate(320 68) scale(0.42)");
   }
+  // Reuse the exact Collatz nodes and connections for the finale miniature.
+  // This graphic is independent of the camera-scrolled world, so the page
+  // can fade to the conjecture while retaining a recognizable tree reminder.
+  function drawFinaleMiniTree() {
+    const mount = document.getElementById("conjecture-tree-reminder");
+    if (!mount || mount.querySelector("svg")) return;
+    const mini = element("svg", {
+      viewBox: "-25 -167 1150 1218",
+      preserveAspectRatio: "xMidYMid meet",
+      role: "presentation",
+      "aria-hidden": "true",
+      class: "finale-tree-svg"
+    }, mount);
+    const defs = element("defs", {}, mini);
+    [["even", "#7ae7ff"], ["odd", "#ffd479"]].forEach(function(pair) {
+      const mark = element("marker", {
+        id: "finale-tree-arrow-" + pair[0],
+        markerWidth: 12, markerHeight: 12, refX: 9.4, refY: 6,
+        markerUnits: "userSpaceOnUse", orient: "auto"
+      }, defs);
+      element("path", { d: "M0 0 L12 6 L0 12 Z", fill: pair[1] }, mark);
+    });
+    const lines = element("g", { class: "finale-mini-edges" }, mini);
+    const nodes = element("g", { class: "finale-mini-nodes" }, mini);
+    const ordered = [...X.keys()].sort(function(a,b) {
+      return distance(b)-distance(a) || a-b;
+    });
+    ordered.forEach(function(n) {
+      if (n === 1) return;
+      const to = nextValue(n), a = pos(n), b = pos(to);
+      const dx = b.x-a.x, dy = b.y-a.y, magnitude = Math.hypot(dx,dy);
+      const ux = dx/magnitude, uy = dy/magnitude;
+      const even = n % 2 === 0;
+      const rule = even ? "even" : "odd";
+      const d = "M " + (a.x+ux*(RADIUS+8)) + " " + (a.y+uy*(RADIUS+8)) +
+                " L " + (b.x-ux*(RADIUS+13)) + " " + (b.y-uy*(RADIUS+13));
+      element("path", {
+        d: d, class: "mini-tree-edge " + rule + (SPINE.has(n) ? " spine" : ""),
+        "marker-end": "url(#finale-tree-arrow-" + rule + ")"
+      }, lines);
+    });
+    ordered.forEach(function(n) {
+      const p = pos(n);
+      const classes = "mini-tree-node" +
+        (SPINE.has(n) ? " spine" : "") +
+        (SEEDS.includes(n) ? " tip" : "");
+      const group = element("g", { class: classes }, nodes);
+      element("circle", { cx: p.x, cy: p.y, r: RADIUS+4 }, group);
+      element("text", { x: p.x, y: p.y+1 }, group, n);
+    });
+    const one = pos(1), four = pos(4);
+    element("path", {
+      class: "mini-tree-loop",
+      d: "M " + (one.x+RADIUS+4) + " " + (one.y-4) +
+        " C " + (one.x+163) + " " + (one.y+15) +
+        " " + (one.x+163) + " " + (four.y+27) +
+        " " + (four.x+RADIUS+2) + " " + (four.y+6),
+      "marker-end": "url(#finale-tree-arrow-odd)"
+    },mini);
+  }
+
   function setFinale(active) {
     const finale = document.getElementById("conjecture-finale");
     const stage = document.querySelector(".sticky-stage");
     if (!finale || !stage) return;
+    if (active) drawFinaleMiniTree();
     stage.classList.toggle("conjecture-is-visible", active);
     finale.classList.toggle("is-visible", active);
     finale.setAttribute("aria-hidden", String(!active));
