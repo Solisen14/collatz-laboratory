@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#07090f" />
   <title>Digging Deeper | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
-  <link rel="stylesheet" href="chapters.css?v=20261021-piecewise-2" />
+  <link rel="stylesheet" href="chapters.css?v=20261021-iterates-1" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -118,10 +118,111 @@
           <p>The sequence of values generated from a particular starting number is called its <strong>orbit</strong>. Each individual step is straightforward, but predicting the long-term behaviour of an orbit is surprisingly difficult.</p>
         </div>
 
+      </article>
+
+      <article class="digging-article digging-article-followup" aria-labelledby="iterates-and-orbits">
+        <header class="article-heading">
+          <p class="article-overline"><span>02</span> FOLLOWING THE SEQUENCE</p>
+          <h2 id="iterates-and-orbits">Iterates and Orbits</h2>
+          <p class="article-lede">We know what the Collatz function does to a number once. What happens when we keep feeding each result back into the function?</p>
+        </header>
+
+        <div class="article-prose">
+          <h3>Applying a function again and again</h3>
+          <p>In mathematics, applying a function repeatedly is called <strong>iteration</strong>. Each successive application gives us another <strong>iterate</strong> of the function.</p>
+          <p>Starting with 3, the first few iterates of the Collatz function are:</p>
+        </div>
+
+        <div class="iterate-equations" role="group" aria-label="The first three iterates of 3">
+          <p><span class="iterate-math">C(3) = 10</span><span class="iterate-equation-note">First application</span></p>
+          <p><span class="iterate-math">C<sup>2</sup>(3) = C(10) = 5</span><span class="iterate-equation-note">Second application</span></p>
+          <p><span class="iterate-math">C<sup>3</sup>(3) = C(5) = 16</span><span class="iterate-equation-note">Third application</span></p>
+        </div>
+
+        <div class="article-prose">
+          <p>The superscript tells us <strong>how many times the function has been applied</strong>. For example, <span class="iterate-math">C<sup>2</sup>(3)</span> means apply <span class="iterate-math">C</span> twice, not square the number <span class="iterate-math">C(3)</span>.</p>
+          <p>We also write <span class="iterate-math">C<sup>0</sup>(3) = 3</span> for the starting value, before any steps have taken place.</p>
+        </div>
+
+        <figure class="iterates-figure">
+          <p class="diagram-topline">SEVEN ITERATIONS · STARTING AT 3</p>
+          <div class="iterates-figure-viewport">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1030 188" role="img" aria-labelledby="iterates-figure-title iterates-figure-description">
+              <title id="iterates-figure-title">Seven iterates of the Collatz function, beginning with 3</title>
+              <desc id="iterates-figure-description">The ordered sequence 3, 10, 5, 16, 8, 4, 2, 1, with labels C to the zero of 3 through C to the seventh of 3 underneath each number. Odd-number steps are gold, even-number steps are cyan, and the first arrival at 1 is highlighted green.</desc>
+              <defs>
+                <marker id="iter-odd-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#ffd479"/></marker>
+                <marker id="iter-even-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#7ae7ff"/></marker>
+              </defs>
+              <line x1="98" y1="75" x2="154" y2="75" stroke="#ffd479" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-odd-arrow)"/>
+              <circle cx="67" cy="75" r="27" fill="#0b1724" stroke="#ffd479" stroke-width="2.5"/>
+              <text x="67" y="82" class="iterates-node-text">3</text>
+              <text x="67" y="143" class="iterates-node-label">C⁰(3)</text>
+              <line x1="223" y1="75" x2="279" y2="75" stroke="#7ae7ff" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-even-arrow)"/>
+              <circle cx="192" cy="75" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.5"/>
+              <text x="192" y="82" class="iterates-node-text">10</text>
+              <text x="192" y="143" class="iterates-node-label">C¹(3)</text>
+              <line x1="348" y1="75" x2="404" y2="75" stroke="#ffd479" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-odd-arrow)"/>
+              <circle cx="317" cy="75" r="27" fill="#0b1724" stroke="#ffd479" stroke-width="2.5"/>
+              <text x="317" y="82" class="iterates-node-text">5</text>
+              <text x="317" y="143" class="iterates-node-label">C²(3)</text>
+              <line x1="473" y1="75" x2="529" y2="75" stroke="#7ae7ff" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-even-arrow)"/>
+              <circle cx="442" cy="75" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.5"/>
+              <text x="442" y="82" class="iterates-node-text">16</text>
+              <text x="442" y="143" class="iterates-node-label">C³(3)</text>
+              <line x1="598" y1="75" x2="654" y2="75" stroke="#7ae7ff" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-even-arrow)"/>
+              <circle cx="567" cy="75" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.5"/>
+              <text x="567" y="82" class="iterates-node-text">8</text>
+              <text x="567" y="143" class="iterates-node-label">C⁴(3)</text>
+              <line x1="723" y1="75" x2="779" y2="75" stroke="#7ae7ff" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-even-arrow)"/>
+              <circle cx="692" cy="75" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.5"/>
+              <text x="692" y="82" class="iterates-node-text">4</text>
+              <text x="692" y="143" class="iterates-node-label">C⁵(3)</text>
+              <line x1="848" y1="75" x2="904" y2="75" stroke="#7ae7ff" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-even-arrow)"/>
+              <circle cx="817" cy="75" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.5"/>
+              <text x="817" y="82" class="iterates-node-text">2</text>
+              <text x="817" y="143" class="iterates-node-label">C⁶(3)</text>
+              <circle cx="942" cy="75" r="27" fill="#0b1724" stroke="#86f0bd" stroke-width="2.5"/>
+              <text x="942" y="82" class="iterates-node-text">1</text>
+              <text x="942" y="143" class="iterates-node-label">C⁷(3)</text>
+            </svg>
+          </div>
+          <div class="iterates-legend" aria-label="Diagram legend">
+            <span><i class="iterates-legend-dot odd-dot"></i>Odd-number rule</span>
+            <span><i class="iterates-legend-dot even-dot"></i>Even-number rule</span>
+            <span><i class="iterates-legend-dot arrived-dot"></i>First arrival at 1</span>
+          </div>
+          <figcaption>Each arrow is one application of <span class="iterate-math">C</span>. The labels below the values show the iterate number: <span class="iterate-math">C<sup>0</sup>(3)</span> through <span class="iterate-math">C<sup>7</sup>(3)</span>.</figcaption>
+        </figure>
+
+        <div class="article-prose">
+          <p>After seven applications, the value is 1. We can write this as <span class="iterate-math">C<sup>7</sup>(3) = 1</span>. But reaching 1 doesn't mean the process stops.</p>
+          <h3>Following an orbit</h3>
+          <p>In a discrete dynamical system, the <strong>forward orbit</strong> of a starting value follows what happens as we continue applying the function. We can show this using arrows, preserving the order of the values and any repetitions.</p>
+        </div>
+
+        <div class="orbit-chain-panel" role="group" aria-label="The forward orbit of 3 continues into the repeating cycle 1 to 4 to 2 to 1">
+          <p class="orbit-chain-kicker">THE FORWARD ORBIT OF 3</p>
+          <div class="orbit-chain-viewport">
+            <p class="orbit-chain">3 <span>→</span> 10 <span>→</span> 5 <span>→</span> 16 <span>→</span> 8 <span>→</span> 4 <span>→</span> 2 <span>→</span> <strong>1 <span>→</span> 4 <span>→</span> 2 <span>→</span> 1 <span>→</span> ⋯</strong></p>
+          </div>
+        </div>
+
+        <div class="article-prose">
+          <p>Notice what happens when the orbit reaches 1. Because 1 is odd, the next value is 4. Then 4 goes to 2, and 2 goes back to 1. The orbit enters the repeating cycle:</p>
+        </div>
+
+        <div class="cycle-equation" aria-label="One to four to two to one, repeating">1 <span>→</span> 4 <span>→</span> 2 <span>→</span> 1 <span>→</span> ⋯</div>
+
+        <div class="article-prose">
+          <p>Here is the question at the heart of the <strong>Collatz conjecture</strong>: <em>Does every positive integer eventually reach 1 and enter this same cycle?</em> That is what mathematicians suspect, but no one has proved it for every positive integer.</p>
+          <p>If we want a compact mathematical description, we can write the forward orbit as the ordered sequence <span class="iterate-math">C<sup>0</sup>(n), C<sup>1</sup>(n), C<sup>2</sup>(n), …</span>. The order matters, and values can appear again when the orbit cycles.</p>
+        </div>
+
         <div class="article-next-topic">
-          <span class="next-index">COMING NEXT · 02</span>
-          <strong>Iterates and Orbits</strong>
-          <p>What can we learn by studying successive applications of the Collatz function?</p>
+          <span class="next-index">COMING NEXT · 03</span>
+          <strong>Fixed Points and Periodic Orbits</strong>
+          <p>One is not a fixed point of the Collatz function. So what kind of repetition have we found?</p>
         </div>
       </article>
 
