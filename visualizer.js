@@ -80,75 +80,142 @@ function updateOutputs() {
 }
 
 function buildTree(options) {
-  let nextNodeId = 0;
   const nodes = [];
   const edges = [];
   const seen = new Set();
+  let nextNodeId = 0;
   let maxValue = 1;
 
-  function visit(value, x, y, angle, depth, incomingType = 'root', parentId = null) {
+  // Every positive integer has one forward successor. Its reverse tree has
+  // an even predecessor (2n) and, where permitted, one odd predecessor.
+  function grow(value, depth, incomingType = 'root', parentId = null) {
     if (seen.has(value)) return null;
     seen.add(value);
-
-    const nodeId = `node-${nextNodeId++}`;
-    nodes.push({ id: nodeId, value, x, y, angle, depth, incomingType, parentId });
+    const node = {
+      id: `node-${nextNodeId++}`, value, depth, incomingType, parentId,
+      spine: Number.isInteger(Math.log2(value)), children: []
+    };
+    nodes.push(node);
     maxValue = Math.max(maxValue, value);
 
-    if (depth >= options.depth) return nodeId;
-
-    const length = options.length * Math.pow(options.decay, depth);
-    const odd = oddPredecessor(value);
-    const candidates = [{ value: value * 2, type: 'even' }];
-    if (odd !== null) candidates.push({ value: odd, type: 'odd' });
-    const children = candidates.filter((child) => !seen.has(child.value));
-
-    children.forEach((child) => {
-      const spread = options.angle * 0.5 * DEG_TO_RAD;
-      const childAngle = children.length === 1
-        ? angle
-        : angle + (child.type === 'even' ? -spread : spread);
-      const childX = x + length * Math.cos(childAngle);
-      const childY = y + length * Math.sin(childAngle);
-      const childId = visit(child.value, childX, childY, childAngle, depth + 1, child.type, nodeId);
-      if (!childId) return;
-
-      edges.push({
-        id: `${nodeId}-${childId}`,
-        from: nodeId,
-        to: childId,
-        x1: x,
-        y1: y,
-        x2: childX,
-        y2: childY,
-        depth: depth + 1,
-        type: child.type,
-        childValue: child.value
-      });
-    });
-
-    return nodeId;
+    if (depth < options.depth) {
+      const even = grow(value * 2, depth + 1, 'even', node.id);
+      if (even) node.children.push({ node: even, type: 'even' });
+      const oddValue = oddPredecessor(value);
+      if (oddValue !== null) {
+        const odd = grow(oddValue, depth + 1, 'odd', node.id);
+        if (odd) node.children.push({ node: odd, type: 'odd' });
+      }
+    }
+    return node;
   }
 
-  visit(1, 0, 0, 0, 0, 'root', null);
+  const root = grow(1, 0);
+  const radians = options.angle * DEG_TO_RAD;
+  const slope = Math.tan(radians);
+  const safetyGap = Math.max(24, options.width * 3 + 17);
+  const minRise = safetyGap / Math.sin(radians);
 
-  const xs = nodes.map((node) => node.x);
-  const ys = nodes.map((node) => node.y);
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
+  // Reserve a horizontal lane for every odd subtree. Even predecessors
+  // are vertical; odd predecessors are straight diagonals at the chosen
+  // angle FROM VERTICAL. A branch never enters its sibling's reserved lane.
+  // Above an even edge, the odd edge from their parent also lies at least
+  // sin(angle)*rise away from every point of that even subtree.
+  function measure(node) {
+    for (const entry of node.children) measure(entry.node);
+    const evenEntry = node.children.find((entry) => entry.type === 'even');
+    if (!evenEntry) {
+      node.minX = node.maxX = node.minY = node.maxY = 0;
+      return;
+    }
 
+    const even = evenEntry.node;
+    const rise = Math.max(options.length * Math.pow(options.decay, node.depth), minRise);
+    even.localX = 0;
+    even.localY = -rise;
+
+    let minX = even.minX;
+    let maxX = even.maxX;
+    let minY = -rise + even.minY;
+    const oddEntry = node.children.find((entry) => entry.type === 'odd');
+
+    if (oddEntry) {
+      const odd = oddEntry.node;
+      let direction = -1;
+      let reach;
+
+      if (node.spine) {
+        // The spine stays at x=0. Alternate the useful side by choosing the
+        // more compact arrangement of left and right odd subtrees.
+        const leftReach = Math.max(rise * slope, -minX + safetyGap);
+        const rightReach = Math.max(rise * slope, maxX + safetyGap);
+        const leftMin = Math.min(minX, -leftReach + odd.minX);
+        const leftMax = maxX;
+        const rightMin = minX;
+        const rightMax = Math.max(maxX, rightReach - odd.minX);
+        const leftScore = Math.abs(leftMin) + Math.abs(leftMax)
+          + 0.2 * Math.max(Math.abs(leftMin), Math.abs(leftMax));
+        const rightScore = Math.abs(rightMin) + Math.abs(rightMax)
+          + 0.2 * Math.max(Math.abs(rightMin), Math.abs(rightMax));
+
+        if (rightScore < leftScore) {
+          direction = 1;
+          reach = rightReach;
+          minX = rightMin;
+          maxX = rightMax;
+        } else {
+          reach = leftReach;
+          minX = leftMin;
+          maxX = leftMax;
+        }
+      } else {
+        // Off-spine subtrees use a single outward direction. A right-hand
+        // subtree is a mirror image of this canonical left-hand layout.
+        reach = Math.max(rise * slope, -minX + safetyGap);
+        minX = Math.min(minX, -reach + odd.minX);
+      }
+
+      odd.localX = direction * reach;
+      odd.localY = -reach / slope;
+      odd.mirrorOnEntry = node.spine && direction === 1;
+      minY = Math.min(minY, odd.localY + odd.minY);
+    }
+
+    node.minX = minX;
+    node.maxX = maxX;
+    node.minY = minY;
+    node.maxY = 0;
+  }
+
+  measure(root);
+
+  function position(node, x, y, direction = 1) {
+    node.x = x;
+    node.y = y;
+    for (const entry of node.children) {
+      const child = entry.node;
+      const dx = node.spine ? child.localX : direction * child.localX;
+      const nextDirection = node.spine && entry.type === 'odd'
+        ? (child.mirrorOnEntry ? -1 : 1) : direction;
+      const childX = x + dx;
+      const childY = y + child.localY;
+      position(child, childX, childY, nextDirection);
+      edges.push({
+        id: `${node.id}-${child.id}`, from: node.id, to: child.id,
+        x1: x, y1: y, x2: childX, y2: childY,
+        depth: child.depth, type: entry.type, childValue: child.value
+      });
+    }
+  }
+
+  // The root is the lowest node. Every predecessor grows upward.
+  position(root, 0, 0);
   return {
-    nodes,
-    edges,
-    maxValue,
+    nodes, edges, maxValue,
     bounds: {
-      minX,
-      maxX,
-      minY,
-      maxY,
-      width: maxX - minX,
-      height: maxY - minY
+      minX: root.minX, maxX: root.maxX,
+      minY: root.minY, maxY: 0,
+      width: root.maxX - root.minX, height: -root.minY
     }
   };
 }
