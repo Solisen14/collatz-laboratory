@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#07090f" />
   <title>The Collatz Laboratory · Visualize</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
-  <link rel="stylesheet" href="visualizer.css?v=20261013-2" />
+  <link rel="stylesheet" href="visualizer.css?v=20261021-story-tree-1" />
 </head>
 <body class="visualizer-body">
   <header class="site-header">
@@ -27,9 +27,9 @@
 
   <main class="visualizer-page">
     <section class="visualizer-hero">
-      <p class="eyebrow">COLLATZ VISUALIZER · v0.2</p>
-      <h1>Build a branching Collatz structure.</h1>
-      <p class="visualizer-sub">Grow the reverse Collatz tree outward from 1, reshape its geometry, zoom into the branches, and click any node to trace its forward path back to 1.</p>
+      <p class="eyebrow">COLLATZ VISUALIZER · STORY TREE</p>
+      <h1>Grow the Collatz tree.</h1>
+      <p class="visualizer-sub">Start at 1 below and explore the tree growing upward. Even-number predecessors rise vertically; odd predecessors branch diagonally at a consistent angle. Zoom, pan, and select any number to trace its Collatz path back to 1.</p>
     </section>
 
     <section id="visualizerShell" class="visualizer-shell" aria-label="Collatz visualizer workspace">
@@ -53,9 +53,9 @@
             </label>
 
             <label class="control-row" for="angleRange">
-              <span>Branch angle</span>
-              <output id="angleValue">28°</output>
-              <input id="angleRange" type="range" min="10" max="65" step="1" value="28" />
+              <span>Odd branch angle</span>
+              <output id="angleValue">48°</output>
+              <input id="angleRange" type="range" min="10" max="65" step="1" value="48" />
             </label>
 
             <label class="control-row" for="lengthRange">
@@ -79,8 +79,8 @@
             <label class="control-row control-select" for="colourMode">
               <span>Colour mode</span>
               <select id="colourMode">
-                <option value="depth" selected>By depth</option>
-                <option value="rule">By rule</option>
+                <option value="depth">By depth</option>
+                <option value="rule" selected>By rule (story colours)</option>
                 <option value="mono">Monochrome</option>
               </select>
             </label>
@@ -131,18 +131,18 @@
           <button id="clearPathButton" type="button" disabled>Clear path</button>
         </div>
 
-        <div class="stage-hint">Drag to pan · Scroll to zoom · Click a node to trace its path to 1</div>
+        <div class="stage-hint">1 at bottom · Even branches vertical · Odd branches at a fixed angle · Drag to pan · Scroll to zoom · Click to trace</div>
         <div id="pathInfo" class="path-info hidden"></div>
 
         <div id="treeWrapper" class="tree-wrapper">
-          <svg id="treeSvg" class="tree-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet" aria-label="Reverse Collatz tree visualization"></svg>
+          <svg id="treeSvg" class="tree-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet" aria-label="Reverse Collatz tree with 1 at the bottom and predecessors branching upward"></svg>
           <div id="treeTooltip" class="tree-tooltip hidden"></div>
         </div>
       </section>
     </section>
   </main>
 
-  <script src="visualizer.js?v=20261013-2"></script>
+  <script src="visualizer.js?v=20261021-story-tree-1"></script>
   <script src="visualizer-animation-speed.js?v=20261013-1"></script>
 </body>
 </html>
