@@ -259,12 +259,19 @@ function hideTooltip() {
 }
 
 function makeViewBox(bounds) {
-  const padding = 58;
+  // Use the displayed SVG aspect ratio to keep Fit and the zoom anchor precise.
+  // The root is y=0, with all its reverse predecessors above it.
+  const padding = 60;
+  let width = Math.max(440, bounds.width + padding * 2);
+  let height = Math.max(440, bounds.height + padding * 2);
+  const rect = svg.getBoundingClientRect();
+  const ratio = rect.width > 0 && rect.height > 0 ? rect.width / rect.height : 10 / 7;
+  if (width / height < ratio) width = height * ratio;
+  else height = width / ratio;
   return {
-    x: bounds.minX - padding,
-    y: bounds.minY - padding,
-    width: Math.max(880, bounds.width + padding * 2),
-    height: Math.max(560, bounds.height + padding * 2)
+    x: (bounds.minX + bounds.maxX - width) / 2,
+    y: (bounds.minY + bounds.maxY - height) / 2,
+    width, height
   };
 }
 
@@ -424,6 +431,20 @@ function renderTree({ animate = false, fit = false } = {}) {
       </feMerge>
     </filter>
   `;
+  // The reverse tree grows upward, but the arrows follow the forward
+  // Collatz operation downward toward 1 (as they do in the story).
+  if (options.colourMode === 'rule') {
+    defs.innerHTML += `
+      <marker id="viz-even-arrow" viewBox="0 0 10 10" refX="9" refY="5"
+        markerWidth="7" markerHeight="7" markerUnits="userSpaceOnUse" orient="auto">
+        <path d="M0 0 L10 5 L0 10Z" fill="#7ae7ff"></path>
+      </marker>
+      <marker id="viz-odd-arrow" viewBox="0 0 10 10" refX="9" refY="5"
+        markerWidth="7" markerHeight="7" markerUnits="userSpaceOnUse" orient="auto">
+        <path d="M0 0 L10 5 L0 10Z" fill="#ffd479"></path>
+      </marker>
+    `;
+  }
   svg.appendChild(defs);
 
   const edgeGlowLayer = document.createElementNS(SVG_NS, 'g');
@@ -439,15 +460,29 @@ function renderTree({ animate = false, fit = false } = {}) {
   model.edges.forEach((edge) => {
     const stroke = colourFor(edge.type, edge.depth, options.depth, options.colourMode);
     const taper = 1 - edge.depth / (depthDenominator + 2);
-    const strokeWidth = Math.max(0.85, options.width * (0.55 + taper * 0.6));
+    const spineEdge = edge.type === 'even' && Number.isInteger(Math.log2(edge.childValue));
+    const strokeWidth = Math.max(0.85, options.width * (0.55 + taper * 0.6))
+      * (spineEdge ? 1.28 : 1);
+
+    // Start near the predecessor and finish near its parent, leaving
+    // space for the node and the arrowhead at each end.
+    const dx = edge.x1 - edge.x2;
+    const dy = edge.y1 - edge.y2;
+    const magnitude = Math.hypot(dx, dy);
+    const ux = dx / magnitude;
+    const uy = dy / magnitude;
+    const x1 = edge.x2 + ux * 9;
+    const y1 = edge.y2 + uy * 9;
+    const x2 = edge.x1 - ux * (edge.depth === 1 ? 12 : 9);
+    const y2 = edge.y1 - uy * (edge.depth === 1 ? 12 : 9);
 
     let glowLine = null;
     if (options.showGlow) {
       glowLine = document.createElementNS(SVG_NS, 'line');
-      glowLine.setAttribute('x1', edge.x1);
-      glowLine.setAttribute('y1', edge.y1);
-      glowLine.setAttribute('x2', edge.x2);
-      glowLine.setAttribute('y2', edge.y2);
+      glowLine.setAttribute('x1', x1);
+      glowLine.setAttribute('y1', y1);
+      glowLine.setAttribute('x2', x2);
+      glowLine.setAttribute('y2', y2);
       glowLine.setAttribute('stroke', stroke);
       glowLine.setAttribute('stroke-width', Math.max(4.5, strokeWidth * 3.2).toFixed(2));
       glowLine.setAttribute('stroke-opacity', '0.16');
@@ -457,10 +492,13 @@ function renderTree({ animate = false, fit = false } = {}) {
     }
 
     const line = document.createElementNS(SVG_NS, 'line');
-    line.setAttribute('x1', edge.x1);
-    line.setAttribute('y1', edge.y1);
-    line.setAttribute('x2', edge.x2);
-    line.setAttribute('y2', edge.y2);
+    line.setAttribute('x1', x1);
+    line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2);
+    line.setAttribute('y2', y2);
+    if (options.colourMode === 'rule' && options.depth <= 18) {
+      line.setAttribute('marker-end', `url(#viz-${edge.type}-arrow)`);
+    }
     line.setAttribute('stroke', stroke);
     line.setAttribute('stroke-width', strokeWidth.toFixed(2));
     line.setAttribute('class', `tree-edge interactive${animate ? ' tree-hidden' : ''}`);
@@ -492,8 +530,8 @@ function renderTree({ animate = false, fit = false } = {}) {
     group.appendChild(circle);
 
     const label = document.createElementNS(SVG_NS, 'text');
-    label.setAttribute('x', node.x + 8);
-    label.setAttribute('y', node.y - 8);
+    label.setAttribute('x', node.x + 9);
+    label.setAttribute('y', node.y - 9);
     label.textContent = String(node.value);
 
     const labelAlways = options.labelMode === 'all'
