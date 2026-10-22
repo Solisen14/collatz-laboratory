@@ -523,7 +523,8 @@ function renderTree({ animate = false, fit = false } = {}) {
     const circle = document.createElementNS(SVG_NS, 'circle');
     circle.setAttribute('cx', node.x);
     circle.setAttribute('cy', node.y);
-    circle.setAttribute('r', node.depth === 0 ? 7.5 : 4.8);
+    const nodeRadius = options.depth <= 13 ? 8 : options.depth <= 18 ? 6 : 4.8;
+    circle.setAttribute('r', node.depth === 0 ? Math.max(10, nodeRadius + 3) : nodeRadius);
     circle.setAttribute('stroke', stroke);
     circle.setAttribute('class', 'tree-node-circle');
     if (options.showGlow) circle.setAttribute('filter', 'url(#vizNodeGlow)');
@@ -614,9 +615,10 @@ function scheduleRender({ fit = false } = {}) {
   renderDebounce = window.setTimeout(() => renderTree({ animate: false, fit }), 130);
 }
 
-['angle', 'length', 'decay', 'width'].forEach((key) => {
-  controls[key].addEventListener('input', () => scheduleRender({ fit: false }));
+['angle', 'length', 'decay'].forEach((key) => {
+  controls[key].addEventListener('input', () => scheduleRender({ fit: true }));
 });
+controls.width.addEventListener('input', () => scheduleRender({ fit: false }));
 controls.depth.addEventListener('input', () => scheduleRender({ fit: true }));
 controls.colourMode.addEventListener('change', () => renderTree({ animate: false, fit: false }));
 controls.labelMode.addEventListener('change', () => renderTree({ animate: false, fit: false }));
