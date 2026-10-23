@@ -7,6 +7,7 @@
   <title>Digging Deeper | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
   <link rel="stylesheet" href="chapters.css?v=20261021-iterates-1" />
+  <link rel="stylesheet" href="digging-fixed-points.css?v=20261023-fixed-1" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -220,10 +221,250 @@
         </div>
 
         <div class="article-next-topic">
-          <span class="next-index">COMING NEXT · 03</span>
-          <strong>Fixed Points and Periodic Orbits</strong>
+          <span class="next-index">CONTINUE READING · 03</span>
+          <strong><a href="#fixed-points">Fixed Points and Periodic Orbits ↗</a></strong>
           <p>One is not a fixed point of the Collatz function. So what kind of repetition have we found?</p>
         </div>
+      </article>
+
+
+      <article class="digging-article digging-article-followup digging-article-fixed" id="fixed-points" aria-labelledby="fixed-points-heading">
+        <header class="article-heading">
+          <p class="article-overline"><span>03</span> WHEN AN ORBIT REPEATS</p>
+          <h2 id="fixed-points-heading">Fixed Points and Periodic Orbits</h2>
+          <p class="article-lede">We've learned how to follow an orbit, step by step. But what happens if it visits a number it has encountered before?</p>
+        </header>
+
+        <div class="article-prose">
+          <p>Because a function always gives the same output for the same input, <strong>once an orbit repeats a value, everything that follows must repeat as well.</strong> The orbit has entered a cycle.</p>
+
+          <h3>Fixed Points: Staying Put</h3>
+          <p>A <strong>fixed point</strong> is a value that remains unchanged when a function is applied. For a function <span class="fixed-math">f</span>, this means finding an <span class="fixed-math">x</span> such that <span class="fixed-math">f(x) = x</span>.</p>
+          <p>Before returning to Collatz, let's start with a familiar function: <span class="fixed-math">f(x) = x²</span>.</p>
+          <p>To find its fixed points, we solve:</p>
+        </div>
+
+        <div class="fixed-equations" role="group" aria-label="Solving for fixed points of f of x equals x squared">
+          <p>x² = x</p>
+          <p>x² − x = 0</p>
+          <p>x(x − 1) = 0</p>
+          <p class="fixed-equation-result">x = 0 or x = 1</p>
+        </div>
+
+        <div class="article-prose">
+          <p>We can see these two fixed points on a graph. Plotting <span class="fixed-math">y = x²</span> alongside <span class="fixed-math">y = x</span>, the graphs intersect exactly where the function's output equals its input.</p>
+        </div>
+
+        <figure class="fixed-graph-figure">
+          <p class="diagram-topline">A FAMILIAR FUNCTION · TWO FIXED POINTS</p>
+          <div class="fixed-graph-layout">
+            <div class="fixed-graph-plot">
+              
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 435" role="img" aria-labelledby="fixed-graph-title fixed-graph-desc">
+    <title id="fixed-graph-title">Graphical fixed points of the quadratic function f(x) = x squared</title>
+    <desc id="fixed-graph-desc">The cyan parabola y = x squared intersects the gold identity line y = x at (0, 0) and (1, 1). The magenta point (-1, 1) lies on the parabola but not on the identity line, so negative 1 is not a fixed point. The orbit of negative 1 maps to 1 and then remains there.</desc>
+    <defs>
+      <marker id="fixed-axis-arrow" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10Z" fill="#788da2"/></marker>
+      <radialGradient id="fixed-point-glow">
+        <stop offset="0" stop-color="#ffd479" stop-opacity=".24"/>
+        <stop offset="1" stop-color="#ffd479" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect x="76" y="23" width="480" height="392" rx="12" fill="#0a1624" stroke="#29445a" stroke-opacity=".34"/>
+    <line x1="160" y1="29" x2="160" y2="406" stroke="#587087" stroke-width="1" stroke-opacity=".18"/>
+    <line x1="260" y1="29" x2="260" y2="406" stroke="#587087" stroke-width="1" stroke-opacity=".18"/>
+    <line x1="360" y1="29" x2="360" y2="406" stroke="#587087" stroke-width="1" stroke-opacity=".18"/>
+    <line x1="460" y1="29" x2="460" y2="406" stroke="#587087" stroke-width="1" stroke-opacity=".18"/>
+    <line x1="82" y1="362" x2="547" y2="362" stroke="#587087" stroke-width="1" stroke-opacity=".18"/>
+    <line x1="82" y1="262" x2="547" y2="262" stroke="#587087" stroke-width="1" stroke-opacity=".18"/>
+    <line x1="82" y1="162" x2="547" y2="162" stroke="#587087" stroke-width="1" stroke-opacity=".18"/>
+    <line x1="82" y1="62" x2="547" y2="62" stroke="#587087" stroke-width="1" stroke-opacity=".18"/>
+    <line x1="83" y1="362" x2="549" y2="362" stroke="#819ab1" stroke-opacity=".62" stroke-width="1.3" marker-end="url(#fixed-axis-arrow)"/>
+    <line x1="260" y1="406" x2="260" y2="28" stroke="#819ab1" stroke-opacity=".62" stroke-width="1.3" marker-end="url(#fixed-axis-arrow)"/>
+    <path d="M 210 412 L 490 132.00000000000003" stroke="#ffd479" stroke-width="2.7" fill="none" stroke-linecap="round"/>
+    <path d="M 83.00 48.71 L 85.25 56.62 L 87.50 64.44 L 89.75 72.15 L 92.00 79.76 L 94.25 87.27 L 96.50 94.68 L 98.75 101.98 L 101.00 109.19 L 103.25 116.29 L 105.50 123.30 L 107.75 130.20 L 110.00 137.00 L 112.25 143.70 L 114.50 150.30 L 116.75 156.79 L 119.00 163.19 L 121.25 169.48 L 123.50 175.68 L 125.75 181.77 L 128.00 187.76 L 130.25 193.65 L 132.50 199.44 L 134.75 205.12 L 137.00 210.71 L 139.25 216.19 L 141.50 221.58 L 143.75 226.86 L 146.00 232.04 L 148.25 237.12 L 150.50 242.10 L 152.75 246.97 L 155.00 251.75 L 157.25 256.42 L 159.50 261.00 L 161.75 265.47 L 164.00 269.84 L 166.25 274.11 L 168.50 278.28 L 170.75 282.34 L 173.00 286.31 L 175.25 290.17 L 177.50 293.94 L 179.75 297.60 L 182.00 301.16 L 184.25 304.62 L 186.50 307.98 L 188.75 311.23 L 191.00 314.39 L 193.25 317.44 L 195.50 320.40 L 197.75 323.25 L 200.00 326.00 L 202.25 328.65 L 204.50 331.20 L 206.75 333.64 L 209.00 335.99 L 211.25 338.23 L 213.50 340.38 L 215.75 342.42 L 218.00 344.36 L 220.25 346.20 L 222.50 347.94 L 224.75 349.57 L 227.00 351.11 L 229.25 352.54 L 231.50 353.88 L 233.75 355.11 L 236.00 356.24 L 238.25 357.27 L 240.50 358.20 L 242.75 359.02 L 245.00 359.75 L 247.25 360.37 L 249.50 360.90 L 251.75 361.32 L 254.00 361.64 L 256.25 361.86 L 258.50 361.98 L 260.75 361.99 L 263.00 361.91 L 265.25 361.72 L 267.50 361.44 L 269.75 361.05 L 272.00 360.56 L 274.25 359.97 L 276.50 359.28 L 278.75 358.48 L 281.00 357.59 L 283.25 356.59 L 285.50 355.50 L 287.75 354.30 L 290.00 353.00 L 292.25 351.60 L 294.50 350.10 L 296.75 348.49 L 299.00 346.79 L 301.25 344.98 L 303.50 343.08 L 305.75 341.07 L 308.00 338.96 L 310.25 336.75 L 312.50 334.44 L 314.75 332.02 L 317.00 329.51 L 319.25 326.89 L 321.50 324.18 L 323.75 321.36 L 326.00 318.44 L 328.25 315.42 L 330.50 312.30 L 332.75 309.07 L 335.00 305.75 L 337.25 302.32 L 339.50 298.80 L 341.75 295.17 L 344.00 291.44 L 346.25 287.61 L 348.50 283.68 L 350.75 279.64 L 353.00 275.51 L 355.25 271.27 L 357.50 266.94 L 359.75 262.50 L 362.00 257.96 L 364.25 253.32 L 366.50 248.58 L 368.75 243.73 L 371.00 238.79 L 373.25 233.74 L 375.50 228.60 L 377.75 223.35 L 380.00 218.00 L 382.25 212.55 L 384.50 207.00 L 386.75 201.34 L 389.00 195.59 L 391.25 189.73 L 393.50 183.78 L 395.75 177.72 L 398.00 171.56 L 400.25 165.30 L 402.50 158.94 L 404.75 152.47 L 407.00 145.91 L 409.25 139.24 L 411.50 132.48 L 413.75 125.61 L 416.00 118.64 L 418.25 111.57 L 420.50 104.40 L 422.75 97.12 L 425.00 89.75 L 427.25 82.27 L 429.50 74.70 L 431.75 67.02 L 434.00 59.24 L 436.25 51.36 L 438.50 43.38 L 440.75 35.29 L 443.00 27.11" stroke="#7ae7ff" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <line x1="160" y1="362" x2="160" y2="262" stroke="#ff97bb" stroke-width="2" stroke-opacity=".83" stroke-dasharray="5 6"/>
+    <circle cx="260" cy="362" r="22" fill="url(#fixed-point-glow)"/>
+    <circle cx="360" cy="262" r="22" fill="url(#fixed-point-glow)"/>
+    <circle cx="260" cy="362" r="6" fill="#ffd479" stroke="#0b1624" stroke-width="1.4"/>
+    <circle cx="360" cy="262" r="6" fill="#ffd479" stroke="#0b1624" stroke-width="1.4"/>
+    <circle cx="160" cy="262" r="6" fill="#ff97bb" stroke="#0b1624" stroke-width="1.5"/>
+    <g fill="#b1c4d7" font-family="Inter,system-ui,sans-serif" font-size="13">
+      <text x="160" y="389" text-anchor="middle">-1</text>
+      <text x="260" y="389" text-anchor="middle">0</text>
+      <text x="360" y="389" text-anchor="middle">1</text>
+      <text x="460" y="389" text-anchor="middle">2</text>
+      <text x="244" y="266" text-anchor="end">1</text>
+      <text x="244" y="166" text-anchor="end">2</text>
+      <text x="244" y="66" text-anchor="end">3</text>
+      <text x="563" y="368" fill="#d0dfea" font-size="14" font-style="italic">x</text>
+      <text x="269" y="25" fill="#d0dfea" font-size="14" font-style="italic">y</text>
+    </g>
+    <g font-family="Inter,system-ui,sans-serif" font-size="14" font-weight="600">
+      <text x="100" y="242" fill="#ffb1ce">(−1, 1)</text>
+      <text x="275" y="348" fill="#ffe3ad">(0, 0)</text>
+      <text x="374" y="250" fill="#ffe3ad">(1, 1)</text>
+      <text x="445" y="65" fill="#7ae7ff" font-size="17" font-style="italic">y = x²</text>
+      <text x="474" y="120" fill="#ffd479" font-size="16" font-style="italic">y = x</text>
+    </g>
+  </svg>
+            </div>
+            <div class="fixed-graph-annotations">
+              <h4>Where the curves meet</h4>
+              <p class="fixed-math-line"><em>0</em> and <em>1</em></p>
+              <p>The intersections at (0, 0) and (1, 1) are fixed points because the input and output are equal.</p>
+              <h4>A value that moves</h4>
+              <p class="fixed-math-line fixed-negative-emphasis">f(−1) = 1</p>
+              <p>The point (−1, 1) lies on the parabola, but not on the line <span class="fixed-math">y = x</span>. So −1 is <strong>not</strong> a fixed point.</p>
+            </div>
+          </div>
+          <div class="fixed-graph-legend" aria-label="Fixed-point graph legend">
+            <span><i class="quad-line"></i> Quadratic function</span>
+            <span><i class="identity-line"></i> Identity line</span>
+            <span><i class="off-point"></i> Not a fixed point</span>
+          </div>
+          <figcaption>The fixed points of <span class="fixed-math">f(x) = x²</span> occur where the parabola intersects <span class="fixed-math">y = x</span>. The highlighted point (−1, 1) shows that −1 is mapped to 1, rather than remaining at −1.</figcaption>
+        </figure>
+
+        <div class="article-prose">
+          <p>Now let's follow the orbit starting at −1. Its first iterate is <span class="fixed-math">f(−1) = (−1)² = 1</span>. Once the orbit reaches 1, it stays there, because <span class="fixed-math">f(1) = 1</span>.</p>
+        </div>
+
+        <div class="fixed-mini-orbit" role="group" aria-label="The orbit starting at negative one: negative one to one to one to one, continuing">
+          <span class="fixed-mini-label">AN ORBIT THAT REACHES A FIXED POINT</span>
+          <span class="fixed-mini-values"><span class="fixed-start">−1</span> <span class="fixed-arrow">→</span> <span class="fixed-arrived">1 → 1 → 1 → ⋯</span></span>
+          <span class="fixed-mini-explanation">The starting value −1 is not fixed. Its orbit lands on the fixed point 1 after one application.</span>
+        </div>
+
+        <div class="article-prose">
+          <p><strong>A starting value doesn't have to be fixed for its orbit to eventually reach a fixed point.</strong> Keep that distinction in mind as we return to Collatz.</p>
+
+          <h3>Does Collatz Have Any Fixed Points?</h3>
+          <p>Recall that the Collatz function sends an even positive integer to <span class="fixed-math">n/2</span> and an odd positive integer to <span class="fixed-math">3n + 1</span>. Could either rule leave a positive integer unchanged?</p>
+          <p>We can check both possibilities.</p>
+        </div>
+
+        <div class="fixed-case-grid" role="group" aria-label="Checking fixed points for even and odd Collatz inputs">
+          <div class="fixed-case-card">
+            <p class="fixed-case-tag">CASE 1 · EVEN n</p>
+            <p class="fixed-case-expression">n/2 = n</p>
+            <p class="fixed-case-answer">n = 0</p>
+            <p class="fixed-case-detail">Zero is not in the domain of positive integers, so this does not give us a Collatz fixed point.</p>
+          </div>
+          <div class="fixed-case-card odd">
+            <p class="fixed-case-tag">CASE 2 · ODD n</p>
+            <p class="fixed-case-expression">3n + 1 = n</p>
+            <p class="fixed-case-answer">n = −½</p>
+            <p class="fixed-case-detail">This is not an integer, so it cannot be a positive odd fixed point either.</p>
+          </div>
+        </div>
+
+        <div class="article-prose">
+          <p>Neither case works. Therefore, <strong>the Collatz function has no fixed points among the positive integers.</strong></p>
+          <p>Not even 1! Since 1 is odd, <span class="fixed-math">C(1) = 4</span>. So when an orbit reaches 1, the process doesn't stop or stay there.</p>
+          <p>What happens instead?</p>
+
+          <h3>Periodic Orbits: Coming Back Again</h3>
+          <p>A fixed point returns to itself after just one application of the function. But a value might return to itself after two, three, or more applications. Such a value is called a <strong>periodic point</strong>.</p>
+          <p>Mathematically, a point <span class="fixed-math">n</span> is periodic when <span class="fixed-math">C<sup>p</sup>(n) = n</span> for some positive integer <span class="fixed-math">p</span>. The <strong>period</strong> is the smallest such value of <span class="fixed-math">p</span>.</p>
+          <p>Let's revisit 1:</p>
+        </div>
+
+        <div class="fixed-period-math" role="group" aria-label="One to four to two to one, a repeating Collatz cycle with period three">
+          <span>1 → 4 → 2 → 1 → ⋯</span>
+          <span class="fixed-period-detail">After three applications of the Collatz function, we're back at 1: <span class="fixed-math">C³(1) = 1</span>.</span>
+        </div>
+
+        <div class="article-prose">
+          <p>This is a <strong>periodic orbit of period 3</strong>. All three numbers in it are periodic points: starting from 4 gives <span class="fixed-math">4 → 2 → 1 → 4</span>, and starting from 2 gives <span class="fixed-math">2 → 1 → 4 → 2</span>.</p>
+          <p>They are three different starting places in the <em>same</em> repeating cycle.</p>
+
+          <h3>Periodic or Eventually Periodic?</h3>
+          <p>Now look again at the orbit starting at 3. The number 3 never returns, so it is <em>not</em> periodic. But after a few steps, its orbit enters the familiar cycle.</p>
+        </div>
+
+        <figure class="periodic-figure">
+          <p class="diagram-topline">STARTING AT 3 · ENTERING THE PERIOD-3 CYCLE</p>
+          <div class="periodic-viewport">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 975 369" role="img" aria-labelledby="periodic-title periodic-desc">
+ <title id="periodic-title">The orbit of 3 enters the Collatz cycle of period 3</title>
+ <desc id="periodic-desc">The initial sequence 3 to 10 to 5 to 16 to 8 reaches 4. The three numbers 4, 2, and 1 then cycle forever, with 4 to 2 to 1 to 4. Cyan arrows mean division by 2 and gold arrows mean 3n plus 1. The number 3 is eventually periodic, not periodic from the start.</desc>
+ <defs>
+   <marker id="fixed-even-arrow" markerWidth="8" markerHeight="8" refX="6.2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8Z" fill="#7ae7ff"/></marker>
+   <marker id="fixed-odd-arrow" markerWidth="8" markerHeight="8" refX="6.2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8Z" fill="#ffd479"/></marker>
+ </defs>
+ <g font-family="Inter,system-ui,sans-serif" font-size="12" font-weight="750" letter-spacing="2">
+   <text x="35" y="47" fill="#9fbdcf">BEFORE THE REPEAT</text>
+   <text x="624" y="47" fill="#e9cb92">THE REPEATING CYCLE</text>
+ </g>
+ <rect x="606" y="80" width="298" height="244" rx="20" fill="#332c22" fill-opacity=".26" stroke="#ffd479" stroke-opacity=".35" stroke-width="1.5" stroke-dasharray="6 8"/>
+ <text x="755" y="348" text-anchor="middle" fill="#e9cf9e" font-size="13" font-family="Inter,system-ui,sans-serif" font-weight="600">PERIOD 3 · 4 → 2 → 1 → 4</text>
+ <line x1="101" y1="162" x2="141" y2="162" stroke="#ffd479" stroke-width="2.5" stroke-linecap="round" marker-end="url(#fixed-odd-arrow)"/>
+ <line x1="207" y1="162" x2="247" y2="162" stroke="#7ae7ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#fixed-even-arrow)"/>
+ <line x1="313" y1="162" x2="353" y2="162" stroke="#ffd479" stroke-width="2.5" stroke-linecap="round" marker-end="url(#fixed-odd-arrow)"/>
+ <line x1="419" y1="162" x2="459" y2="162" stroke="#7ae7ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#fixed-even-arrow)"/>
+ <line x1="525" y1="162" x2="614" y2="162" stroke="#7ae7ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#fixed-even-arrow)"/>
+ <line x1="680" y1="162" x2="793" y2="162" stroke="#7ae7ff" stroke-width="2.6" marker-end="url(#fixed-even-arrow)" stroke-linecap="round"/>
+ <line x1="813" y1="186" x2="759" y2="261" stroke="#7ae7ff" stroke-width="2.6" marker-end="url(#fixed-even-arrow)" stroke-linecap="round"/>
+ <line x1="724" y1="262" x2="668" y2="186" stroke="#ffd479" stroke-width="2.6" marker-end="url(#fixed-odd-arrow)" stroke-linecap="round"/>
+ 
+   <circle cx="71" cy="162" r="27" fill="#0b1724" stroke="#ffd479" stroke-width="2.4"/>
+   <text x="71" y="169" font-family="Inter,system-ui,sans-serif" text-anchor="middle" font-size="21" font-weight="650" fill="#f3f8ff">3</text>
+ 
+ 
+   <circle cx="177" cy="162" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.4"/>
+   <text x="177" y="169" font-family="Inter,system-ui,sans-serif" text-anchor="middle" font-size="21" font-weight="650" fill="#f3f8ff">10</text>
+ 
+ 
+   <circle cx="283" cy="162" r="27" fill="#0b1724" stroke="#ffd479" stroke-width="2.4"/>
+   <text x="283" y="169" font-family="Inter,system-ui,sans-serif" text-anchor="middle" font-size="21" font-weight="650" fill="#f3f8ff">5</text>
+ 
+ 
+   <circle cx="389" cy="162" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.4"/>
+   <text x="389" y="169" font-family="Inter,system-ui,sans-serif" text-anchor="middle" font-size="21" font-weight="650" fill="#f3f8ff">16</text>
+ 
+ 
+   <circle cx="495" cy="162" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.4"/>
+   <text x="495" y="169" font-family="Inter,system-ui,sans-serif" text-anchor="middle" font-size="21" font-weight="650" fill="#f3f8ff">8</text>
+ 
+ 
+   <circle cx="650" cy="162" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.4"/>
+   <text x="650" y="169" font-family="Inter,system-ui,sans-serif" text-anchor="middle" font-size="21" font-weight="650" fill="#f3f8ff">4</text>
+ 
+ 
+   <circle cx="829" cy="162" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.4"/>
+   <text x="829" y="169" font-family="Inter,system-ui,sans-serif" text-anchor="middle" font-size="21" font-weight="650" fill="#f3f8ff">2</text>
+ 
+ 
+   <circle cx="742" cy="286" r="27" fill="#0b1724" stroke="#ffd479" stroke-width="2.4"/>
+   <text x="742" y="293" font-family="Inter,system-ui,sans-serif" text-anchor="middle" font-size="21" font-weight="650" fill="#f3f8ff">1</text>
+ 
+ <text x="564" y="134" font-size="11" font-family="Inter,system-ui,sans-serif" fill="#93afbf" text-anchor="middle">enters cycle</text>
+</svg></div>
+          <div class="periodic-legend" aria-label="Orbit diagram legend">
+            <span><i class="odd"></i> Odd-number rule: 3n + 1</span>
+            <span><i class="even"></i> Even-number rule: divide by 2</span>
+            <span><i class="cycle"></i> Repeating cycle</span>
+          </div>
+          <figcaption>The orbit follows <span class="fixed-math">3 → 10 → 5 → 16 → 8</span> before entering <span class="fixed-math">4 → 2 → 1 → 4 → ⋯</span>. The starting point 3 is <em>eventually periodic</em>, while 1, 2, and 4 are periodic points.</figcaption>
+        </figure>
+
+        <div class="article-prose">
+          <p>We call this <strong>eventually periodic</strong> behaviour: an orbit follows some initial steps before entering a repeating cycle.</p>
+          <p>Think back to <span class="fixed-math">f(x) = x²</span>. The orbit <span class="fixed-math">−1 → 1 → 1 → ⋯</span> eventually reaches a fixed point, while the orbit of 3 under Collatz eventually enters a three-number cycle. Both are eventually periodic.</p>
+          <p>There's a useful connection here: <strong>a fixed point is simply a periodic point of period 1.</strong> Collatz's familiar cycle has period 3 instead.</p>
+
+          <h3>The Question We Still Can't Answer</h3>
+          <p>We've shown that there are no positive integer fixed points of Collatz, and we've found one repeating cycle, <span class="fixed-math">1 → 4 → 2 → 1</span>. But is it the only possible long-term behaviour?</p>
+          <p>Could a positive integer enter an entirely different cycle? Could an orbit continue forever without ever repeating a value?</p>
+          <p>These possibilities take us back to the conjecture itself. <strong>Every positive integer is conjectured to eventually reach 1 and enter the same period-3 cycle.</strong></p>
+          <p>Although enormous ranges of starting values have been checked by computer, there is still no proof that this must happen for <em>every</em> positive integer.</p>
+        </div>
+
+        <aside class="fixed-conclusion" aria-label="Key takeaway from fixed points and periodic orbits">
+          <span>THE BIG IDEA</span>
+          <p>We know exactly what the Collatz function does at <strong>each step</strong>. What remains mysterious is whether those simple rules always produce the <strong>same long-term behaviour</strong>.</p>
+        </aside>
       </article>
 
       <nav class="chapter-next digging-bottom-nav" aria-label="Continue exploring">
