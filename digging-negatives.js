@@ -129,86 +129,175 @@
   });
 })();
 
-/* Unified integer landscape: inverse branches and known cycles.
- * Edges are forward Collatz steps. This finite graph deliberately makes
- * no completeness claim about the infinite integer dynamics.
+/* Section 05: one mathematical landscape, revealed in four scroll chapters.
+ * All diagram edges are true one-step forward Collatz transformations.
+ * The finite selection makes no claim to enumerate all integer orbits.
  */
 (() => {
   'use strict';
-  const scene=document.getElementById('universe-scrollstory');
+  const story=document.getElementById('universe-scrollstory');
   const svg=document.getElementById('universe-map');
-  if(!scene||!svg)return;
+  if (!story || !svg) return;
   const NS='http://www.w3.org/2000/svg';
-  const groups=[document.getElementById('universe-positive'),document.getElementById('universe-zero'),document.getElementById('universe-negative')];
-  const make=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs||{}))e.setAttribute(k,String(v));parent.appendChild(e);return e;};
-  const edge=(g,a,b,color,curved=false)=>{
-    const [x,y]=a,[X,Y]=b;
-    const path=curved?`M ${x} ${y} Q ${(x+X)/2+24} ${(y+Y)/2-17} ${X} ${Y}`:`M ${x} ${y} L ${X} ${Y}`;
-    make('path',{d:path,class:'universe-edge',stroke:color},g);
-  };
-  const node=(g,n,x,y,color,r=13)=>{
-    make('circle',{cx:x,cy:y,r,fill:'#111b2c',stroke:color,class:'universe-node'},g);
-    const t=make('text',{x,y:y+1,class:'universe-node-label','font-size':Math.abs(n)>99?10:13},g);t.textContent=String(n).replace('-','−');
-  };
-  const label=(g,text,x,y,color)=>{const t=make('text',{x,y,fill:color,class:'universe-region-label'},g);t.textContent=text;};
-  // Positive rooted inverse graph. Parent references are actual forward images.
-  const pos=new Map([[1,[485,88]],[4,[420,128]],[2,[550,128]]]);
-  const pEdges=[[1,4],[4,2],[2,1]];
-  const levels=[[8,16],[5,10,20,32],[3,6,12,13,21,40,64],[7,11,24,26,42,80,128]];
-  // Construct inverse graph automatically, keeping only orbits that reach 1.
-  const pool=new Set([1,2,4]);
-  for(let n=1;n<=160;n++){let v=n,seen=new Set(),safe=false;for(let k=0;k<80;k++){if(v===1||v===2||v===4){safe=true;break;}if(seen.has(v))break;seen.add(v);v=v%2?3*v+1:v/2;}if(safe)pool.add(n);}
-  const rows=[...pool].filter(n=>n>4).sort((a,b)=>a-b).slice(0,63);
-  const depth=new Map([[1,0],[2,0],[4,0]]);
-  function distance(n){if(depth.has(n))return depth.get(n);const next=n%2?3*n+1:n/2;const d=distance(next)+1;depth.set(n,d);return d;}
-  rows.forEach(distance);
-  const bands=new Map();
-  for(const n of rows){const d=Math.min(distance(n),9);if(!bands.has(d))bands.set(d,[]);bands.get(d).push(n);}
-  const extra=[];
-  [...bands.entries()].forEach(([d,nums])=>{nums.forEach((n,i)=>{const x=95+(i+.5)*770/nums.length;const y=175+d*28;pos.set(n,[x,y]);extra.push([n,n%2?3*n+1:n/2]);});});
-  // Nodes whose forward images fall outside the drawn sample are omitted, not misconnected.
-  pEdges.concat(extra).forEach(([a,b])=>{if(pos.has(a)&&pos.has(b))edge(groups[0],pos.get(a),pos.get(b),'#6bafc4',a===2);});
-  [...pos.entries()].forEach(([n,p])=>node(groups[0],n,...p,n<=4?'#ffd479':'#7ae7ff',n<=4?17:11));
-  label(groups[0],'POSITIVE ORBITS',64,46,'#7ae7ff');
-  // Zero's only orbit is 0 -> 0.
-  make('path',{d:'M 490 469 C 545 415 561 525 490 490',class:'universe-edge',stroke:'#eee0a9','stroke-width':2.5},groups[1]);
-  node(groups[1],0,476,484,'#eee0a9',19);
-  label(groups[1],'ZERO: FIXED POINT',530,490,'#eee0a9');
-  // Each negative circle is an actual forward Collatz cycle.
-  const cycles=[[-1,-2],[-5,-14,-7,-20,-10],[-17,-50,-25,-74,-37,-110,-55,-164,-82,-41,-122,-61,-182,-91,-272,-136,-68,-34]];
-  const centers=[[170,552],[480,565],[775,565]];
-  const radii=[38,48,73];
-  cycles.forEach((cycle,k)=>{
-    const [cx,cy]=centers[k],r=radii[k];
-    const coords=cycle.map((n,i)=>{const theta=2*Math.PI*i/cycle.length-Math.PI/2;return[cx+r*Math.cos(theta),cy+r*Math.sin(theta)];});
-    cycle.forEach((n,i)=>edge(groups[2],coords[i],coords[(i+1)%cycle.length],'#bc9af0',true));
-    cycle.forEach((n,i)=>node(groups[2],n,...coords[i],'#c8a8ee',cycle.length>10?11:15));
-    label(groups[2],`PERIOD ${cycle.length}`,cx-47,cy+r+31,'#cbb1ef');
-  });
-  label(groups[2],'NEGATIVE CYCLES',57,425,'#bc9af0');
-  const captions=[
-    'Branches lead toward 1 → 4 → 2 → 1. The diagram shows a finite selection of positive orbits.',
-    'Zero is fixed: 0 → 0. Its orbit cannot cross to positive or negative integers.',
-    'Three separate negative cycles: periods 2, 5 and 18. The map shows the cycles, not every branch.',
-    'One rule across all integers; several disconnected components, with open questions remaining.'
+  const groups=[
+    document.getElementById('universe-positive'),
+    document.getElementById('universe-zero'),
+    document.getElementById('universe-negative')
   ];
-  const beats=[...scene.querySelectorAll('[data-universe-step]')];
+  if(groups.some(g=>!g)) return;
+  const add=(parent,tag,attrs)=>{
+    const el=document.createElementNS(NS,tag);
+    Object.entries(attrs||{}).forEach(([k,v])=>el.setAttribute(k,String(v)));
+    parent.appendChild(el);
+    return el;
+  };
+  const txt=(parent,content,x,y,color,size)=>{
+    const el=add(parent,'text',{x,y,fill:color,class:'universe-region-label','font-size':size||13});
+    el.textContent=content;
+    return el;
+  };
+  const defs=add(svg,'defs');
+  [['pos','#7ae7ff'],['gold','#ffd479'],['neg','#c4a4ef'],['zero','#eee0a9']].forEach(([name,color])=>{
+    const m=add(defs,'marker',{id:'universe-arrow-'+name,markerWidth:6,markerHeight:6,refX:5.2,refY:3,orient:'auto',markerUnits:'userSpaceOnUse'});
+    add(m,'path',{d:'M0 0 L6 3 L0 6 Z',fill:color});
+  });
+  function arrow(group,from,to,kind,fromRadius=13,toRadius=13){
+    const dx=to[0]-from[0],dy=to[1]-from[1],len=Math.hypot(dx,dy);
+    if(len<3)return;
+    const ux=dx/len,uy=dy/len;
+    const a=Math.min(fromRadius+2,len*.26), b=Math.min(toRadius+4,len*.26);
+    add(group,'path',{d:'M '+(from[0]+ux*a)+' '+(from[1]+uy*a)+' L '+(to[0]-ux*b)+' '+(to[1]-uy*b),
+      class:'universe-edge',stroke:kind==='gold'?'#ffd479':kind==='neg'?'#bfa0ef':'#7ae7ff',
+      'marker-end':'url(#universe-arrow-'+kind+')'});
+  }
+  function node(group,n,x,y,kind,r=13){
+    const color=kind==='gold'?'#ffd479':kind==='neg'?'#c4a4ef':kind==='zero'?'#eee0a9':'#7ae7ff';
+    add(group,'circle',{cx:x,cy:y,r,fill:'#101a2b',stroke:color,class:'universe-node'});
+    const label=add(group,'text',{x,y:y+1,class:'universe-node-label','font-size':Math.abs(n)>=100?11:13});
+    label.textContent=String(n).replace('-','−');
+  }
+  // Inverse graph rooted at 4, where an inverse child n satisfies C(n)=parent.
+  // Exclude the 1, 4, 2 loop from the branches; draw that loop separately.
+  const all=new Map([[4,{n:4,d:0,parent:null,children:[]}]]);
+  let frontier=[4];
+  const maxDepth=11;
+  for(let d=1;d<=maxDepth;d++){
+    const next=[];
+    for(const target of frontier){
+      const candidates=[2*target];
+      if((target-1)%3===0){
+        const odd=(target-1)/3;
+        if(odd>1 && odd%2===1)candidates.push(odd);
+      }
+      candidates.sort((a,b)=>a-b);
+      for(const n of candidates){
+        if(all.has(n)||n===1||n===2)continue;
+        all.set(n,{n,d,parent:target,children:[]});
+        all.get(target).children.push(n);
+        next.push(n);
+      }
+    }
+    frontier=next;
+  }
+  let leaf=0;
+  function layout(n){
+    const item=all.get(n);
+    if(!item.children.length){item.horizontal=leaf++;return item.horizontal;}
+    const childX=item.children.map(layout);
+    item.horizontal=(childX[0]+childX[childX.length-1])/2;
+    return item.horizontal;
+  }
+  layout(4);
+  const positions=new Map();
+  for(const item of all.values()){
+    const x=80+(item.horizontal+.5)*840/leaf;
+    const y=item.d===0?120:157+item.d*29;
+    positions.set(item.n,[x,y]);
+  }
+  const root=positions.get(4);
+  positions.set(1,[root[0]-85,65]);
+  positions.set(2,[root[0]+85,65]);
+  // Paint connecting edges first so labels and nodes sit above the lines.
+  [[1,4],[4,2],[2,1]].forEach(([a,b])=>arrow(groups[0],positions.get(a),positions.get(b),'gold',18,18));
+  for(const item of all.values()){
+    if(item.parent!==null)arrow(groups[0],positions.get(item.n),positions.get(item.parent),'pos',12,item.parent===4?18:12);
+  }
+  for(const [n,p] of positions)node(groups[0],n,p[0],p[1],[1,2,4].includes(n)?'gold':'pos',[1,2,4].includes(n)?18:12);
+  txt(groups[0],'POSITIVE ORBITS',42,28,'#7ae7ff');
+  // A true fixed point, not connected to any other integer.
+  add(groups[1],'path',{d:'M 483 548 C 429 511 417 608 477 597',
+    class:'universe-edge',stroke:'#eee0a9','marker-end':'url(#universe-arrow-zero)'});
+  node(groups[1],0,495,573,'zero',19);
+  txt(groups[1],'ZERO · FIXED POINT',540,579,'#eee0a9');
+  // Known negative cycles (in exact forward Collatz order).
+  const cycles=[
+    {values:[-1,-2],cx:160,cy:762,r:42},
+    {values:[-5,-14,-7,-20,-10],cx:455,cy:755,r:70},
+    {values:[-17,-50,-25,-74,-37,-110,-55,-164,-82,-41,-122,-61,-182,-91,-272,-136,-68,-34],cx:783,cy:758,r:110}
+  ];
+  txt(groups[2],'NEGATIVE ORBITS · THREE KNOWN CYCLES',42,636,'#c4a4ef');
+  cycles.forEach(c=>{
+    const points=c.values.map((n,i)=>{
+      const ang=-Math.PI/2+2*Math.PI*i/c.values.length;
+      return [c.cx+c.r*Math.cos(ang),c.cy+c.r*Math.sin(ang)];
+    });
+    c.values.forEach((n,i)=>arrow(groups[2],points[i],points[(i+1)%c.values.length],'neg',c.values.length===18?13:15,c.values.length===18?13:15));
+    c.values.forEach((n,i)=>node(groups[2],n,points[i][0],points[i][1],'neg',c.values.length===18?14:16));
+    txt(groups[2],'PERIOD '+c.values.length,c.cx-41,899,'#d6bef5',12);
+  });
+  const captions=[
+    'Each connecting line is one Collatz step. The finite branches feed into 1 → 4 → 2 → 1.',
+    'Zero stands alone: 0 → 0. It neither joins nor connects the positive and negative orbits.',
+    'The known negative cycles have lengths 2, 5 and 18. They remain distinct components.',
+    'One function, multiple components. This finite map does not classify every orbit.'
+  ];
+  const phases=['01 / POSITIVE INTEGERS','02 / ZERO','03 / NEGATIVE INTEGERS','04 / WHOLE LANDSCAPE'];
+  const beats=[...story.querySelectorAll('[data-universe-step]')];
   const phase=document.getElementById('universe-phase-label');
   const caption=document.getElementById('universe-caption');
-  const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  let current=-1;
-  const show=step=>{
-    if(step===current)return;current=step;
-    groups.forEach((g,i)=>g.classList.toggle('visible',i===0||(i===1&&step>=2)||(i===2&&step>=3)));
-    phase.textContent=['01 / POSITIVE INTEGERS','02 / ZERO','03 / NEGATIVE INTEGERS','04 / ALL INTEGERS'][step-1];
-    caption.textContent=captions[step-1];
-  };
-  function update(){
-    const threshold=window.innerHeight*.57;
-    let step=1;
-    for(const beat of beats){if(beat.getBoundingClientRect().top<=threshold)step=Number(beat.dataset.universeStep);}
-    show(step);
+  const reduced=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  let active=0,frame=0,currentHeight=530;
+  function setExtent(height){
+    if(frame)cancelAnimationFrame(frame);
+    if(reduced&&reduced.matches){svg.setAttribute('viewBox','0 0 1000 '+height);currentHeight=height;return;}
+    const start=currentHeight,change=height-start,began=performance.now();
+    if(Math.abs(change)<1)return;
+    function tick(now){
+      const p=Math.min(1,(now-began)/750),smooth=p*p*(3-2*p);
+      currentHeight=start+change*smooth;
+      svg.setAttribute('viewBox','0 0 1000 '+currentHeight.toFixed(2));
+      if(p<1)frame=requestAnimationFrame(tick);else frame=0;
+    }
+    frame=requestAnimationFrame(tick);
   }
-  if(reduced){groups.forEach(g=>g.classList.add('visible'));phase.textContent='ALL INTEGERS';caption.textContent=captions[3];return;}
-  update();window.addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);
+  function show(step){
+    if(step===active)return;
+    active=step;
+    groups.forEach((g,i)=>g.classList.toggle('visible',i===0||(i===1&&step>=2)||(i===2&&step>=3)));
+    phase.textContent=phases[step-1];
+    caption.textContent=captions[step-1];
+    beats.forEach(b=>b.classList.toggle('is-active',Number(b.dataset.universeStep)===step));
+    setExtent(step===1?530:step===2?640:930);
+  }
+  let queued=false;
+  function onScroll(){
+    if(queued)return;queued=true;
+    requestAnimationFrame(()=>{
+      queued=false;
+      const threshold=window.innerHeight*.6;
+      let step=1;
+      for(const b of beats)if(b.getBoundingClientRect().top<=threshold)step=Number(b.dataset.universeStep);
+      show(step);
+    });
+  }
+  if(reduced && reduced.matches){
+    groups.forEach(g=>g.classList.add('visible'));
+    svg.setAttribute('viewBox','0 0 1000 930');
+    phase.textContent=phases[3];caption.textContent=captions[3];
+    return;
+  }
+  show(1);onScroll();
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+  window.addEventListener('pageshow',onScroll);
 })();
