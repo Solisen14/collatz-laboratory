@@ -46,7 +46,9 @@
     // Graph starts blank when the figure enters the lower viewport, and is
     // fully drawn as the reader continues past it. Scrolling up rewinds.
     const begin = viewport * 0.82;
-    const finish = -Math.min(rect.height * 0.55, viewport * 0.40);
+    // Complete the reveal while the figure is still comfortably on screen,
+    // rather than after the points have scrolled past the top.
+    const finish = viewport * 0.10;
     const progress = clamp((begin - rect.top) / (begin - finish));
 
     const quadraticProgress = phase(progress, 0.02, 0.41);
