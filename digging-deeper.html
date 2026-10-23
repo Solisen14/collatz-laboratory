@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
   <link rel="stylesheet" href="chapters.css?v=20261021-iterates-1" />
   <link rel="stylesheet" href="digging-fixed-points.css?v=20261023-scroll-1" />
-  <link rel="stylesheet" href="digging-negatives.css?v=20261023-negatives-1" />
+  <link rel="stylesheet" href="digging-negatives.css?v=20261023-negatives-2" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -590,8 +590,51 @@
         </figure>
 
         <div class="article-prose">
-          <p>We've found a fixed point at zero and a period-2 orbit below zero. Maybe these are just special cases very close to the origin?</p>
-          <p>Let's try <span class="negative-math">−5</span>.</p>
+          <h3>What About −2, −3, and −4?</h3>
+          <p>We found a two-number cycle beginning at −1. But does that tell us anything about the negative integers nearby? Before jumping farther down the number line, let's test the next three starting values.</p>
+          <p>Will their orbits reach a fixed point, enter a repeating cycle, or keep moving away from zero without ever returning?</p>
+          <p>Start with <span class="negative-math">−2</span>. It's already part of the two-cycle. For <span class="negative-math">−3</span>, the first step looks less promising: <span class="negative-math">3(−3) + 1 = −8</span>. We've moved <em>farther</em> from zero. What happens when we keep going? And what about <span class="negative-math">−4</span>?</p>
+        </div>
+
+        <figure class="negative-fig negative-small-orbits" aria-label="Collatz orbits beginning at negative two, negative three and negative four">
+          <p class="diagram-topline">THREE MORE STARTING VALUES · FOLLOW EACH ORBIT</p>
+          <div class="negative-small-orbit-list">
+            <div class="negative-small-orbit-row">
+              <div class="negative-small-orbit-start"><span>START</span><strong>−2</strong></div>
+              <div class="negative-small-orbit-track">
+                <div class="negative-small-orbit-sequence"><strong class="negative-tail">−2 → −1 → −2 → ⋯</strong></div>
+                <span class="negative-small-orbit-note">Already in the period-2 cycle</span>
+              </div>
+            </div>
+            <div class="negative-small-orbit-row">
+              <div class="negative-small-orbit-start"><span>START</span><strong>−3</strong></div>
+              <div class="negative-small-orbit-track">
+                <div class="negative-small-orbit-sequence"><span class="negative-lead">−3 → −8 → −4 → </span><strong class="negative-tail">−2 → −1 → −2 → ⋯</strong></div>
+                <span class="negative-small-orbit-note">Three steps before joining the same cycle</span>
+              </div>
+            </div>
+            <div class="negative-small-orbit-row">
+              <div class="negative-small-orbit-start"><span>START</span><strong>−4</strong></div>
+              <div class="negative-small-orbit-track">
+                <div class="negative-small-orbit-sequence"><span class="negative-lead">−4 → </span><strong class="negative-tail">−2 → −1 → −2 → ⋯</strong></div>
+                <span class="negative-small-orbit-note">One step before joining the same cycle</span>
+              </div>
+            </div>
+          </div>
+          <figcaption>The gold portion of every orbit is the <strong>same repeating cycle</strong>, <span class="negative-math">−2 → −1 → −2</span>. The earlier values are not periodic themselves, but their orbits eventually become periodic.</figcaption>
+        </figure>
+
+        <div class="article-prose">
+          <p>None of these three orbits escapes toward negative infinity. None reaches a fixed point, either. They all join the period-2 cycle, although they take different routes to get there.</p>
+          <p>The orbit of −2 is <strong>periodic</strong> from the start. The orbits of −3 and −4 are <strong>eventually periodic</strong>. Remember the distinction from our previous section?</p>
+        </div>
+
+        <div class="negative-before-five">
+          So far, every negative starting value we've tested has ended up in the <strong>same two-number cycle</strong>. It would be tempting to guess that all negative integers do the same. But a few successful examples are not a proof.
+        </div>
+
+        <div class="article-prose">
+          <p class="negative-five-prompt">Now let's try <span class="negative-math">−5</span>.</p>
 
           <h3>Third Surprise: A Longer Loop</h3>
           <p>Follow the usual Collatz rules without making any changes:</p>
@@ -807,6 +850,6 @@
     </div>
   </main>
   <script src="digging-fixed-scroll.js?v=20261023-scroll-3" defer></script>
-  <script src="digging-negatives.js?v=20261023-negatives-1" defer></script>
+  <script src="digging-negatives.js?v=20261023-negatives-2" defer></script>
 </body>
 </html>
