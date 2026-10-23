@@ -350,3 +350,64 @@
     padding: .4rem .5rem;
   }
 }
+
+
+/* Dark Laboratory option, scoped to Circular Representation only.
+   The existing pale canvas remains available for comparison. */
+.circle-workspace[data-canvas-theme="dark"] .circle-stage {
+  background: linear-gradient(150deg, #0c1a2b 0%, #08121f 58%, #070e19 100%);
+  border-color: rgba(122, 231, 255, .23);
+  box-shadow: inset 0 0 0 1px rgba(83, 145, 190, .08), 0 24px 80px rgba(0, 0, 0, .4);
+}
+.circle-workspace[data-canvas-theme="dark"] .circle-stage::before {
+  background: radial-gradient(circle at 52% 43%,rgba(54, 98, 140, .15),transparent 70%);
+}
+.circle-workspace[data-canvas-theme="dark"] .circle-stage-heading .eyebrow { color:#94bfd5; }
+.circle-workspace[data-canvas-theme="dark"] .circle-stage-heading h2 { color:#f0f6ff; }
+.circle-workspace[data-canvas-theme="dark"] .circle-stats { color:#a7bdd1; }
+.circle-workspace[data-canvas-theme="dark"] .circle-details {
+  background:rgba(13,27,45,.84);
+  border-color:rgba(125,173,199,.23);
+  color:#b6cedf;
+}
+.circle-workspace[data-canvas-theme="dark"] .circle-details strong { color:#ffe0a2; }
+.circle-workspace[data-canvas-theme="dark"] .circle-path-sequence { color:#e1f2ff; }
+.circle-workspace[data-canvas-theme="dark"] .circle-status { color:#91aabf; }
+.circle-workspace[data-canvas-theme="dark"] .circle-zoom-tools button {
+  border-color:rgba(122,175,205,.30);
+  background:rgba(17,34,54,.94);
+  color:#e4f4ff;
+  box-shadow:0 2px 12px rgba(0,0,0,.18);
+}
+.circle-workspace[data-canvas-theme="dark"] .circle-zoom-tools button:hover,
+.circle-workspace[data-canvas-theme="dark"] .circle-zoom-tools button:focus-visible {
+  border-color:#7ae7ff;
+  background:#1c3a53;
+}
+.circle-theme { margin:-.15rem 0 1.25rem; }
+.circle-theme-label {
+  margin:0 0 .55rem;
+  color:#b8cce0;
+  font-weight:590;
+  font-size:.85rem;
+}
+.circle-theme-options { display:flex; gap:.45rem; }
+.circle-theme-options button {
+  appearance:none;
+  flex:1;
+  padding:.7rem .8rem;
+  border:1px solid rgba(122,231,255,.18);
+  border-radius:.75rem;
+  background:#0c1728;
+  color:#c5d5e4;
+  font:570 .88rem Inter,system-ui,sans-serif;
+  cursor:pointer;
+}
+.circle-theme-options button.is-active {
+  background:rgba(34,89,124,.30);
+  border-color:#7ae7ff;
+  color:#e8f9ff;
+  box-shadow:inset 0 0 0 1px rgba(122,231,255,.1);
+}
+.circle-theme-options button:hover,
+.circle-theme-options button:focus-visible { border-color:#7ae7ff; }
