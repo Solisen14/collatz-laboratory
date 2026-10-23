@@ -229,7 +229,7 @@
     '.circle-light .orbit-start:hover rect,.circle-light .orbit-start:focus-visible rect,.circle-light .orbit-start.is-selected rect{fill:#fff0de;stroke:#b67a41}',
     '.circle-light .orbit-start.is-selected text{fill:#34485b}',
     '.circle-light .orbit-cycle{stroke:#b98a4b;stroke-opacity:.7}'
-  ].join('\\n');
+  ].join('\n');
 
   function createModelSvg() {
     const model = state.model;
