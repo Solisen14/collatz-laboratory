@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
   <link rel="stylesheet" href="chapters.css?v=20261021-iterates-1" />
   <link rel="stylesheet" href="digging-fixed-points.css?v=20261023-scroll-1" />
+  <link rel="stylesheet" href="digging-negatives.css?v=20261023-negatives-1" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -478,6 +479,327 @@
         </aside>
       </article>
 
+      
+      <article class="digging-article digging-article-followup digging-article-negative" id="below-zero" aria-labelledby="below-zero-heading">
+        <header class="article-heading">
+          <p class="article-overline"><span>04</span> EXPANDING THE DOMAIN</p>
+          <h2 id="below-zero-heading">Below Zero: Same Rules, Different Cycles</h2>
+          <p class="article-lede">We've found a repeating cycle in the positive integers. What happens if we let the Collatz function explore the other side of zero?</p>
+        </header>
+
+        <div class="article-prose">
+          <p>Until now, we've restricted the Collatz function to <strong>positive integers</strong>. But neither rule requires its input to be positive. Even integers can still be divided by 2, and odd integers can still be multiplied by 3 and increased by 1.</p>
+          <p>So let's change the domain. Instead of <span class="negative-math">C : ℤ⁺ → ℤ⁺</span>, imagine using the same function on <strong>all integers</strong>: <span class="negative-math">C : ℤ → ℤ</span>.</p>
+          <p>One subtle fact matters immediately. A positive input always produces a positive output. A negative input always produces a negative output. And zero maps to zero. An orbit cannot cross from one of these regions into another.</p>
+        </div>
+
+        <figure class="negative-fig negative-domain-figure">
+          <p class="diagram-topline">ONE FUNCTION · THREE SEPARATE REGIONS</p>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 195" role="img" aria-labelledby="negative-dom-title negative-dom-desc">
+ <title id="negative-dom-title">The integers split into negative, zero, and positive regions</title>
+ <desc id="negative-dom-desc">A number line shows negative integers in violet, the isolated zero in gold, and positive integers in cyan. Under the extended Collatz rules, an orbit never crosses between these three regions.</desc>
+ <rect x="23" y="40" width="375" height="111" rx="14" fill="#4d336f" fill-opacity=".16" stroke="#bd9bdc" stroke-opacity=".20"/>
+ <rect x="488" y="40" width="370" height="111" rx="14" fill="#2a7790" fill-opacity=".10" stroke="#7ae7ff" stroke-opacity=".19"/>
+ <g font-family="Inter,ui-sans-serif,system-ui,sans-serif" text-anchor="middle" font-weight="740" letter-spacing="1.7" font-size="12">
+  <text x="206" y="27" fill="#c5a8ef">NEGATIVE INTEGERS</text>
+  <text x="440" y="27" fill="#f1d092">ZERO</text>
+  <text x="673" y="27" fill="#99deed">POSITIVE INTEGERS</text>
+ </g>
+ <line x1="39" y1="99" x2="840" y2="99" stroke="#8ba5ba" stroke-width="1.5" stroke-opacity=".72"/>
+ <path d="M39 99 l10 -5 v10Z M840 99 l-10 -5 v10Z" fill="#8ba5ba"/>
+ <line x1="112" y1="89" x2="112" y2="109" stroke="#bb9fe5"/><text x="112" y="131" fill="#e4d3f4" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="650" text-anchor="middle">−4</text>
+ <line x1="198" y1="89" x2="198" y2="109" stroke="#bb9fe5"/><text x="198" y="131" fill="#e4d3f4" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="650" text-anchor="middle">−3</text>
+ <line x1="284" y1="89" x2="284" y2="109" stroke="#bb9fe5"/><text x="284" y="131" fill="#e4d3f4" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="650" text-anchor="middle">−2</text>
+ <line x1="370" y1="89" x2="370" y2="109" stroke="#bb9fe5"/><text x="370" y="131" fill="#e4d3f4" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="650" text-anchor="middle">−1</text>
+ <line x1="535" y1="89" x2="535" y2="109" stroke="#89d7ea"/><text x="535" y="131" fill="#d5f6ff" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="650" text-anchor="middle">1</text>
+ <line x1="618" y1="89" x2="618" y2="109" stroke="#89d7ea"/><text x="618" y="131" fill="#d5f6ff" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="650" text-anchor="middle">2</text>
+ <line x1="701" y1="89" x2="701" y2="109" stroke="#89d7ea"/><text x="701" y="131" fill="#d5f6ff" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="650" text-anchor="middle">3</text>
+ <line x1="784" y1="89" x2="784" y2="109" stroke="#89d7ea"/><text x="784" y="131" fill="#d5f6ff" font-family="Inter,system-ui,sans-serif" font-size="16" font-weight="650" text-anchor="middle">4</text>
+ <circle cx="440" cy="99" r="23" fill="#1c2a3b" stroke="#f1d092" stroke-width="2"/>
+ <text x="440" y="105" fill="#ffe6a6" font-size="19" font-weight="740" font-family="Inter,system-ui,sans-serif" text-anchor="middle">0</text>
+ <g fill="#869aac" font-family="Inter,system-ui,sans-serif" font-size="11" text-anchor="middle">
+  <text x="210" y="174">an orbit stays negative</text>
+  <text x="675" y="174">an orbit stays positive</text>
+ </g>
+</svg>
+          <figcaption>The same two rules can be applied throughout the integers, but <strong>positive values, negative values, and zero never mix under iteration.</strong> We can explore each region separately.</figcaption>
+        </figure>
+
+        <div class="article-prose">
+          <h3>First Surprise: Zero Stays Put</h3>
+          <p>Think back to our discussion of fixed points. We proved that there were none among the <em>positive</em> integers. Now we've added zero to the domain. What does the function do to it?</p>
+        </div>
+
+        <figure class="negative-fig negative-zero-figure negative-reveal" data-negative-stage="zero">
+          <div class="negative-surprise-tag">AN UNEXPECTED FIXED POINT</div>
+          <div class="negative-zero-layout">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 248" role="img" aria-labelledby="negative-zero-title negative-zero-desc">
+  <title id="negative-zero-title">Zero is a fixed point of the extended Collatz function</title>
+  <desc id="negative-zero-desc">A glowing zero with a looping cyan arrow showing that zero maps right back to zero.</desc>
+  <defs>
+    <radialGradient id="negative-zero-halo"><stop offset="0" stop-color="#7ae7ff" stop-opacity=".24"/><stop offset="1" stop-color="#7ae7ff" stop-opacity="0"/></radialGradient>
+    <marker id="negative-zero-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7ae7ff"/></marker>
+  </defs>
+  <circle cx="177" cy="137" r="96" fill="url(#negative-zero-halo)"/>
+  <path data-negative-animate="edge" class="negative-cycle-edge negative-cycle-even" pathLength="1" style="--negative-i:0" d="M201 104 C281 6 74 17 152 102" stroke="#7ae7ff" stroke-width="3.2" stroke-linecap="round" fill="none" marker-end="url(#negative-zero-arrow)"/>
+  <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:0">
+    <circle cx="177" cy="141" r="44" fill="#111f31" stroke="#7ae7ff" stroke-width="3"/>
+    <text x="177" y="155" text-anchor="middle" font-size="42" font-family="Inter,system-ui,sans-serif" fill="#edfbff" font-weight="600">0</text>
+  </g>
+  <text x="177" y="224" text-anchor="middle" fill="#a9c7db" font-size="14" font-family="Inter,system-ui,sans-serif">a fixed point · period 1</text>
+</svg>
+            <div class="negative-zero-math">
+              <strong>Apply the even rule</strong>
+              <span class="negative-eq">C(0) = 0/2 = 0</span>
+              <p>Zero doesn't move. So when we expand the domain to include zero, <strong>the Collatz function gains a fixed point.</strong></p>
+            </div>
+          </div>
+          <figcaption>Its period is 1. The function itself hasn't changed: only its <em>domain</em> has.</figcaption>
+        </figure>
+
+        <div class="article-prose">
+          <h3>Second Surprise: A New Cycle</h3>
+          <p>Now step just one integer below zero. Starting at <span class="negative-math">−1</span>, the odd-number rule gives <span class="negative-math">3(−1) + 1 = −2</span>. What happens next?</p>
+          <p>The even-number rule sends <span class="negative-math">−2</span> straight back to <span class="negative-math">−1</span>.</p>
+        </div>
+
+        <figure class="negative-fig negative-reveal" data-negative-stage="two">
+          <div class="negative-figure-heading">
+            <p class="diagram-topline">THE FIRST NEGATIVE CYCLE</p>
+            <span class="negative-period">PERIOD 2</span>
+          </div>
+          <div class="negative-figure-viewport"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 275" role="img" aria-labelledby="negative-two-title negative-two-desc">
+ <title id="negative-two-title">The negative Collatz two-cycle between negative one and negative two</title>
+ <desc id="negative-two-desc">The gold odd step sends negative one to negative two. The cyan even step sends negative two back to negative one. The orbit has period two.</desc>
+ <defs>
+   <marker id="negative-two-odd" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#ffd479"/></marker>
+   <marker id="negative-two-even" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#7ae7ff"/></marker>
+ </defs>
+ <path data-negative-animate="edge" class="negative-cycle-edge negative-cycle-odd" pathLength="1" style="--negative-i:0" d="M253 117 Q410 12 567 117" stroke="#ffd479" stroke-width="3" stroke-linecap="round" fill="none" marker-end="url(#negative-two-odd)"/>
+ <path data-negative-animate="edge" class="negative-cycle-edge negative-cycle-even" pathLength="1" style="--negative-i:1" d="M567 158 Q410 267 253 158" stroke="#7ae7ff" stroke-width="3" stroke-linecap="round" fill="none" marker-end="url(#negative-two-even)"/>
+ <g data-negative-animate="node" class="negative-cycle-node" style="--negative-i:0"><circle cx="222" cy="137" r="35" fill="#0e1b2c" stroke="#ffd479" stroke-width="2.8"/><text x="222" y="145" text-anchor="middle" fill="#f1f8ff" font-size="26" font-weight="650" font-family="Inter,system-ui,sans-serif">−1</text></g>
+ <g data-negative-animate="node" class="negative-cycle-node" style="--negative-i:1"><circle cx="598" cy="137" r="35" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.8"/><text x="598" y="145" text-anchor="middle" fill="#f1f8ff" font-size="26" font-weight="650" font-family="Inter,system-ui,sans-serif">−2</text></g>
+ <text x="410" y="61" fill="#ffe2a5" text-anchor="middle" font-size="16" font-family="Inter,system-ui,sans-serif">3n + 1</text>
+ <text x="410" y="232" fill="#a9deed" text-anchor="middle" font-size="16" font-family="Inter,system-ui,sans-serif">÷ 2</text>
+</svg></div>
+          <div class="negative-legend" aria-label="Negative Collatz cycle rule legend">
+            <span><i class="odd"></i> Odd input: 3n + 1</span>
+            <span><i class="even"></i> Even input: divide by 2</span>
+          </div>
+          <figcaption>The two rules take us around a closed loop: <span class="negative-math">−1 → −2 → −1 → ⋯</span>. Unlike the familiar positive cycle, this orbit repeats after just <strong>two</strong> applications.</figcaption>
+        </figure>
+
+        <div class="article-prose">
+          <p>We've found a fixed point at zero and a period-2 orbit below zero. Maybe these are just special cases very close to the origin?</p>
+          <p>Let's try <span class="negative-math">−5</span>.</p>
+
+          <h3>Third Surprise: A Longer Loop</h3>
+          <p>Follow the usual Collatz rules without making any changes:</p>
+        </div>
+
+        <div class="negative-orbit-inline" role="group" aria-label="Negative five to negative fourteen to negative seven to negative twenty to negative ten to negative five">
+          −5 → −14 → −7 → −20 → −10 → <strong>−5</strong>
+        </div>
+
+        <div class="article-prose">
+          <p>The orbit comes back to its starting value after <strong>five iterations</strong>. This isn't the period-2 cycle we just found. It's a completely different periodic orbit.</p>
+        </div>
+
+        <figure class="negative-fig negative-reveal" data-negative-stage="five">
+          <div class="negative-figure-heading">
+            <p class="diagram-topline">ANOTHER NEGATIVE CYCLE · EVERY ARROW IS A REAL COLLATZ STEP</p>
+            <span class="negative-period">PERIOD 5</span>
+          </div>
+          <div class="negative-figure-viewport"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 395" role="img" aria-labelledby="neg5-title neg5-desc">
+   <title id="neg5-title">The negative Collatz cycle of period five</title>
+   <desc id="neg5-desc">The sequence negative five, negative fourteen, negative seven, negative twenty, negative ten, returning to negative five. Gold steps start at odd values and cyan steps start at even values.</desc>
+   <defs>
+    <marker id="neg5-even" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8Z" fill="#7ae7ff"/></marker>
+    <marker id="neg5-odd" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8Z" fill="#ffd479"/></marker>
+  </defs>
+   <path class="negative-cycle-edge negative-cycle-odd" data-negative-animate="edge" pathLength="1" style="--negative-i:0" d="M415.85 75.15 L527.32 131.84" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg5-odd)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:1" d="M548.98 175.37 L511.8 255.47" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg5-even)"/>
+    <path class="negative-cycle-edge negative-cycle-odd" data-negative-animate="edge" pathLength="1" style="--negative-i:2" d="M466.8 289.94 L322.2 289.94" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg5-odd)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:3" d="M271.99 263.63 L234.81 183.53" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg5-even)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:4" d="M244.66 135.92 L356.13 79.23" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg5-even)"/>
+   <g aria-hidden="true" text-anchor="middle" font-family="Inter,ui-sans-serif,system-ui,sans-serif"><text x="390" y="191" fill="#dbc2ef" font-size="22" font-weight="650">Period 5</text><text x="390" y="216" fill="#a7b3c9" font-size="12">five different values</text></g>
+   <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:0">
+      <circle cx="390" cy="62" r="27" fill="#0e1b2c" stroke="#ffd479" stroke-width="2.4"/>
+      <text x="390" y="68.46" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="19" font-weight="650">−5</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:1">
+      <circle cx="561.19" cy="149.06" r="27" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="561.19" y="155.52" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="19" font-weight="650">−14</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:2">
+      <circle cx="495.8" cy="289.94" r="27" fill="#0e1b2c" stroke="#ffd479" stroke-width="2.4"/>
+      <text x="495.8" y="296.4" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="19" font-weight="650">−7</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:3">
+      <circle cx="284.2" cy="289.94" r="27" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="284.2" y="296.4" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="19" font-weight="650">−20</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:4">
+      <circle cx="218.81" cy="149.06" r="27" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="218.81" y="155.52" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="19" font-weight="650">−10</text>
+    </g>
+  </svg></div>
+          <div class="negative-legend" aria-label="Cycle rule colours">
+            <span><i class="odd"></i> Odd input: 3n + 1</span>
+            <span><i class="even"></i> Even input: divide by 2</span>
+          </div>
+          <figcaption>Each number is connected to the next value in the orbit, and the last arrow returns to −5. The five nodes are <strong>five distinct integers</strong> in one periodic cycle.</figcaption>
+        </figure>
+
+        <div class="article-prose">
+          <h3>One Final Surprise: Eighteen Steps</h3>
+          <p>We've found cycles of length 2 and 5. But the negative integers contain another known cycle, beginning at <span class="negative-math">−17</span>. This one takes <strong>18 steps</strong> to return to its starting value.</p>
+          <p>That's 18 different integers, connected by the exact same two rules we started with.</p>
+        </div>
+
+        <figure class="negative-fig negative-cycle-large negative-reveal" data-negative-stage="eighteen">
+          <div class="negative-figure-heading">
+            <p class="diagram-topline">THE LONGER NEGATIVE CYCLE · STARTING AT −17</p>
+            <span class="negative-period">PERIOD 18</span>
+          </div>
+          <div class="negative-figure-viewport large"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 545" role="img" aria-labelledby="neg18-title neg18-desc">
+   <title id="neg18-title">The full eighteen-step negative Collatz cycle beginning at negative seventeen</title>
+   <desc id="neg18-desc">Eighteen directed arrows connect negative seventeen, negative fifty, negative twenty-five, negative seventy-four, negative thirty-seven, negative one hundred ten, negative fifty-five, negative one hundred sixty-four, negative eighty-two, negative forty-one, negative one hundred twenty-two, negative sixty-one, negative one hundred eighty-two, negative ninety-one, negative two hundred seventy-two, negative one hundred thirty-six, negative sixty-eight, negative thirty-four, and back to negative seventeen. Cyan denotes halving even values, gold denotes tripling plus one for odd values.</desc>
+   <defs>
+    <marker id="neg18-even" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8Z" fill="#7ae7ff"/></marker>
+    <marker id="neg18-odd" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8Z" fill="#ffd479"/></marker>
+  </defs>
+   <path class="negative-cycle-edge negative-cycle-odd" data-negative-animate="edge" pathLength="1" style="--negative-i:0" d="M515.88 68.53 L574.87 74.3" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-odd)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:1" d="M634.47 85.62 L681.64 100.72" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-even)"/>
+    <path class="negative-cycle-edge negative-cycle-odd" data-negative-animate="edge" pathLength="1" style="--negative-i:2" d="M736.67 125.72 L763.91 143.71" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-odd)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:3" d="M807.38 184.73 L815.47 197.06" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-even)"/>
+    <path class="negative-cycle-edge negative-cycle-odd" data-negative-animate="edge" pathLength="1" style="--negative-i:4" d="M834.68 252.31 L834.68 258.69" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-odd)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:5" d="M820.41 315.42 L812.32 327.74" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-even)"/>
+    <path class="negative-cycle-edge negative-cycle-odd" data-negative-animate="edge" pathLength="1" style="--negative-i:6" d="M771.41 371.33 L744.18 389.32" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-odd)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:7" d="M690.21 416.54 L643.04 431.63" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-even)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:8" d="M583.83 444.83 L524.83 450.6" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-even)"/>
+    <path class="negative-cycle-edge negative-cycle-odd" data-negative-animate="edge" pathLength="1" style="--negative-i:9" d="M464.12 451.47 L405.13 445.7" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-odd)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:10" d="M345.53 434.38 L298.36 419.28" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-even)"/>
+    <path class="negative-cycle-edge negative-cycle-odd" data-negative-animate="edge" pathLength="1" style="--negative-i:11" d="M243.33 394.28 L216.09 376.29" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-odd)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:12" d="M172.62 335.27 L164.53 322.94" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-even)"/>
+    <path class="negative-cycle-edge negative-cycle-odd" data-negative-animate="edge" pathLength="1" style="--negative-i:13" d="M145.32 267.69 L145.32 261.31" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-odd)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:14" d="M159.59 204.58 L167.68 192.26" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-even)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:15" d="M208.59 148.67 L235.82 130.68" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-even)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:16" d="M289.79 103.46 L336.96 88.37" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-even)"/>
+    <path class="negative-cycle-edge negative-cycle-even" data-negative-animate="edge" pathLength="1" style="--negative-i:17" d="M396.17 75.17 L455.17 69.4" stroke-width="2.4" stroke-linecap="round" marker-end="url(#neg18-even)"/>
+   <g aria-hidden="true" text-anchor="middle" font-family="Inter,ui-sans-serif,system-ui,sans-serif">
+    <text x="490" y="259" fill="#d8c1f5" font-size="43" font-weight="600" letter-spacing="-1">Period 18</text>
+    <text x="490" y="290" fill="#a4b6cc" font-size="16">18 distinct integers, one repeating orbit</text>
+   </g>
+   <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:0">
+      <circle cx="490" cy="66" r="24" fill="#0e1b2c" stroke="#ffd479" stroke-width="2.4"/>
+      <text x="490" y="71.44" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−17</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:1">
+      <circle cx="609.71" cy="77.7" r="24" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="609.71" y="83.14" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−50</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:2">
+      <circle cx="714.98" cy="111.39" r="24" fill="#0e1b2c" stroke="#ffd479" stroke-width="2.4"/>
+      <text x="714.98" y="116.83" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−25</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:3">
+      <circle cx="793.11" cy="163" r="24" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="793.11" y="168.44" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−74</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:4">
+      <circle cx="834.68" cy="226.31" r="24" fill="#0e1b2c" stroke="#ffd479" stroke-width="2.4"/>
+      <text x="834.68" y="231.75" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−37</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:5">
+      <circle cx="834.68" cy="293.69" r="24" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="834.68" y="299.13" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−110</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:6">
+      <circle cx="793.11" cy="357" r="24" fill="#0e1b2c" stroke="#ffd479" stroke-width="2.4"/>
+      <text x="793.11" y="362.44" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−55</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:7">
+      <circle cx="714.98" cy="408.61" r="24" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="714.98" y="414.05" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−164</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:8">
+      <circle cx="609.71" cy="442.3" r="24" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="609.71" y="447.74" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−82</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:9">
+      <circle cx="490" cy="454" r="24" fill="#0e1b2c" stroke="#ffd479" stroke-width="2.4"/>
+      <text x="490" y="459.44" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−41</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:10">
+      <circle cx="370.29" cy="442.3" r="24" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="370.29" y="447.74" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−122</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:11">
+      <circle cx="265.02" cy="408.61" r="24" fill="#0e1b2c" stroke="#ffd479" stroke-width="2.4"/>
+      <text x="265.02" y="414.05" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−61</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:12">
+      <circle cx="186.89" cy="357" r="24" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="186.89" y="362.44" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−182</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:13">
+      <circle cx="145.32" cy="293.69" r="24" fill="#0e1b2c" stroke="#ffd479" stroke-width="2.4"/>
+      <text x="145.32" y="299.13" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−91</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:14">
+      <circle cx="145.32" cy="226.31" r="24" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="145.32" y="231.75" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−272</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:15">
+      <circle cx="186.89" cy="163" r="24" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="186.89" y="168.44" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−136</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:16">
+      <circle cx="265.02" cy="111.39" r="24" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="265.02" y="116.83" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−68</text>
+    </g>
+    <g class="negative-cycle-node" data-negative-animate="node" style="--negative-i:17">
+      <circle cx="370.29" cy="77.7" r="24" fill="#0e1b2c" stroke="#7ae7ff" stroke-width="2.4"/>
+      <text x="370.29" y="83.14" text-anchor="middle" fill="#eef8ff" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="650">−34</text>
+    </g>
+  </svg></div>
+          <div class="negative-legend" aria-label="Period 18 cycle rule colours">
+            <span><i class="odd"></i> Odd input: 3n + 1</span>
+            <span><i class="even"></i> Even input: divide by 2</span>
+          </div>
+          <figcaption>All 18 steps are shown. Starting at −17, follow the arrows around the circuit until the final even step <span class="negative-math">−34 → −17</span> closes the loop. On narrow screens, scroll horizontally to explore the complete diagram.</figcaption>
+        </figure>
+
+        <div class="article-prose">
+          <p>What began as one repeating positive cycle has become a much richer picture. With zero and negative inputs allowed, we've found periodic behaviour with periods <strong>1, 2, 5, and 18</strong>, alongside the familiar positive period-3 cycle.</p>
+          <p>But there's an important distinction: <strong>these are known cycles, not a complete classification of all possible orbits.</strong> It is still not proved that every negative integer eventually enters one of these three known negative cycles.</p>
+
+          <h3>Why Does Changing the Domain Matter?</h3>
+          <p>Here's a curious connection. Write a negative number as <span class="negative-math">−m</span>, where <span class="negative-math">m</span> is positive. For an odd <span class="negative-math">m</span>, the usual rule gives:</p>
+        </div>
+
+        <div class="negative-rule-panel" role="group" aria-label="The odd Collatz rule for negative inputs has the magnitude of three m minus one">
+          <p class="diagram-topline">THE SAME RULE · VIEWED FROM THE OTHER SIDE</p>
+          <span class="negative-eq">C(−m) = 3(−m) + 1 = −(3m − 1)</span>
+          <p>The absolute value behaves according to <strong>3m − 1</strong>, rather than <strong>3m + 1</strong>. Dividing by 2 works the same way for even values. Thus, reflecting the negative orbit into positive magnitudes turns it into a related <span class="negative-math">3m − 1</span> system.</p>
+        </div>
+
+        <div class="article-prose">
+          <p>A tiny difference in the constant, from <span class="negative-math">+1</span> to <span class="negative-math">−1</span>, accompanies very different known repeating cycles.</p>
+          <p>Does that tell us that the positive integers <em>must</em> all enter the one familiar cycle? No. That remains the unproved Collatz conjecture.</p>
+        </div>
+
+        <aside class="negative-takeaway">
+          <span class="negative-takeaway-label">THE BIG IDEA</span>
+          <p><strong>Same function. Different region of the integers. Different known cycles.</strong> The rules tell us exactly what happens next, but they do not automatically tell us what happens forever.</p>
+        </aside>
+
+        <p class="negative-ending">If the same simple rules can produce several different cycles below zero, what would it take to prove that every positive orbit finds just one?</p>
+
+        <p class="negative-reference">Further reading: <a href="https://ccchallenge.org/story" target="_blank" rel="noopener noreferrer">The Collatz Conjecture Challenge: The Collatz problem beyond natural numbers</a> explores the known negative cycles and the questions that remain open.</p>
+      </article>
+
       <nav class="chapter-next digging-bottom-nav" aria-label="Continue exploring">
         <a href="index.html#story"><span aria-hidden="true">←</span> Back to the story</a>
         <a href="fractals.html">Fractals <span aria-hidden="true">→</span></a>
@@ -485,5 +807,6 @@
     </div>
   </main>
   <script src="digging-fixed-scroll.js?v=20261023-scroll-3" defer></script>
+  <script src="digging-negatives.js?v=20261023-negatives-1" defer></script>
 </body>
 </html>
