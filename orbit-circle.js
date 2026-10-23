@@ -357,7 +357,7 @@
 
   function detailFor(start) {
     if (start === null) {
-      return '<strong>Follow a number.</strong> Click an outer starting value, or choose one from the menu, to trace its orbit to 1. Each inner number appears only once, even when many orbits pass through it.';
+      return '<strong>Find the bullseye.</strong> The black 1 is at the exact centre. Select any coloured node or outer terminal label, or choose a number from the menu, to follow its forward orbit into 1. Shared paths are drawn once.';
     }
     const path = orbitOf(start);
     const peak = Math.max(...path);
