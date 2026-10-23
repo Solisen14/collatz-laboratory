@@ -39,6 +39,13 @@
   const nextValue = (n) => n % 2 === 0 ? n / 2 : 3 * n + 1;
   const edgeKey = (from, to) => String(from) + ':' + String(to);
 
+  function nodeRadius(node, count) {
+    if (node.value === 1 || node.value === 2 || node.value === 4) return 12;
+    if (count >= 100) return Math.min(6.2, 2.1 + Math.sqrt(node.traffic) * 0.4);
+    if (count >= 50) return Math.min(7.8, 2.8 + Math.sqrt(node.traffic) * 0.67);
+    return Math.min(9, 3.8 + Math.sqrt(node.traffic) * 0.75);
+  }
+
   function element(tag, attributes, parent, content) {
     const el = document.createElementNS(NS, tag);
     for (const [key, value] of Object.entries(attributes || {})) {
@@ -164,13 +171,46 @@
         }
       }
     }
-    for (const node of nodes.values()) {
-      if (node.radius !== undefined) {
-        const p = point(node.radius, node.angle);
-        node.x = p.x;
-        node.y = p.y;
+    // Relax crowded angles without changing radii, node identities or edges.
+    // Compressing 118 steps into a single circular graphic otherwise creates
+    // overlapping discs, especially for the 50- and 100-start diagrams.
+    const adjustable = Array.from(nodes.values()).filter((node) => node.radius !== undefined);
+    const nodeAngles = adjustable.map((node) => node.angle);
+    const nodeRadii = adjustable.map((node) => node.radius);
+    const dotRadii = adjustable.map((node) => nodeRadius(node, count));
+    const iterationLimit = count >= 100 ? 320 : count >= 50 ? 200 : 85;
+    for (let iteration = 0; iteration < iterationLimit; iteration++) {
+      let collisions = 0;
+      const correction = new Float64Array(adjustable.length);
+      const points = adjustable.map((node, i) => point(nodeRadii[i], nodeAngles[i]));
+      for (let i = 0; i < points.length; i++) {
+        for (let j = 0; j < i; j++) {
+          const required = dotRadii[i] + dotRadii[j] + 2.4;
+          if (Math.abs(nodeRadii[i] - nodeRadii[j]) >= required) continue;
+          const gap = Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y);
+          if (gap >= required) continue;
+          collisions++;
+          const sine = Math.sin(nodeAngles[i] - nodeAngles[j]);
+          const direction = Math.abs(sine) > 1e-7
+            ? Math.sign(sine)
+            : (adjustable[i].value > adjustable[j].value ? 1 : -1);
+          const shift = Math.min(0.15,
+            (required - gap) / Math.min(nodeRadii[i], nodeRadii[j]) * 0.55);
+          correction[i] += direction * shift;
+          correction[j] -= direction * shift;
+        }
+      }
+      if (!collisions) break;
+      for (let i = 0; i < nodeAngles.length; i++) {
+        nodeAngles[i] += Math.max(-0.16, Math.min(0.16, correction[i]));
       }
     }
+    adjustable.forEach((node, i) => {
+      node.angle = nodeAngles[i];
+      const p = point(node.radius, node.angle);
+      node.x = p.x;
+      node.y = p.y;
+    });
     return { count, nodes, edges, orbits, longest, peak, maxDepth };
   }
 
@@ -277,14 +317,13 @@
 
     for (const node of model.nodes.values()) {
       const core = node.value === 1 || node.value === 2 || node.value === 4;
-      const radius = core ? 12 : Math.min(10, 3.8 + Math.sqrt(node.traffic) * 0.93);
+      const radius = nodeRadius(node, model.count);
       const g = element('g', { 'data-first-seen': node.firstSeen }, nodeGroup);
       element('circle', {
         cx: fmt(node.x), cy: fmt(node.y), r: fmt(radius),
         class: 'orbit-node' + (core ? ' is-core' : '')
       }, g);
-      if (core || (node.value <= 16 && node.traffic >= 2) ||
-          (node.value === model.peak && node.traffic > 1)) {
+      if (core || (model.count <= 25 && node.value <= 16 && node.traffic >= 2)) {
         element('text', {
           x: fmt(node.x), y: fmt(node.y + (core ? 1 : -radius - 8)),
           class: 'orbit-inner-label' + (core ? ' core' : '')
