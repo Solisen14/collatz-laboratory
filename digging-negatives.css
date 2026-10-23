@@ -546,3 +546,98 @@
  .universe-beat p {font-size:12px;line-height:1.52;}
 }
 @media(prefers-reduced-motion:reduce) {.universe-layer {transition:none!important;}}
+
+/* 2026-10-23 finale repair.
+ * overflow:clip is essential: overflow:hidden on the chapter shell
+ * creates a non-scrolling ancestor that breaks position:sticky.
+ */
+.digging-page {min-width:0;}
+.digging-page .digging-shell {overflow:clip;}
+.collatz-universe {
+  width:min(1120px,calc(100vw - 36px));
+  max-width:none;
+  position:relative;
+  left:50%;
+  transform:translateX(-50%);
+}
+.universe-scrollstory {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(240px,290px);
+  align-items:start;
+  gap:22px;
+  min-height:0;
+}
+.universe-sticky {
+  grid-column:1;
+  grid-row:1;
+  align-self:start;
+  position:sticky;
+  top:64px;
+  height:min(calc(100dvh - 80px),730px);
+  min-height:390px;
+  max-height:none;
+  padding:17px 15px 12px;
+}
+.universe-beats {
+  grid-column:2;
+  grid-row:1;
+  position:relative;
+  z-index:2;
+  margin:0;
+  padding:0;
+  pointer-events:auto;
+}
+.universe-beat,
+.universe-beat:nth-child(even) {
+  min-height:80vh;
+  max-width:none;
+  width:100%;
+  padding:24px 0;
+  margin:0;
+  justify-content:center;
+}
+.universe-beat > * {
+  border-left:2px solid #657c98;
+  background:rgba(13,22,39,.93);
+}
+.universe-beat.is-active > * {border-left-color:#bc9af0;}
+.universe-beat h3 {font-size:clamp(19px,2.15vw,25px);}
+.universe-beat p {font-size:14px;}
+.universe-node-label {font:600 12px Inter,ui-sans-serif,system-ui,sans-serif;}
+.universe-region-label {font:750 13px Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:1.6px;}
+.universe-edge {stroke-width:1.7;opacity:.78;}
+@media(max-width:930px) {
+  .universe-scrollstory {display:grid;grid-template-columns:minmax(0,1fr);gap:0;}
+  .universe-sticky {
+    grid-column:1;grid-row:1;
+    top:7px;
+    height:55vh;
+    min-height:320px;
+    max-height:none;
+    padding:12px 10px;
+  }
+  .universe-beats {
+    grid-column:1;grid-row:1;
+    z-index:2;
+    margin:0;
+    padding:42vh 0 0;
+    pointer-events:none;
+  }
+  .universe-beat,.universe-beat:nth-child(even) {
+    width:min(410px,92%);
+    max-width:none;
+    margin:0 auto;
+    min-height:82vh;
+    padding:0 0 9vh;
+    justify-content:flex-end;
+    pointer-events:none;
+  }
+  .universe-beat > * {
+    background:rgba(8,13,27,.96);
+    padding-left:14px;
+    padding-right:14px;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .universe-layer {opacity:1!important;transition:none!important;}
+}
