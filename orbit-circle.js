@@ -187,6 +187,8 @@
     '.radial-guide{fill:none;stroke:#b6bfc5;stroke-opacity:.5;stroke-width:1.15}',
     '.radial-caption{font:750 14px Inter,system-ui,sans-serif;letter-spacing:2.1px;fill:#788592;text-anchor:middle}',
     '.orbit-edge{fill:none;stroke:#9098a0;stroke-opacity:.79;stroke-linecap:round;transition:opacity .14s,stroke-width .14s}',
+    '.orbit-edge.highlight-even{stroke:#279bd1!important}',
+    '.orbit-edge.highlight-odd{stroke:#d99b3c!important}',
     '.orbit-node-group{cursor:pointer;outline:none;transition:opacity .15s}',
     '.orbit-node-group circle{stroke:#2c3441;stroke-opacity:.33;stroke-width:.78}',
     '.orbit-node-group:hover circle,.orbit-node-group:focus-visible circle{stroke:#1b2335;stroke-width:2.5}',
@@ -248,6 +250,7 @@
         : 1.12;
       const line=element('path',{
         class:'orbit-edge',
+        'data-rule':edge.type,
         d:'M'+fmt(from.x)+','+fmt(from.y)+' L'+fmt(to.x)+','+fmt(to.y),
         'stroke-width':fmt(strokeWidth)
       },edgeLayer);
@@ -371,6 +374,8 @@
       item.classList.toggle('orbit-hidden', hidden);
       item.classList.toggle('orbit-faint', dim && !hidden);
       item.classList.toggle('orbit-strong', !hidden && active !== null && !dim);
+      item.classList.toggle('highlight-even', active !== null && !dim && !hidden && edge.type === 'even');
+      item.classList.toggle('highlight-odd', active !== null && !dim && !hidden && edge.type === 'odd');
       if (active !== null && !dim && !hidden) {
         item.setAttribute('stroke', edge.type === 'even' ? '#279bd1' : '#d99b3c');
         item.setAttribute('marker-end', 'url(#circle-' + edge.type + '-arrow)');
