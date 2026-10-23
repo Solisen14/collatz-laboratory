@@ -283,6 +283,8 @@
       try{window.history.replaceState(null,'',href);}catch(_){}
     }else{
       stopAnimation();
+      // Returning to this view should show the complete figure again.
+      visibleCurves=curves.length;
     }
   }
 
