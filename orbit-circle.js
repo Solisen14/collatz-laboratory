@@ -163,171 +163,167 @@
   }
 
 
+  function radialColor(depth) {
+    const gradient = [
+      [0,[25,24,35]], [2,[110,85,166]], [8,[43,132,185]],
+      [22,[76,179,152]], [42,[192,224,119]], [58,[255,223,114]],
+      [77,[255,159,79]], [95,[224,77,68]], [119,[182,22,77]], [150,[132,28,104]]
+    ];
+    for (let i = 1; i < gradient.length; i++) {
+      if (depth <= gradient[i][0]) {
+        const left = gradient[i-1], right = gradient[i];
+        const t = (depth-left[0])/(right[0]-left[0]);
+        const values = left[1].map((c,j) => Math.round(c+(right[1][j]-c)*t));
+        return 'rgb(' + values.join(',') + ')';
+      }
+    }
+    return 'rgb(132,28,104)';
+  }
+
   const embeddedStyle = [
-    '.orbit-guide{fill:none;stroke:#7ae7ff;stroke-opacity:.10;stroke-width:1}',
-    '.orbit-guide.outer{stroke-opacity:.29;stroke-width:1.7}',
-    '.orbit-entry{fill:none;stroke:#d5e7ff;stroke-opacity:.16;stroke-width:1.15;stroke-dasharray:3 6;transition:opacity .18s}',
-    '.orbit-edge{fill:none;stroke-linecap:round;stroke-opacity:.52;transition:opacity .18s,stroke-width .18s}',
-    '.orbit-node{fill:#101827;stroke:#a9b9df;stroke-width:1.3;transition:opacity .18s}',
-    '.orbit-node.is-core{fill:#1a1830;stroke:#f0d5a0;stroke-width:2.2}',
-    '.orbit-inner-label{fill:#e7effe;paint-order:stroke;stroke:#07101e;stroke-width:3.5;stroke-linejoin:round;font:600 13px Inter,system-ui,sans-serif;text-anchor:middle;dominant-baseline:central;pointer-events:none}',
-    '.orbit-inner-label.core{font-size:15px;fill:#fff2d4}',
-    '.orbit-start{cursor:pointer;outline:none;transition:opacity .18s}',
-    '.orbit-start-disc{fill:#0d1926;stroke:#85cdda;stroke-width:1.5;transition:fill .18s,stroke .18s}',
-    '.orbit-start-label{fill:#e5f5ff;font:600 13px Inter,system-ui,sans-serif;text-anchor:middle;dominant-baseline:central;pointer-events:none}',
-    '.orbit-start:hover .orbit-start-disc,.orbit-start:focus-visible .orbit-start-disc{stroke:#ffd479;fill:#372e26;stroke-width:2.5}',
-    '.orbit-start.is-selected .orbit-start-disc{fill:#453323;stroke:#ffd479;stroke-width:3}',
-    '.orbit-start.is-selected .orbit-start-label{fill:#ffe4aa}',
-    '.orbit-faint{opacity:.055!important}',
-    '.orbit-entry.orbit-faint{opacity:.018!important}',
-    '.orbit-node.orbit-faint{opacity:.11!important}',
-    '.orbit-start.orbit-faint{opacity:.32!important}',
-    '.orbit-strong{opacity:1!important;stroke-opacity:1!important}',
+    '.radial-background{fill:#fcfdfa}',
+    '.radial-guide{fill:none;stroke:#b6bfc5;stroke-opacity:.5;stroke-width:1.15}',
+    '.radial-caption{font:750 14px Inter,system-ui,sans-serif;letter-spacing:2.1px;fill:#788592;text-anchor:middle}',
+    '.orbit-edge{fill:none;stroke:#9098a0;stroke-opacity:.79;stroke-linecap:round;transition:opacity .14s,stroke-width .14s}',
+    '.orbit-node-group{cursor:pointer;outline:none;transition:opacity .15s}',
+    '.orbit-node-group circle{stroke:#2c3441;stroke-opacity:.33;stroke-width:.78}',
+    '.orbit-node-group:hover circle,.orbit-node-group:focus-visible circle{stroke:#1b2335;stroke-width:2.5}',
+    '.orbit-node-group.is-selected circle{stroke:#1b2335;stroke-width:2.7}',
+    '.radial-node-label{pointer-events:none;text-anchor:middle;dominant-baseline:central;fill:#1d2635;font:600 9px Inter,system-ui,sans-serif;paint-order:stroke;stroke:#ffffff90;stroke-width:.65}',
+    '.radial-node-label.light{fill:#fff;stroke:#14162590}',
+    '.orbit-start{cursor:pointer;outline:none;transition:opacity .15s}',
+    '.orbit-start rect{fill:#fff;stroke:#adbcc8;stroke-width:1.0}',
+    '.orbit-start text{fill:#34485b;font:650 10px Inter,system-ui,sans-serif;text-anchor:middle;dominant-baseline:central;pointer-events:none}',
+    '.orbit-start:hover rect,.orbit-start:focus-visible rect,.orbit-start.is-selected rect{fill:#fff0de;stroke:#b67a41;stroke-width:2}',
+    '.orbit-faint{opacity:.11!important}',
+    '.orbit-node-group.orbit-faint{opacity:.18!important}',
+    '.orbit-start.orbit-faint{opacity:.27!important}',
+    '.orbit-strong{opacity:1!important;stroke-opacity:1!important;stroke-width:3!important}',
     '.orbit-hidden{opacity:0!important;pointer-events:none}',
-    '.orbit-center-name{font:700 13px Inter,system-ui,sans-serif;fill:#e9b979;text-anchor:middle;letter-spacing:2px}',
-    '.orbit-cycle-arrow{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.85}'
+    '.orbit-cycle{fill:none;stroke:#b98a4b;stroke-width:2;stroke-dasharray:4 6;stroke-opacity:.7}'
   ].join('\n');
 
   function createModelSvg() {
     const model = state.model;
     svg.replaceChildren();
-    svg.setAttribute('viewBox', '-540 -540 1080 1080');
-    const title = element('title', { id: 'circleSvgTitle' }, svg,
-      'Circular representation of Collatz orbits starting at 1 through ' + model.count);
-    element('desc', { id: 'circleSvgDescription' }, svg,
-      'Outer numbers are selectable start markers. Each visited integer has one shared inner node. Cyan lines indicate even-number Collatz steps, gold lines indicate odd steps, and the 1-4-2-1 cycle appears in the center.');
-    svg.setAttribute('aria-labelledby', 'circleSvgTitle circleSvgDescription');
-    element('style', { type: 'text/css' }, svg, embeddedStyle);
-    const defs = element('defs', {}, svg);
-    for (const type of ['even', 'odd']) {
-      const marker = element('marker', {
-        id: 'circle-' + type + '-arrow', viewBox: '0 0 10 10',
-        refX: 9, refY: 5, markerWidth: 5.6, markerHeight: 5.6,
-        markerUnits: 'userSpaceOnUse', orient: 'auto'
-      }, defs);
-      element('path', { d: 'M0 0L10 5L0 10Z', fill: colours[type] }, marker);
+    svg.setAttribute('viewBox', '-500 -500 1000 1000');
+    svg.setAttribute('role','img');
+    svg.setAttribute('aria-labelledby','radialDiagramTitle radialDiagramDesc');
+    element('title',{id:'radialDiagramTitle'},svg,
+      'Circular tree of the forward Collatz orbits for the first '+model.count+' positive integers');
+    element('desc',{id:'radialDiagramDesc'},svg,
+      'The value 1 is at the right edge of the circle. Unique Collatz paths spread into a branching canopy. Each node is one real integer, and the outer white labels identify terminal values.');
+    element('style',{},svg,embeddedStyle);
+    const defs=element('defs',{},svg);
+    for(const type of ['even','odd']){
+      const marker=element('marker',{
+        id:'circle-'+type+'-arrow',viewBox:'0 0 10 10',refX:9,refY:5,
+        markerWidth:5.5,markerHeight:5.5,markerUnits:'userSpaceOnUse',
+        orient:'auto'
+      },defs);
+      element('path',{d:'M0 0 L10 5 L0 10Z',
+        fill:type==='even'?'#279bd1':'#d99b3c'},marker);
     }
-    const guides = element('g', { 'aria-hidden': 'true' }, svg);
-    for (const radius of [85, 180, 275, 360]) {
-      element('circle', { cx: 0, cy: 0, r: radius, class: 'orbit-guide' }, guides);
+    element('rect',{x:-500,y:-500,width:1000,height:1000,class:'radial-background'},svg);
+    const backdrop=element('g',{'aria-hidden':'true'},svg);
+    element('circle',{cx:0,cy:0,r:405,class:'radial-guide'},backdrop);
+    element('text',{x:0,y:-470,class:'radial-caption'},backdrop,
+      'THE COLLATZ TREE · '+model.count+' STARTING INTEGERS');
+
+    const edgeLayer=element('g',{'aria-label':'Forward Collatz connections'},svg);
+    const arcLayer=element('g',{'aria-label':'The 1 to 4 return cycle'},svg);
+    const nodeLayer=element('g',{'aria-label':'Unique integer nodes'},svg);
+    const tipLayer=element('g',{'aria-label':'Terminal values around the circumference'},svg);
+    const edges=new Map(),nodes=new Map(),starts=new Map(),entries=new Map();
+
+    // Draw every mathematical connection exactly once. Grey, straight
+    // filaments match the reference; selected orbits use cyan and gold.
+    for(const edge of model.edges.values()){
+      const from=model.nodes.get(edge.from),to=model.nodes.get(edge.to);
+      const strokeWidth=trafficToggle.checked
+        ? 0.95+Math.min(1.9,Math.log2(edge.traffic+1)*0.37)
+        : 1.12;
+      const line=element('path',{
+        class:'orbit-edge',
+        d:'M'+fmt(from.x)+','+fmt(from.y)+' L'+fmt(to.x)+','+fmt(to.y),
+        'stroke-width':fmt(strokeWidth)
+      },edgeLayer);
+      element('title',{},line,edge.from+' → '+edge.to+
+        ' · '+edge.type+' rule · shared by '+edge.traffic+' starting orbit(s)');
+      edges.set(edge.key,line);
     }
-    element('circle', { cx: 0, cy: 0, r: 429, class: 'orbit-guide outer' }, guides);
-    element('text', { x: 0, y: -494, class: 'orbit-center-name' },
-      guides, 'STARTING VALUES 1–' + model.count);
-    element('text', { x: 0, y: 4, class: 'orbit-center-name' },
-      guides, 'CYCLE');
 
-    const entryGroup = element('g', { 'aria-label': 'Starting markers' }, svg);
-    const edgeGroup = element('g', { 'aria-label': 'Shared Collatz paths' }, svg);
-    const nodeGroup = element('g', { 'aria-label': 'Visited integers' }, svg);
-    const startGroup = element('g', { 'aria-label': 'Selectable starting integers' }, svg);
-    const entries = new Map(), edgeEls = new Map(), nodeEls = new Map(), starts = new Map();
+    const one=model.nodes.get(1), four=model.nodes.get(4);
+    // The additional odd step from 1 to 4 closes the period-three cycle,
+    // but is not a tree edge. Draw it separately as a dashed return arc.
+    const returnArc=element('path',{
+      class:'orbit-cycle',
+      d:'M'+fmt(one.x+4)+','+fmt(one.y-11)+
+        ' Q'+fmt(465)+','+fmt(-74)+
+        ' '+fmt(four.x+5)+','+fmt(four.y-9),
+      'marker-end':'url(#circle-odd-arrow)'
+    },arcLayer);
+    element('title',{},returnArc,'1 → 4 closes the 1 → 4 → 2 → 1 cycle');
 
-    for (let start = 1; start <= model.count; start++) {
-      const angle = -Math.PI / 2 + TAU * (start - 1) / model.count;
-      const a = point(423, angle), b = model.nodes.get(start);
-      const entry = element('path', {
-        d: pathBetween(a, b), class: 'orbit-entry',
-        'data-start': start
-      }, entryGroup);
-      entries.set(start, entry);
-    }
-
-    // Canonical shared edges, with 4->2 and 2->1 curving around the core.
-    for (const edge of model.edges.values()) {
-      const from = model.nodes.get(edge.from);
-      const to = model.nodes.get(edge.to);
-      let d;
-      if (edge.from === 4 && edge.to === 2) {
-        d = 'M-32,-21 Q0,-51 32,-21';
-      } else if (edge.from === 2 && edge.to === 1) {
-        d = 'M32,-21 Q48,18 0,33';
-      } else {
-        d = pathBetween(from, to);
+    for(const node of model.nodes.values()){
+      const group=element('g',{
+        class:'orbit-node-group',
+        role:'button',tabindex:0,
+        'data-value':node.value,
+        'aria-label':'Highlight forward Collatz orbit starting at '+node.value
+      },nodeLayer);
+      const core=node.value===1;
+      const radius=core?11.4:node.radius;
+      element('circle',{
+        cx:fmt(node.x),cy:fmt(node.y),r:fmt(radius),
+        fill:radialColor(node.distance)
+      },group);
+      const showLabel=core || (model.count<=25 && radius>=4.4)
+        || (node.value<=100 && radius>=6.4 && model.count<=100);
+      if(showLabel){
+        element('text',{
+          x:fmt(node.x),y:fmt(node.y+.5),
+          class:'radial-node-label'+(core||node.distance<8||node.distance>105?' light':''),
+          'font-size':core?10:(radius<7?7:9)
+        },group,node.value);
       }
-      const thick = trafficToggle.checked
-        ? 1.15 + Math.min(4.4, Math.log2(edge.traffic + 1) * 0.85) : 1.75;
-      const path = element('path', {
-        d, class: 'orbit-edge', stroke: colours[edge.type],
-        'stroke-width': fmt(thick), 'data-first-seen': edge.firstSeen
-      }, edgeGroup);
-      element('title', {}, path, edge.from + ' → ' + edge.to +
-        ' · ' + edge.type + ' rule · used by ' + edge.traffic + ' starting orbit(s)');
-      edgeEls.set(edge.key, path);
+      element('title',{},group,node.value+' · '+node.distance+
+        ' steps to 1 · visited by '+node.traffic+' starting orbit(s)');
+      const onSelect=()=>selectStart(node.value);
+      group.addEventListener('click',onSelect);
+      group.addEventListener('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){event.preventDefault();onSelect();}
+      });
+      nodes.set(node.value,group);
     }
 
-    // The forward orbit doesn't terminate at 1: 1 -> 4 closes the cycle.
-    const returnArc = element('path', {
-      d: 'M0,33 Q-50,17 -32,-21',
-      class: 'orbit-cycle-arrow', stroke: colours.odd,
-      'marker-end': 'url(#circle-odd-arrow)'
-    }, edgeGroup);
-    element('title', {}, returnArc, '1 → 4 · the odd step that closes the 4–2–1 cycle');
-
-    for (const node of model.nodes.values()) {
-      const core = node.value === 1 || node.value === 2 || node.value === 4;
-      const radius = nodeRadius(node, model.count);
-      const g = element('g', { 'data-first-seen': node.firstSeen }, nodeGroup);
-      element('circle', {
-        cx: fmt(node.x), cy: fmt(node.y), r: fmt(radius),
-        class: 'orbit-node' + (core ? ' is-core' : '')
-      }, g);
-      if (core || (model.count <= 25 && node.value <= 16 && node.traffic >= 2)) {
-        element('text', {
-          x: fmt(node.x), y: fmt(node.y + (core ? 1 : -radius - 8)),
-          class: 'orbit-inner-label' + (core ? ' core' : '')
-        }, g, node.value);
-      }
-      element('title', {}, g,
-        String(node.value) + ' · ' + node.distance + ' steps to 1 · visited by ' +
-        node.traffic + ' of ' + model.count + ' starting orbits');
-      nodeEls.set(node.value, g);
-    }
-
-    for (let start = 1; start <= model.count; start++) {
-      const angle = -Math.PI / 2 + TAU * (start - 1) / model.count;
-      const p = point(429, angle);
-      const g = element('g', {
-        class: 'orbit-start', tabindex: '0', role: 'button',
-        'aria-label': 'Highlight Collatz orbit starting at ' + start,
-        'aria-pressed': 'false', 'data-start': start
-      }, startGroup);
-      element('circle', {
-        cx: fmt(p.x), cy: fmt(p.y), r: model.count >= 100 ? 10 : 12,
-        class: 'orbit-start-disc'
-      }, g);
-      const label = element('text', {
-        x: fmt(p.x), y: fmt(p.y + 0.6), class: 'orbit-start-label'
-      }, g, start);
-      label.setAttribute('font-size', model.count >= 100 ? '10.8' :
-        model.count >= 50 ? '11.8' : '13');
-      element('title', {}, g, 'Click to trace the orbit of ' + start);
-      g.addEventListener('mouseenter', () => {
-        state.hovered = start;
-        updateEmphasis();
-      });
-      g.addEventListener('mouseleave', () => {
-        state.hovered = null;
-        updateEmphasis();
-      });
-      g.addEventListener('focus', () => {
-        state.hovered = start;
-        updateEmphasis();
-      });
-      g.addEventListener('blur', () => {
-        state.hovered = null;
-        updateEmphasis();
-      });
-      g.addEventListener('click', () => selectStart(start));
-      g.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          selectStart(start);
+    // Only actual terminal nodes sit on the outer boundary. A starting
+    // number visited by another start remains a single INNER node.
+    for(const value of model.tips){
+      const node=model.nodes.get(value);
+      const angle=node.angle;
+      const radius=431;
+      const p=point(radius,angle);
+      const label=String(value),width=14+6.2*label.length;
+      const group=element('g',{
+        class:'orbit-start',role:'button',tabindex:0,
+        'aria-label':'Highlight Collatz orbit beginning at '+value,
+        'aria-pressed':'false'
+      },tipLayer);
+      element('rect',{
+        x:fmt(p.x-width/2),y:fmt(p.y-9),width:fmt(width),height:18,rx:9
+      },group);
+      element('text',{x:fmt(p.x),y:fmt(p.y+0.5)},group,value);
+      group.addEventListener('click',()=>selectStart(value));
+      group.addEventListener('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){
+          event.preventDefault();selectStart(value);
         }
       });
-      starts.set(start, g);
+      element('title',{},group,'Terminal starting value '+value);
+      starts.set(value,group);
     }
-    state.elements = { entries, edges: edgeEls, nodes: nodeEls, starts, returnArc };
+    state.elements={edges,nodes,starts,entries,returnArc};
     updateEmphasis();
   }
 
