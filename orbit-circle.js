@@ -1,8 +1,9 @@
 /* The Collatz Laboratory | Circular Representation
- * The outer circumference contains selectable START MARKERS, not duplicate
- * Collatz nodes. Every integer visited has exactly one canonical inner node.
- * Radius is based on steps remaining to 1, using a nonlinear display scale.
- * The 1 -> 4 -> 2 -> 1 cycle is drawn as a clearly labelled central loop.
+ * Real forward Collatz orbits radiate from a single 1 at (0, 0).
+ * Every visited integer is represented by one canonical node. Actual
+ * terminal values sit on the outer ring and intermediate nodes occupy
+ * nested angular sectors, keeping the displayed tree free of crossings.
+ * The separate 1 -> 4 return arc closes the cycle, outside the tree.
  */
 (function () {
   'use strict';
@@ -113,41 +114,39 @@
       node.children.forEach(visit);
     }
     visit(1);
-    // Root 1 and actual terminal nodes lie around the outer perimeter.
-    const ring = [1, ...tips], R = 405;
-    ring.forEach((value,i) => {
-      const node = nodes.get(value), angle = 2*Math.PI*i/ring.length;
-      node.fixed = true; node.angle = angle;
-      node.x = R*Math.cos(angle); node.y = R*Math.sin(angle);
-    });
-    // Exact harmonic embedding of this tree: eliminate unknown interior
-    // vertices bottom-up, then back-substitute from the boundary root.
-    function eliminate(value) {
-      const n = nodes.get(value);
-      if (n.fixed) return;
-      let denominator = n.children.length+1, bx=0, by=0;
-      for (const v of n.children) {
-        eliminate(v);
-        const ch = nodes.get(v);
-        if (ch.fixed) { bx+=ch.x; by+=ch.y; }
-        else { denominator-=ch.alpha; bx+=ch.betaX; by+=ch.betaY; }
+    // The bullseye is the actual value 1 at (0,0).
+    // Root the tree here and reserve a contiguous angular sector for the
+    // terminal leaves of each subtree, preserving the planar embedding.
+    const R = 405, leafCount = tips.length;
+    const tipIndex = new Map(tips.map((value, index) => [value, index]));
+    function assignSectors(value, depth) {
+      const node = nodes.get(value);
+      node.depth = depth;
+      if (!node.children.length) {
+        node.firstTip = node.lastTip = tipIndex.get(value);
+        return;
       }
-      if (denominator<=0) throw Error('Invalid radial layout');
-      n.alpha = 1/denominator; n.betaX=bx/denominator; n.betaY=by/denominator;
+      node.children.forEach(child => assignSectors(child, depth + 1));
+      node.firstTip = Math.min(...node.children.map(v => nodes.get(v).firstTip));
+      node.lastTip = Math.max(...node.children.map(v => nodes.get(v).lastTip));
     }
-    function place(value) {
-      const parent=nodes.get(value);
-      for (const v of parent.children) {
-        const ch=nodes.get(v);
-        if (!ch.fixed) {
-          ch.x = ch.alpha*parent.x+ch.betaX;
-          ch.y = ch.alpha*parent.y+ch.betaY;
-        }
-        place(v);
-      }
+    assignSectors(1, 0);
+    const greatestDepth = Math.max(...Array.from(nodes.values(), n => n.depth));
+    // Tested easing preserves uncrossed branches at every available count,
+    // with more room around the central 1 -> 2 -> 4 path.
+    const easing = count <= 25 ? 1 : count === 100 ? 0.75 : 0.65;
+    for (const node of nodes.values()) {
+      const midpoint = (node.firstTip + node.lastTip) / 2;
+      node.angle = (midpoint + 0.5) * 2 * Math.PI / leafCount - Math.PI / 2;
+      const radial = node.value === 1 ? 0
+        : node.children.length === 0 ? R
+        : R * Math.pow(node.depth / greatestDepth, easing);
+      node.x = radial * Math.cos(node.angle);
+      node.y = radial * Math.sin(node.angle);
+      node.fixed = node.value === 1 || node.children.length === 0;
     }
-    nodes.get(1).children.forEach(eliminate);
-    place(1);
+    nodes.get(1).x = 0;
+    nodes.get(1).y = 0;
     // Nearest-neighbour sizing avoids overlapping circles in dense chains.
     const list=[...nodes.values()];
     const maxRadius = count<=25?11:count<=50?9.6:count<=100?8.4:count<=250?7:5.7;
@@ -191,6 +190,8 @@
     '.orbit-edge.highlight-odd{stroke:#d99b3c!important}',
     '.orbit-node-group{cursor:pointer;outline:none;transition:opacity .15s}',
     '.orbit-node-group circle{stroke:#2c3441;stroke-opacity:.33;stroke-width:.78}',
+    '.orbit-node-group.is-root circle{stroke:#cba66e;stroke-opacity:1;stroke-width:2.4}',
+    '.radial-bullseye{fill:#eec779;fill-opacity:.04;stroke:#c7a56d;stroke-opacity:.44;stroke-width:1.2;stroke-dasharray:3.5 4.5}',
     '.orbit-node-group:hover circle,.orbit-node-group:focus-visible circle{stroke:#1b2335;stroke-width:2.5}',
     '.orbit-node-group.is-selected circle{stroke:#1b2335;stroke-width:2.7}',
     '.radial-node-label{pointer-events:none;text-anchor:middle;dominant-baseline:central;fill:#1d2635;font:600 9px Inter,system-ui,sans-serif;paint-order:stroke;stroke:#ffffff90;stroke-width:.65}',
@@ -217,7 +218,7 @@
     element('title',{id:'radialDiagramTitle'},svg,
       'Circular tree of the forward Collatz orbits for the first '+model.count+' positive integers');
     element('desc',{id:'radialDiagramDesc'},svg,
-      'The value 1 is at the right edge of the circle. Unique Collatz paths spread into a branching canopy. Each node is one real integer, and the outer white labels identify terminal values.');
+      'The number 1 is in the exact centre. Unique positive integers branch outward in circular sectors, with actual terminal values around the perimeter. Select a node to trace its forward Collatz orbit into 1.');
     element('style',{},svg,embeddedStyle);
     const defs=element('defs',{},svg);
     for(const type of ['even','odd']){
@@ -232,6 +233,10 @@
     element('rect',{x:-500,y:-500,width:1000,height:1000,class:'radial-background'},svg);
     const backdrop=element('g',{'aria-hidden':'true'},svg);
     element('circle',{cx:0,cy:0,r:405,class:'radial-guide'},backdrop);
+    const nearTwo=model.nodes.get(2);
+    const centreGap=Math.hypot(nearTwo.x,nearTwo.y);
+    const centreRadius=Math.min(11.4,Math.max(5.0,centreGap*0.52));
+    element('circle',{cx:0,cy:0,r:centreRadius+8,class:'radial-bullseye'},backdrop);
     element('text',{x:0,y:-470,class:'radial-caption'},backdrop,
       'THE COLLATZ TREE · '+model.count+' STARTING INTEGERS');
 
@@ -260,26 +265,36 @@
     }
 
     const one=model.nodes.get(1), four=model.nodes.get(4);
-    // The additional odd step from 1 to 4 closes the period-three cycle,
-    // but is not a tree edge. Draw it separately as a dashed return arc.
+    // Draw 1 -> 4 as a small, independent return arc beside the central
+    // 1 -> 2 -> 4 chain. It is not a second edge of the acyclic tree.
+    const cycleDx=four.x-one.x,cycleDy=four.y-one.y;
+    const cycleLen=Math.hypot(cycleDx,cycleDy);
+    const normalX=cycleDy/cycleLen,normalY=-cycleDx/cycleLen;
+    const curveOffset=Math.max(29,cycleLen*0.70);
+    const cx=(one.x+four.x)/2+normalX*curveOffset;
+    const cy=(one.y+four.y)/2+normalY*curveOffset;
+    const startX=one.x+normalX*(centreRadius+2);
+    const startY=one.y+normalY*(centreRadius+2);
+    const endX=four.x+normalX*(four.radius+4);
+    const endY=four.y+normalY*(four.radius+4);
     const returnArc=element('path',{
       class:'orbit-cycle',
-      d:'M'+fmt(one.x+4)+','+fmt(one.y-11)+
-        ' Q'+fmt(465)+','+fmt(-74)+
-        ' '+fmt(four.x+5)+','+fmt(four.y-9),
+      d:'M'+fmt(startX)+','+fmt(startY)+
+        ' Q'+fmt(cx)+','+fmt(cy)+
+        ' '+fmt(endX)+','+fmt(endY),
       'marker-end':'url(#circle-odd-arrow)'
     },arcLayer);
     element('title',{},returnArc,'1 → 4 closes the 1 → 4 → 2 → 1 cycle');
 
     for(const node of model.nodes.values()){
       const group=element('g',{
-        class:'orbit-node-group',
+        class:'orbit-node-group'+(node.value===1?' is-root':''),
         role:'button',tabindex:0,
         'data-value':node.value,
         'aria-label':'Highlight forward Collatz orbit starting at '+node.value
       },nodeLayer);
       const core=node.value===1;
-      const radius=core?11.4:node.radius;
+      const radius=core?centreRadius:node.radius;
       element('circle',{
         cx:fmt(node.x),cy:fmt(node.y),r:fmt(radius),
         fill:radialColor(node.distance)
@@ -303,8 +318,8 @@
       nodes.set(node.value,group);
     }
 
-    // Only actual terminal nodes sit on the outer boundary. A starting
-    // number visited by another start remains a single INNER node.
+    // Only actual terminal nodes sit on the outer boundary. Every other
+    // number including 1 remains at its canonical inner position.
     for(const value of model.tips){
       const node=model.nodes.get(value);
       const angle=node.angle;
