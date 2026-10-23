@@ -310,3 +310,52 @@
   .fixed-mini-orbit{padding:19px;}
   .fixed-conclusion{padding:20px;}
 }
+
+
+/* Section 03 graph is static unless the scroll controller successfully
+ * initializes. These rules don't hide content for readers without JS. */
+.fixed-graph-scroll-hint {display:none;}
+.fixed-graph-figure.is-scroll-revealing .fixed-graph-scroll-hint {
+  display:inline-flex;
+  margin:-.1rem 0 0;
+  color:#86aabc;
+  font-size:10px;
+  font-weight:750;
+  letter-spacing:.15em;
+  opacity:var(--fixed-scroll-hint-alpha,1);
+  pointer-events:none;
+}
+.fixed-graph-topline {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:13px;
+}
+.fixed-graph-figure.is-scroll-revealing [data-fixed-draw] {
+  stroke-dasharray:1000;
+  stroke-dashoffset:1000;
+}
+.fixed-graph-figure.is-scroll-revealing [data-fixed-reveal] {
+  opacity:0;
+}
+.fixed-graph-figure .fixed-point-label {
+  paint-order:stroke fill;
+  stroke:#0a1624;
+  stroke-width:3.3;
+  stroke-linejoin:round;
+}
+@media(max-width:690px) {
+  .fixed-graph-topline {flex-wrap:wrap;gap:5px 12px;}
+  .fixed-graph-figure.is-scroll-revealing .fixed-graph-scroll-hint {
+    font-size:9px;
+    letter-spacing:.08em;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .fixed-graph-figure [data-fixed-draw] {
+    stroke-dasharray:none !important;
+    stroke-dashoffset:0 !important;
+  }
+  .fixed-graph-figure [data-fixed-reveal] {opacity:1 !important;}
+  .fixed-graph-scroll-hint {display:none !important;}
+}
