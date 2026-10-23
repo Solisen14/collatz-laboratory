@@ -24,7 +24,7 @@
   const saveButton = document.getElementById('circleSave');
   const clearButton = document.getElementById('circleClear');
 
-  if (!svg || !standard || !circular || cards.length !== 2) return;
+  if (!svg || !standard || !circular || cards.length < 2) return;
 
   const state = {
     mode: 'standard', count: 250, selected: null, hovered: null,
