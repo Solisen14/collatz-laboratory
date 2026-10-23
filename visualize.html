@@ -290,12 +290,12 @@
           </div>
           <div>
             <label class="angle-control-label" for="angleExponent">Step-length exponent <output id="angleExponentValue" for="angleExponent">1.20</output></label>
-            <input id="angleExponent" type="range" min="0.70" max="1.85" step="0.05" value="1.20"/>
-            <p class="angle-mini-help">Controls how quickly steps shrink for large values.</p>
+            <input id="angleExponent" type="range" min="0.01" max="3.00" step="0.01" value="1.20"/>
+            <p class="angle-mini-help">Determines how step lengths depend on the values visited.</p>
           </div>
           <div>
             <label class="angle-control-label" for="angleStrength">Turning strength <output id="angleStrengthValue" for="angleStrength">0.34</output></label>
-            <input id="angleStrength" type="range" min="0.05" max="0.90" step="0.01" value="0.34"/>
+            <input id="angleStrength" type="range" min="0" max="1" step="0.01" value="0.34"/>
             <p class="angle-mini-help">Controls how sharply parity changes the direction.</p>
           </div>
         </div>
