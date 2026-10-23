@@ -7,7 +7,7 @@
   <title>The Collatz Laboratory · Visualize</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
   <link rel="stylesheet" href="visualizer.css?v=20261021-story-tree-1" />
-  <link rel="stylesheet" href="orbit-circle.css?v=20261023-1" />
+  <link rel="stylesheet" href="orbit-circle.css?v=20261023-radial-2" />
 </head>
 <body class="visualizer-body">
   <header class="site-header">
@@ -31,7 +31,7 @@
     <section class="visualizer-hero">
       <p class="eyebrow">COLLATZ LABORATORY · INTERACTIVE VISUALIZATIONS</p>
       <h1>Explore the Collatz structure.</h1>
-      <p class="visualizer-sub">Two perspectives on the same simple rule. Grow a reverse Collatz tree from 1, or follow the orbits of 25, 50, or 100 starting integers as their paths merge toward a repeating cycle.</p>
+      <p class="visualizer-sub">Two ways to see the same mathematics. Explore the upward-growing reverse tree, or discover how hundreds of real Collatz orbits form a colourful circular branching structure.</p>
     </section>
 
     <section class="visualizer-picker" aria-labelledby="view-picker-heading">
@@ -48,15 +48,37 @@
         </button>
         <button type="button" class="visualizer-mode-card" data-visualizer-mode="circular" aria-pressed="false" aria-controls="circleWorkspace">
           <span class="visualizer-mode-thumb" aria-hidden="true"><svg viewBox="0 0 180 115" xmlns="http://www.w3.org/2000/svg">
-<circle cx="90" cy="57" r="48" fill="none" stroke="#7198bf" stroke-opacity=".5" stroke-width="1.5"/>
-<circle cx="90" cy="57" r="24" fill="none" stroke="#7198bf" stroke-opacity=".26"/>
-<g fill="none" stroke-width="1.8" stroke-linecap="round">
-<path d="M90 9Q116 33 105 62Q96 76 88 68 M138 57Q120 45 106 61 M42 57Q63 46 77 61Q80 67 88 68 M124 92Q109 82 88 68" stroke="#7ae7ff"/>
-<path d="M125 22Q117 43 106 61 M90 105Q69 75 88 68 M55 22Q69 40 77 61" stroke="#ffd479"/></g>
-<g fill="#101827" stroke="#7ae7ff" stroke-width="1.5"><circle cx="90" cy="9" r="4"/><circle cx="138" cy="57" r="4"/><circle cx="90" cy="105" r="4"/><circle cx="42" cy="57" r="4"/><circle cx="106" cy="61" r="4"/><circle cx="77" cy="61" r="4"/></g>
-<g fill="#101827" stroke="#ffd479" stroke-width="1.5"><circle cx="125" cy="22" r="4"/><circle cx="55" cy="22" r="4"/><circle cx="124" cy="92" r="4"/><circle cx="88" cy="68" r="6"/></g>
-<text x="88" y="70.7" text-anchor="middle" fill="#fff5df" font-size="7" font-family="system-ui">1</text></svg></span>
-          <span class="visualizer-mode-copy"><small>02 · Forward orbits</small><strong>Circular Representation</strong><span>Start around the circle. Watch different numbers flow into shared paths and the central cycle.</span></span>
+  <circle cx="90" cy="57" r="48" fill="none" stroke="#8194a4" stroke-opacity=".5" stroke-width="1"/>
+  <g fill="none" stroke="#9eafbc" stroke-width="1.6" stroke-linecap="round">
+    <path d="M138 57L122 57L108 57L95 57L86 55L76 46L64 37L53 21"/>
+    <path d="M86 55L76 66L64 80L54 95"/>
+    <path d="M76 46L63 53L50 58L43 75L39 90"/>
+    <path d="M64 37L56 33L45 24L39 13"/>
+    <path d="M64 80L74 91L87 101"/>
+    <path d="M95 57L92 43L91 29L91 11"/>
+    <path d="M76 66L93 73L110 83L125 97"/>
+    <path d="M50 58L37 49L29 38"/>
+  </g>
+  <g stroke="#435564" stroke-width=".5">
+    <circle cx="138" cy="57" r="6" fill="#1c202b"/>
+    <circle cx="122" cy="57" r="4" fill="#7d62af"/>
+    <circle cx="108" cy="57" r="4" fill="#358cbb"/>
+    <circle cx="95" cy="57" r="4" fill="#70b79e"/>
+    <circle cx="86" cy="55" r="4" fill="#b4d879"/>
+    <circle cx="76" cy="46" r="4" fill="#e8dc72"/>
+    <circle cx="64" cy="37" r="4" fill="#ffc06a"/>
+    <circle cx="53" cy="21" r="4" fill="#ef7863"/>
+    <circle cx="76" cy="66" r="4" fill="#ecbd62"/>
+    <circle cx="64" cy="80" r="4" fill="#db715f"/>
+    <circle cx="54" cy="95" r="4" fill="#b73165"/>
+    <circle cx="50" cy="58" r="4" fill="#c4d96c"/>
+    <circle cx="43" cy="75" r="3" fill="#d0a95e"/>
+    <circle cx="91" cy="11" r="3" fill="#67bdb4"/>
+    <circle cx="87" cy="101" r="3" fill="#aa4c80"/>
+    <circle cx="125" cy="97" r="3" fill="#e4c264"/>
+  </g>
+</svg></span>
+          <span class="visualizer-mode-copy"><small>02 · Circular orbit tree</small><strong>Circular Representation</strong><span>Follow genuine orbits through a radial canopy, with 1 on the outer rim.</span></span>
         </button>
       </div>
     </section>
@@ -174,41 +196,47 @@
       <aside class="circle-controls">
         <p class="step-number">WORKSPACE · 02</p>
         <h2>Circular Representation</h2>
-        <p class="circle-controls-description">Explore the forward Collatz orbits of consecutive positive integers. Paths join when they reach the same number, and the familiar 1 → 4 → 2 → 1 cycle sits at the centre.</p>
+        <p class="circle-controls-description">See a circular tree built from real forward Collatz orbits. The value 1 sits on the right-hand edge; unique number paths branch inward and around the circle. Selecting a node traces its orbit to 1.</p>
 
         <h3 class="circle-controls-label">How many starting integers?</h3>
         <div class="circle-count-options" role="group" aria-label="Starting integer range">
-          <button type="button" data-orbit-count="25" aria-pressed="true" class="is-active">1–25</button>
+          <button type="button" data-orbit-count="25" aria-pressed="false">1–25</button>
           <button type="button" data-orbit-count="50" aria-pressed="false">1–50</button>
           <button type="button" data-orbit-count="100" aria-pressed="false">1–100</button>
+          <button type="button" data-orbit-count="250" aria-pressed="true" class="is-active">1–250</button>
         </div>
         <div class="circle-select-wrap">
           <label for="circleFocus">Highlight a starting number</label>
           <select id="circleFocus"><option value="">All starting values</option></select>
         </div>
-        <label class="circle-traffic-toggle"><input id="circleTraffic" type="checkbox" checked /> Thicken paths shared by more orbits</label>
+        <label class="circle-traffic-toggle"><input id="circleTraffic" type="checkbox" /> Emphasize frequently shared paths</label>
         <div class="circle-action-row">
           <button id="circleAnimate" type="button">Animate orbits</button>
           <button id="circleClear" type="button">Clear highlight</button>
           <button id="circleSave" type="button">Save SVG</button>
         </div>
         <div class="circle-mini-legend" aria-label="Orbit diagram legend">
-          <span><i class="even"></i> Even step: divide by 2</span>
-          <span><i class="odd"></i> Odd step: multiply by 3, add 1</span>
-          <span><i class="entry"></i> Outer starting marker (not a Collatz step)</span>
+          <span><i class="even"></i> Cyan when selected: even step, divide by 2</span>
+          <span><i class="odd"></i> Gold when selected: odd step, 3n + 1</span>
+          <span><i class="entry"></i> White labels: terminal values on the rim</span>
         </div>
-        <p class="circle-controls-note"><strong>How to read the circle.</strong> The numbered points around the rim are clickable starting markers. Inside, each visited integer occupies one shared node. Values with more steps remaining to reach 1 are placed farther outward. Radial distances are compressed to make long orbits visible, and the layout curves are illustrative rather than geometric measurements.</p>
+        <p class="circle-controls-note"><strong>How to read the circle.</strong> Black 1 sits at the right edge. Each coloured dot represents a distinct integer; fine grey lines join values that are consecutive Collatz iterates. The white labels identify the terminal branches. The layout positions come from the branching network rather than numerical size or iteration count. The dashed return arrow illustrates 1 → 4, completing the repeating cycle.</p>
       </aside>
       <section class="circle-stage" aria-label="Interactive circular Collatz diagram">
         <div class="circle-stage-heading">
           <p class="eyebrow">ORBIT CIRCLE · LIVE MATHEMATICS</p>
-          <h2>Many beginnings. Shared paths.</h2>
+          <h2>One rule. A circular canopy.</h2>
           <p id="circleStats" class="circle-stats">Choose Circular Representation to generate the diagram.</p>
         </div>
-        <div class="circle-canvas-wrap">
-          <svg id="circleSvg" class="circle-canvas" viewBox="-540 -540 1080 1080" role="img" aria-label="Collatz circular orbit diagram"></svg>
+        <div class="circle-zoom-tools" aria-label="Circular diagram zoom controls">
+          <button id="circleZoomOut" type="button" aria-label="Zoom out">−</button>
+          <button id="circleZoomIn" type="button" aria-label="Zoom in">+</button>
+          <button id="circleFit" type="button">Fit</button>
         </div>
-        <div id="circleDetails" class="circle-details" aria-live="polite">Click an outer starting value to follow its orbit to 1.</div>
+        <div class="circle-canvas-wrap">
+          <svg id="circleSvg" class="circle-canvas" viewBox="-500 -500 1000 1000" role="img" aria-label="Radial Collatz orbit tree with 1 on the right-hand rim"></svg>
+        </div>
+        <div id="circleDetails" class="circle-details" aria-live="polite">Select a number on the diagram or from the menu to follow its orbit to 1.</div>
         <p id="circleStatus" class="circle-status" aria-live="polite">Ready.</p>
       </section>
     </section>
@@ -216,6 +244,6 @@
 
   <script src="visualizer.js?v=20261021-story-tree-1"></script>
   <script src="visualizer-animation-speed.js?v=20261013-1"></script>
-  <script src="orbit-circle.js?v=20261023-1"></script>
+  <script src="orbit-circle.js?v=20261023-radial-2"></script>
 </body>
 </html>
