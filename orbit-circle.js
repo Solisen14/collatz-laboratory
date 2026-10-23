@@ -26,7 +26,7 @@
   if (!svg || !standard || !circular || cards.length !== 2) return;
 
   const state = {
-    mode: 'standard', count: 25, selected: null, hovered: null,
+    mode: 'standard', count: 250, selected: null, hovered: null,
     model: null, elements: null, timer: null, revealed: null
   };
 
@@ -327,11 +327,18 @@
     updateEmphasis();
   }
 
+  function orbitOf(value) {
+    if (state.model.orbits.has(value)) return state.model.orbits.get(value);
+    const p=[value];
+    while (p[p.length-1]!==1 && p.length<2500) p.push(nextValue(p[p.length-1]));
+    return p;
+  }
+
   function detailFor(start) {
     if (start === null) {
       return '<strong>Follow a number.</strong> Click an outer starting value, or choose one from the menu, to trace its orbit to 1. Each inner number appears only once, even when many orbits pass through it.';
     }
-    const path = state.model.orbits.get(start);
+    const path = orbitOf(start);
     const peak = Math.max(...path);
     const shown = path.length <= 21
       ? path.join(' → ')
@@ -345,7 +352,7 @@
     if (!state.elements || !state.model) return;
     const active = state.hovered === null ? state.selected : state.hovered;
     const animating = state.revealed !== null;
-    const path = active === null ? null : state.model.orbits.get(active);
+    const path = active === null ? null : orbitOf(active);
     const visited = path ? new Set(path) : null;
     const highlightedEdges = new Set();
     if (path) {
@@ -362,8 +369,10 @@
       item.classList.toggle('orbit-faint', dim && !hidden);
       item.classList.toggle('orbit-strong', !hidden && active !== null && !dim);
       if (active !== null && !dim && !hidden) {
+        item.setAttribute('stroke', edge.type === 'even' ? '#279bd1' : '#d99b3c');
         item.setAttribute('marker-end', 'url(#circle-' + edge.type + '-arrow)');
       } else {
+        item.removeAttribute('stroke');
         item.removeAttribute('marker-end');
       }
     }
@@ -406,7 +415,7 @@
     stopAnimation();
     state.selected = state.selected === start ? null : start;
     state.hovered = null;
-    focus.value = state.selected === null ? '' : String(state.selected);
+    focus.value = state.selected !== null && state.selected <= state.count ? String(state.selected) : '';
     updateEmphasis();
   }
 
@@ -427,6 +436,7 @@
     }
     stats.textContent = count + ' starting integers · ' +
       state.model.nodes.size + ' distinct values · ' +
+      state.model.tips.length + ' terminal branches · ' +
       state.model.longest.steps + ' maximum steps (' +
       state.model.longest.starting + ') · peak ' +
       state.model.peak.toLocaleString();
@@ -539,6 +549,9 @@
       edges: model.edges.size,
       stepsTo1: model.maxDepth,
       peak: model.peak,
+      tips: model.tips.slice(),
+      points: [...model.nodes.values()].map(n=>({value:n.value,x:n.x,y:n.y,r:n.radius})),
+      connections: [...model.edges.values()].map(e=>({from:e.from,to:e.to})),
       orbit: (start) => (model.orbits.get(start) || []).slice()
     };
   };
