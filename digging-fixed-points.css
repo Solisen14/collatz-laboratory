@@ -1,0 +1,312 @@
+/* Digging Deeper · Section 03: Fixed Points and Periodic Orbits.
+ * Editorial, accessible diagrams. No JavaScript or external math fonts.
+ */
+.digging-article-fixed {
+  margin-top: 54px;
+  padding-top: 65px;
+}
+.digging-article-fixed .article-heading { margin-bottom: 30px; }
+.digging-article-fixed .article-prose h3:first-child { margin-top: 0; }
+
+.fixed-math {
+  font-family: "Cambria Math","STIX Two Math","Times New Roman",serif;
+  color: #f3f8ff;
+  font-size: 1.08em;
+  font-style: italic;
+}
+.fixed-math sup { font-size: .69em; font-style: normal; }
+
+.fixed-equations {
+  max-width: 740px;
+  padding: 23px 30px;
+  margin: 23px 0 35px;
+  border-left: 3px solid rgba(122,231,255,.8);
+  border-radius: 0 13px 13px 0;
+  background: linear-gradient(90deg, rgba(19,38,55,.75), rgba(15,25,43,.48));
+  display: grid;
+  gap: 13px;
+  color: #ecf7ff;
+}
+.fixed-equations p {
+  margin: 0;
+  font: 510 clamp(22px,2.7vw,31px)/1.4 "Cambria Math","STIX Two Math",serif;
+}
+.fixed-equations p + p {
+  padding-top: 11px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.fixed-equations .fixed-equation-result {color:#ffd479;font-weight:590;}
+.fixed-equations .fixed-equation-note {
+  margin: 0;
+  color: #9ab0c4;
+  font: 480 13px/1.65 Inter,ui-sans-serif,system-ui,sans-serif;
+}
+.fixed-equations.case-even { border-left-color:#7ae7ff; }
+.fixed-equations.case-odd { border-left-color:#ffd479; }
+
+.fixed-graph-figure, .periodic-figure {
+  max-width: 900px;
+  margin: 40px 0 50px;
+  padding: 25px 28px 23px;
+  border: 1px solid rgba(122,231,255,.19);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 12% 20%,rgba(45,95,125,.16),transparent 50%),
+    linear-gradient(130deg,rgba(13,28,44,.9),rgba(7,13,24,.96));
+}
+.fixed-graph-layout {
+  display: grid;
+  grid-template-columns: minmax(0,1.45fr) minmax(225px,.72fr);
+  gap: 22px;
+  align-items: center;
+  margin: 18px 0 18px;
+}
+.fixed-graph-plot {
+  min-width: 0;
+}
+.fixed-graph-plot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.fixed-graph-annotations {
+  padding: 18px 0 17px 23px;
+  border-left: 1px solid rgba(122,231,255,.15);
+}
+.fixed-graph-annotations h4 {
+  margin: 0 0 9px;
+  color: #a2b6c7;
+  font-size: 10px;
+  font-weight: 770;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+}
+.fixed-graph-annotations h4:not(:first-child) {
+  margin-top: 29px;
+}
+.fixed-graph-annotations .fixed-math-line {
+  margin: 0 0 9px;
+  color: #f6f9ff;
+  font: 500 23px/1.5 "Cambria Math","STIX Two Math",serif;
+}
+.fixed-graph-annotations .fixed-math-line em {
+  color: #ffd479;
+  font-style: normal;
+}
+.fixed-graph-annotations p {
+  margin: 0;
+  color: #aebfce;
+  font-size: 14px;
+  line-height: 1.68;
+}
+.fixed-graph-annotations .fixed-negative-emphasis {
+  color: #ffabc9;
+}
+.fixed-graph-figure figcaption, .periodic-figure figcaption {
+  padding-top: 17px;
+  border-top: 1px solid rgba(255,255,255,.09);
+  color: #9daec3;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.fixed-graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 21px;
+  margin: -3px 0 17px;
+  color:#aabdd0;
+  font-size:12px;
+}
+.fixed-graph-legend span {display:inline-flex;align-items:center;gap:8px;}
+.fixed-graph-legend i {
+  display:inline-block;
+  width:17px;
+  height:2px;
+  border-radius:3px;
+}
+.fixed-graph-legend .quad-line {background:#7ae7ff;}
+.fixed-graph-legend .identity-line {background:#ffd479;}
+.fixed-graph-legend .off-point {width:8px;height:8px;border-radius:50%;background:#ff97bb;}
+.fixed-mini-orbit {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px 13px;
+  max-width:735px;
+  margin: 22px 0 29px;
+  padding: 19px 25px;
+  border: 1px solid rgba(255,151,187,.21);
+  border-radius: 13px;
+  background: rgba(65,31,53,.24);
+  color: #d5c8d3;
+}
+.fixed-mini-orbit .fixed-mini-label {
+  width: 100%;
+  color: #dcb3c7;
+  font-weight: 760;
+  letter-spacing: .16em;
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+.fixed-mini-orbit .fixed-mini-values {
+  color: #f4f8ff;
+  font: 530 clamp(21px,2.8vw,30px) "Cambria Math","STIX Two Math",serif;
+  letter-spacing: .01em;
+}
+.fixed-mini-values .fixed-start {color:#ffabc9;}
+.fixed-mini-values .fixed-arrived {color:#ffd479;}
+.fixed-mini-values .fixed-arrow {color:#8ab9c9; margin:0 .08em;}
+.fixed-mini-orbit .fixed-mini-explanation {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #b7c3d1;
+}
+.fixed-case-grid {
+  max-width: 795px;
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 15px;
+  margin: 25px 0 37px;
+}
+.fixed-case-card {
+  border: 1px solid rgba(122,231,255,.18);
+  background: rgba(15,29,46,.68);
+  border-radius: 13px;
+  padding: 23px 23px 20px;
+}
+.fixed-case-card.odd {border-color:rgba(255,212,121,.19);}
+.fixed-case-card .fixed-case-tag {
+  color:#7ae7ff;
+  font-size: 11px;
+  font-weight:730;
+  letter-spacing:.13em;
+  margin:0 0 15px;
+}
+.fixed-case-card.odd .fixed-case-tag {color:#ffd479;}
+.fixed-case-card .fixed-case-expression {
+  font: 520 clamp(19px,2.2vw,27px)/1.65 "Cambria Math","STIX Two Math",serif;
+  color:#f3f8ff;
+  margin:0 0 9px;
+}
+.fixed-case-card .fixed-case-answer {
+  font: 560 clamp(24px,2.4vw,30px) "Cambria Math","STIX Two Math",serif;
+  color:#ffd479;
+  margin:0 0 12px;
+}
+.fixed-case-card .fixed-case-detail {
+  font-size: 13px;
+  color:#a9bdcf;
+  line-height:1.7;
+  margin:0;
+}
+.fixed-note {
+  max-width: 735px;
+  margin: 28px 0 38px;
+  padding: 19px 25px;
+  border-radius: 11px;
+  background: rgba(35,52,76,.32);
+  border: 1px solid rgba(122,231,255,.14);
+  color: #c4d6e6;
+  font-size: 16px;
+  line-height: 1.75;
+}
+.fixed-note strong {color:#ffe1a7;}
+.fixed-period-math {
+  max-width: 795px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 28px 0 34px;
+  padding: 21px 24px;
+  background: rgba(65,46,26,.24);
+  border: 1px solid rgba(255,212,121,.22);
+  border-radius: 12px;
+  color: #ffd479;
+  font: 570 clamp(22px,2.7vw,30px)/1.6 "Cambria Math","STIX Two Math",serif;
+}
+.fixed-period-math .fixed-period-detail {
+  flex: 1;
+  min-width: 170px;
+  color: #b9c8d8;
+  font: 450 14px/1.65 Inter,ui-sans-serif,system-ui,sans-serif;
+}
+.periodic-figure .periodic-viewport {padding: 17px 0 4px;overflow-x:auto; scrollbar-width:thin;}
+.periodic-figure .periodic-viewport svg {display:block;width:100%;min-width:700px;height:auto;}
+.periodic-legend {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px 20px;
+  margin:3px 0 18px;
+  color:#afbfcd;
+  font-size:12px;
+}
+.periodic-legend span {display:inline-flex;align-items:center;gap:8px;}
+.periodic-legend i {display:inline-block;width:17px;height:2px;border-radius:3px;}
+.periodic-legend i.odd {background:#ffd479;}
+.periodic-legend i.even {background:#7ae7ff;}
+.periodic-legend i.cycle {width:9px;height:9px;border:1.5px solid #eac588;border-radius:50%;background:rgba(235,194,112,.13);}
+.fixed-conclusion {
+  max-width: 790px;
+  margin: 40px 0 45px;
+  padding: 25px 30px;
+  border-left: 3px solid #ffd479;
+  border-radius: 0 13px 13px 0;
+  background: linear-gradient(105deg, rgba(53,41,26,.35), rgba(17,27,44,.44));
+}
+.fixed-conclusion > span {
+  display:block;
+  margin-bottom:8px;
+  font-size:10px;
+  font-weight:750;
+  letter-spacing:.17em;
+  color:#ffd479;
+}
+.fixed-conclusion p {
+  margin:0;
+  font-size:clamp(17px,1.8vw,21px);
+  line-height:1.7;
+  color:#e0eaf5;
+}
+.fixed-conclusion strong {color:#ffe3b0;}
+.digging-article-fixed .article-prose p a, .fixed-conclusion a {
+  color:#7ae7ff;
+}
+.digging-article-fixed .article-prose p a:hover, .fixed-conclusion a:hover {
+  color:#c4f6ff;
+}
+.digging-article-followup .article-next-topic a,
+.digging-article-followup .article-next-topic a:visited {
+  color: #f0f7fd;
+  text-decoration: none;
+}
+.digging-article-followup .article-next-topic a:hover,
+.digging-article-followup .article-next-topic a:focus-visible {
+  color: #7ae7ff;
+  text-underline-offset: 4px;
+  text-decoration: underline;
+}
+@media (max-width:760px) {
+  .fixed-graph-layout {grid-template-columns:1fr;gap:8px;}
+  .fixed-graph-annotations {
+    border-left:0;
+    border-top:1px solid rgba(122,231,255,.14);
+    padding:19px 0 0;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:0 25px;
+  }
+  .fixed-graph-annotations h4:not(:first-child){margin-top:0;}
+}
+@media (max-width:690px) {
+  .digging-article-fixed {margin-top:35px;padding-top:46px;}
+  .fixed-graph-figure,.periodic-figure{padding:21px 13px;margin:32px 0 38px;}
+  .fixed-equations{padding:18px 20px;}
+  .fixed-graph-annotations{grid-template-columns:1fr;}
+  .fixed-graph-annotations h4:not(:first-child){margin-top:22px;}
+  .fixed-case-grid{grid-template-columns:1fr;}
+  .fixed-case-card{padding:20px;}
+  .fixed-mini-orbit{padding:19px;}
+  .fixed-conclusion{padding:20px;}
+}
