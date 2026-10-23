@@ -70,149 +70,98 @@
   }
 
   function buildOrbitModel(count) {
-    const nodes = new Map();
-    const edges = new Map();
-    const orbits = new Map();
-    let longest = { starting: 1, steps: 0 };
-    let peak = 1;
-
+    const nodes = new Map(), edges = new Map(), orbits = new Map();
+    let peak = 1, longest = { starting: 1, steps: 0 };
     for (let start = 1; start <= count; start++) {
       const path = [start];
       while (path[path.length - 1] !== 1) {
-        const previous = path[path.length - 1];
-        const following = nextValue(previous);
-        if (!Number.isSafeInteger(following) || path.length > 2000) {
-          throw new Error('A Collatz orbit exceeded the safe visualization limit.');
-        }
-        path.push(following);
+        const next = nextValue(path[path.length - 1]);
+        if (path.length > 2500 || !Number.isSafeInteger(next)) throw Error('Orbit exceeds safe limit');
+        path.push(next);
       }
       orbits.set(start, path);
-      if (path.length - 1 > longest.steps) {
-        longest = { starting: start, steps: path.length - 1 };
-      }
-      for (let i = 0; i < path.length; i++) {
-        const value = path[i];
+      if (path.length - 1 > longest.steps) longest = { starting: start, steps: path.length - 1 };
+      path.forEach((value, i) => {
+        const distance = path.length - i - 1;
         peak = Math.max(peak, value);
-        if (!nodes.has(value)) {
-          nodes.set(value, {
-            value, distance: path.length - i - 1, firstSeen: start,
-            traffic: 0, owners: [], x: 0, y: 0
-          });
-        }
+        if (!nodes.has(value)) nodes.set(value, {
+          value, distance, traffic: 0, firstSeen: start,
+          children: [], fixed: false, x: 0, y: 0, radius: 0
+        });
         const node = nodes.get(value);
-        if (node.distance !== path.length - i - 1) {
-          throw new Error('Inconsistent steps-to-1 for Collatz value ' + value);
-        }
+        if (node.distance !== distance) throw Error('Inconsistent distance: ' + value);
         node.traffic++;
-        node.owners.push(start);
         if (i + 1 < path.length) {
           const to = path[i + 1], key = edgeKey(value, to);
-          if (!edges.has(key)) {
-            edges.set(key, {
-              key, from: value, to, type: getRule(value),
-              traffic: 0, firstSeen: start
-            });
-          }
+          if (!edges.has(key)) edges.set(key, {
+            key, from: value, to, type: getRule(value),
+            firstSeen: start, traffic: 0
+          });
           edges.get(key).traffic++;
         }
-      }
+      });
     }
-
-    const maxDepth = Math.max(...Array.from(nodes.values(), (node) => node.distance));
-    const center = {
-      1: { x: 0, y: 33 },
-      2: { x: 32, y: -21 },
-      4: { x: -32, y: -21 }
-    };
-    for (const node of nodes.values()) {
-      if (center[node.value]) {
-        Object.assign(node, center[node.value]);
-        continue;
-      }
-      let sx = 0, sy = 0;
-      for (const origin of node.owners) {
-        const a = -Math.PI / 2 + TAU * (origin - 1) / count;
-        sx += Math.cos(a);
-        sy += Math.sin(a);
-      }
-      node.angle = Math.hypot(sx, sy) < 1e-7
-        ? -Math.PI / 2 + TAU * (node.firstSeen - 1) / count
-        : Math.atan2(sy, sx);
-      // Logically ordered radial layers: more remaining steps => farther out.
-      // The 0.63 exponent makes short and very long journeys readable together.
-      node.radius = 78 + 278 * Math.pow(node.distance / Math.max(1, maxDepth), 0.63);
+    edges.forEach(edge => nodes.get(edge.to).children.push(edge.from));
+    nodes.forEach(node => node.children.sort((a,b) =>
+      Number(b%2!==0) - Number(a%2!==0) || a-b));
+    const tips = [];
+    function visit(value) {
+      const node = nodes.get(value);
+      if (!node.children.length && value !== 1) tips.push(value);
+      node.children.forEach(visit);
     }
-
-    // Spread near-identical preferred angles within one generation, without
-    // changing any edge or the integer's steps-to-1.
-    const byDistance = new Map();
-    for (const node of nodes.values()) {
-      if (node.value <= 4 && center[node.value]) continue;
-      if (!byDistance.has(node.distance)) byDistance.set(node.distance, []);
-      byDistance.get(node.distance).push(node);
-    }
-    for (const group of byDistance.values()) {
-      if (group.length < 2) continue;
-      const radius = group[0].radius;
-      const separation = Math.min(0.30, Math.max(0.058, 19 / radius));
-      for (let pass = 0; pass < 32; pass++) {
-        for (let i = 0; i < group.length; i++) {
-          const a = group[i], b = group[(i + 1) % group.length];
-          if (a === b) continue;
-          let delta = b.angle - a.angle;
-          while (delta > Math.PI) delta -= TAU;
-          while (delta < -Math.PI) delta += TAU;
-          if (Math.abs(delta) < separation) {
-            const sign = delta < 0 ? -1 : 1;
-            const shift = (separation - Math.abs(delta)) * 0.30;
-            a.angle -= sign * shift;
-            b.angle += sign * shift;
-          }
-        }
-      }
-    }
-    // Relax crowded angles without changing radii, node identities or edges.
-    // Compressing 118 steps into a single circular graphic otherwise creates
-    // overlapping discs, especially for the 50- and 100-start diagrams.
-    const adjustable = Array.from(nodes.values()).filter((node) => node.radius !== undefined);
-    const nodeAngles = adjustable.map((node) => node.angle);
-    const nodeRadii = adjustable.map((node) => node.radius);
-    const dotRadii = adjustable.map((node) => nodeRadius(node, count));
-    const iterationLimit = count >= 100 ? 320 : count >= 50 ? 200 : 85;
-    for (let iteration = 0; iteration < iterationLimit; iteration++) {
-      let collisions = 0;
-      const correction = new Float64Array(adjustable.length);
-      const points = adjustable.map((node, i) => point(nodeRadii[i], nodeAngles[i]));
-      for (let i = 0; i < points.length; i++) {
-        for (let j = 0; j < i; j++) {
-          const required = dotRadii[i] + dotRadii[j] + 2.4;
-          if (Math.abs(nodeRadii[i] - nodeRadii[j]) >= required) continue;
-          const gap = Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y);
-          if (gap >= required) continue;
-          collisions++;
-          const sine = Math.sin(nodeAngles[i] - nodeAngles[j]);
-          const direction = Math.abs(sine) > 1e-7
-            ? Math.sign(sine)
-            : (adjustable[i].value > adjustable[j].value ? 1 : -1);
-          const shift = Math.min(0.15,
-            (required - gap) / Math.min(nodeRadii[i], nodeRadii[j]) * 0.55);
-          correction[i] += direction * shift;
-          correction[j] -= direction * shift;
-        }
-      }
-      if (!collisions) break;
-      for (let i = 0; i < nodeAngles.length; i++) {
-        nodeAngles[i] += Math.max(-0.16, Math.min(0.16, correction[i]));
-      }
-    }
-    adjustable.forEach((node, i) => {
-      node.angle = nodeAngles[i];
-      const p = point(node.radius, node.angle);
-      node.x = p.x;
-      node.y = p.y;
+    visit(1);
+    // Root 1 and actual terminal nodes lie around the outer perimeter.
+    const ring = [1, ...tips], R = 405;
+    ring.forEach((value,i) => {
+      const node = nodes.get(value), angle = 2*Math.PI*i/ring.length;
+      node.fixed = true; node.angle = angle;
+      node.x = R*Math.cos(angle); node.y = R*Math.sin(angle);
     });
-    return { count, nodes, edges, orbits, longest, peak, maxDepth };
+    // Exact harmonic embedding of this tree: eliminate unknown interior
+    // vertices bottom-up, then back-substitute from the boundary root.
+    function eliminate(value) {
+      const n = nodes.get(value);
+      if (n.fixed) return;
+      let denominator = n.children.length+1, bx=0, by=0;
+      for (const v of n.children) {
+        eliminate(v);
+        const ch = nodes.get(v);
+        if (ch.fixed) { bx+=ch.x; by+=ch.y; }
+        else { denominator-=ch.alpha; bx+=ch.betaX; by+=ch.betaY; }
+      }
+      if (denominator<=0) throw Error('Invalid radial layout');
+      n.alpha = 1/denominator; n.betaX=bx/denominator; n.betaY=by/denominator;
+    }
+    function place(value) {
+      const parent=nodes.get(value);
+      for (const v of parent.children) {
+        const ch=nodes.get(v);
+        if (!ch.fixed) {
+          ch.x = ch.alpha*parent.x+ch.betaX;
+          ch.y = ch.alpha*parent.y+ch.betaY;
+        }
+        place(v);
+      }
+    }
+    nodes.get(1).children.forEach(eliminate);
+    place(1);
+    // Nearest-neighbour sizing avoids overlapping circles in dense chains.
+    const list=[...nodes.values()];
+    const maxRadius = count<=25?11:count<=50?9.6:count<=100?8.4:count<=250?7:5.7;
+    for (let i=0;i<list.length;i++) {
+      const n=list[i]; let nearest=Infinity;
+      for (let j=0;j<list.length;j++) {
+        if (i===j) continue;
+        const other=list[j];
+        nearest=Math.min(nearest,Math.hypot(n.x-other.x,n.y-other.y));
+      }
+      n.radius=Math.max(0.05,Math.min(n.value===1?11.5:maxRadius,(nearest-0.28)*0.42));
+    }
+    return { count, nodes, edges, orbits, longest, peak, tips,
+      maxDepth:Math.max(...list.map(n=>n.distance)) };
   }
+
 
   const embeddedStyle = [
     '.orbit-guide{fill:none;stroke:#7ae7ff;stroke-opacity:.10;stroke-width:1}',
