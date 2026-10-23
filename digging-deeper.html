@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
   <link rel="stylesheet" href="chapters.css?v=20261021-iterates-1" />
   <link rel="stylesheet" href="digging-fixed-points.css?v=20261023-scroll-1" />
-  <link rel="stylesheet" href="digging-negatives.css?v=20261023-negatives-2" />
+  <link rel="stylesheet" href="digging-negatives.css?v=20261023-negatives-3" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -629,9 +629,13 @@
           <p>The orbit of −2 is <strong>periodic</strong> from the start. The orbits of −3 and −4 are <strong>eventually periodic</strong>. Remember the distinction from our previous section?</p>
         </div>
 
-        <div class="negative-before-five">
-          So far, every negative starting value we've tested has ended up in the <strong>same two-number cycle</strong>. It would be tempting to guess that all negative integers do the same. But a few successful examples are not a proof.
-        </div>
+        <aside class="negative-conjecture-card" aria-label="A conjecture to investigate using negative integers">
+          <span class="negative-conjecture-label">MAKE A CONJECTURE · THEN TEST IT</span>
+          <p class="negative-conjecture-claim"><strong>Every negative integer eventually enters the cycle</strong><br>
+            <span class="negative-math">−2 → −1 → −2 → ⋯</span>
+          </p>
+          <p class="negative-conjecture-question">Our first four examples support this guess. But <strong>is that enough evidence to know it's true for every negative integer?</strong></p>
+        </aside>
 
         <div class="article-prose">
           <p class="negative-five-prompt">Now let's try <span class="negative-math">−5</span>.</p>
@@ -693,6 +697,11 @@
           </div>
           <figcaption>Each number is connected to the next value in the orbit, and the last arrow returns to −5. The five nodes are <strong>five distinct integers</strong> in one periodic cycle.</figcaption>
         </figure>
+
+        <aside class="negative-counterexample" aria-label="The conjecture has been disproved by negative five">
+          <span class="negative-counterexample-tag">COUNTEREXAMPLE FOUND</span>
+          <p><strong>Our conjecture is false.</strong> The orbit of −5 does not enter the cycle −2 → −1. Instead, it returns to −5 after five steps and repeats its own cycle forever. <strong>Just one counterexample</strong> is enough to disprove a statement about <em>every</em> negative integer.</p>
+        </aside>
 
         <div class="article-prose">
           <h3>One Final Surprise: Eighteen Steps</h3>
