@@ -15,6 +15,7 @@
   const circular = document.getElementById('circleWorkspace');
   const cards = Array.from(document.querySelectorAll('[data-visualizer-mode]'));
   const counters = Array.from(document.querySelectorAll('[data-orbit-count]'));
+  const themeButtons = Array.from(document.querySelectorAll('[data-circle-theme]'));
   const focus = document.getElementById('circleFocus');
   const status = document.getElementById('circleStatus');
   const stats = document.getElementById('circleStats');
@@ -181,32 +182,54 @@
     return 'rgb(132,28,104)';
   }
 
+  // Styles travel with the SVG, including export. Dark is the default,
+  // while the optional light mode reproduces the prior atlas presentation.
   const embeddedStyle = [
-    '.radial-background{fill:#fcfdfa}',
-    '.radial-guide{fill:none;stroke:#b6bfc5;stroke-opacity:.5;stroke-width:1.15}',
-    '.radial-caption{font:750 14px Inter,system-ui,sans-serif;letter-spacing:2.1px;fill:#788592;text-anchor:middle}',
-    '.orbit-edge{fill:none;stroke:#9098a0;stroke-opacity:.79;stroke-linecap:round;transition:opacity .14s,stroke-width .14s}',
-    '.orbit-edge.highlight-even{stroke:#279bd1!important}',
-    '.orbit-edge.highlight-odd{stroke:#d99b3c!important}',
+    '.radial-background{fill:#0a1423}',
+    '.radial-guide{fill:none;stroke:#89b0c7;stroke-opacity:.32;stroke-width:1.12}',
+    '.radial-caption{font:750 14px Inter,system-ui,sans-serif;letter-spacing:2.1px;fill:#97b6ca;text-anchor:middle}',
+    '.orbit-edge{fill:none;stroke:#8baabe;stroke-opacity:.72;stroke-linecap:round;transition:opacity .14s,stroke-width .14s}',
+    '.orbit-edge.highlight-even{stroke:#7ae7ff!important}',
+    '.orbit-edge.highlight-odd{stroke:#ffd479!important}',
     '.orbit-node-group{cursor:pointer;outline:none;transition:opacity .15s}',
-    '.orbit-node-group circle{stroke:#2c3441;stroke-opacity:.33;stroke-width:.78}',
-    '.orbit-node-group.is-root circle{stroke:#cba66e;stroke-opacity:1;stroke-width:2.4}',
-    '.radial-bullseye{fill:#eec779;fill-opacity:.04;stroke:#c7a56d;stroke-opacity:.44;stroke-width:1.2;stroke-dasharray:3.5 4.5}',
-    '.orbit-node-group:hover circle,.orbit-node-group:focus-visible circle{stroke:#1b2335;stroke-width:2.5}',
-    '.orbit-node-group.is-selected circle{stroke:#1b2335;stroke-width:2.7}',
-    '.radial-node-label{pointer-events:none;text-anchor:middle;dominant-baseline:central;fill:#1d2635;font:600 9px Inter,system-ui,sans-serif;paint-order:stroke;stroke:#ffffff90;stroke-width:.65}',
-    '.radial-node-label.light{fill:#fff;stroke:#14162590}',
+    '.orbit-node-group circle{stroke:#e4f2ff;stroke-opacity:.48;stroke-width:.85}',
+    '.orbit-node-group.is-root circle{stroke:#f6d89a;stroke-opacity:1;stroke-width:2.7}',
+    '.radial-bullseye{fill:#eec779;fill-opacity:.035;stroke:#d2ae71;stroke-opacity:.62;stroke-width:1.2;stroke-dasharray:3.5 4.5}',
+    '.orbit-node-group:hover circle,.orbit-node-group:focus-visible circle{stroke:#fcfeff;stroke-opacity:1;stroke-width:2.5}',
+    '.orbit-node-group.is-selected circle{stroke:#ffe0a0;stroke-opacity:1;stroke-width:2.7}',
+    '.radial-node-label{pointer-events:none;text-anchor:middle;dominant-baseline:central;fill:#162435;font:700 9px Inter,system-ui,sans-serif;paint-order:stroke;stroke:#e9f5ff33;stroke-width:.65}',
+    '.radial-node-label.light{fill:#fff;stroke:#11192acc;stroke-width:1.05}',
     '.orbit-start{cursor:pointer;outline:none;transition:opacity .15s}',
-    '.orbit-start rect{fill:#fff;stroke:#adbcc8;stroke-width:1.0}',
-    '.orbit-start text{fill:#34485b;font:650 10px Inter,system-ui,sans-serif;text-anchor:middle;dominant-baseline:central;pointer-events:none}',
-    '.orbit-start:hover rect,.orbit-start:focus-visible rect,.orbit-start.is-selected rect{fill:#fff0de;stroke:#b67a41;stroke-width:2}',
+    '.orbit-start rect{fill:#17283b;stroke:#7897b0;stroke-opacity:.87;stroke-width:1.05}',
+    '.orbit-start text{fill:#e4f2fc;font:650 10px Inter,system-ui,sans-serif;text-anchor:middle;dominant-baseline:central;pointer-events:none}',
+    '.orbit-start:hover rect,.orbit-start:focus-visible rect,.orbit-start.is-selected rect{fill:#29364b;stroke:#ffd479;stroke-width:2}',
+    '.orbit-start.is-selected text{fill:#ffe5b7}',
     '.orbit-faint{opacity:.11!important}',
     '.orbit-node-group.orbit-faint{opacity:.18!important}',
     '.orbit-start.orbit-faint{opacity:.27!important}',
     '.orbit-strong{opacity:1!important;stroke-opacity:1!important;stroke-width:3!important}',
     '.orbit-hidden{opacity:0!important;pointer-events:none}',
-    '.orbit-cycle{fill:none;stroke:#b98a4b;stroke-width:2;stroke-dasharray:4 6;stroke-opacity:.7}'
-  ].join('\n');
+    '.orbit-cycle{fill:none;stroke:#ffd479;stroke-width:1.9;stroke-dasharray:4 6;stroke-opacity:.76}',
+    // The existing pale view remains available for comparison.
+    '.circle-light .radial-background{fill:#fcfdfa}',
+    '.circle-light .radial-guide{stroke:#b6bfc5;stroke-opacity:.5}',
+    '.circle-light .radial-caption{fill:#788592}',
+    '.circle-light .orbit-edge{stroke:#9098a0;stroke-opacity:.79}',
+    '.circle-light .orbit-edge.highlight-even{stroke:#279bd1!important}',
+    '.circle-light .orbit-edge.highlight-odd{stroke:#d99b3c!important}',
+    '.circle-light .orbit-node-group circle{stroke:#2c3441;stroke-opacity:.33}',
+    '.circle-light .orbit-node-group.is-root circle{stroke:#cba66e;stroke-opacity:1}',
+    '.circle-light .radial-bullseye{stroke:#c7a56d;stroke-opacity:.44;fill-opacity:.04}',
+    '.circle-light .orbit-node-group:hover circle,.circle-light .orbit-node-group:focus-visible circle{stroke:#1b2335;stroke-opacity:1}',
+    '.circle-light .orbit-node-group.is-selected circle{stroke:#1b2335;stroke-opacity:1}',
+    '.circle-light .radial-node-label{fill:#1d2635;stroke:#ffffff90}',
+    '.circle-light .radial-node-label.light{fill:#fff;stroke:#14162590}',
+    '.circle-light .orbit-start rect{fill:#fff;stroke:#adbcc8}',
+    '.circle-light .orbit-start text{fill:#34485b}',
+    '.circle-light .orbit-start:hover rect,.circle-light .orbit-start:focus-visible rect,.circle-light .orbit-start.is-selected rect{fill:#fff0de;stroke:#b67a41}',
+    '.circle-light .orbit-start.is-selected text{fill:#34485b}',
+    '.circle-light .orbit-cycle{stroke:#b98a4b;stroke-opacity:.7}'
+  ].join('\\n');
 
   function createModelSvg() {
     const model = state.model;
@@ -304,7 +327,7 @@
       if(showLabel){
         element('text',{
           x:fmt(node.x),y:fmt(node.y+.5),
-          class:'radial-node-label'+(core||node.distance<8||node.distance>105?' light':''),
+          class:'radial-node-label'+(core||node.distance<16||node.distance>=95?' light':''),
           'font-size':core?10:(radius<7?7:9)
         },group,node.value);
       }
@@ -559,6 +582,21 @@
     focus.value = '';
     updateEmphasis();
   });
+
+  function setCircleTheme(next) {
+    const light = next === 'light';
+    circular.dataset.canvasTheme = light ? 'light' : 'dark';
+    svg.classList.toggle('circle-light', light);
+    for (const button of themeButtons) {
+      const chosen = button.dataset.circleTheme === (light ? 'light' : 'dark');
+      button.classList.toggle('is-active', chosen);
+      button.setAttribute('aria-pressed', String(chosen));
+    }
+  }
+  for (const button of themeButtons) {
+    button.addEventListener('click', () => setCircleTheme(button.dataset.circleTheme));
+  }
+  setCircleTheme('dark');
 
   // Pan, wheel zoom, buttons and fit. The mathematical node geometry is
   // unchanged: only the viewport moves.
