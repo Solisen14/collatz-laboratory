@@ -41,14 +41,14 @@
   function render() {
     if (!active) return;
 
-    const rect = figure.getBoundingClientRect();
+    const rect = svg.getBoundingClientRect();
     const viewport = window.innerHeight || document.documentElement.clientHeight || 760;
     // Graph starts blank when the figure enters the lower viewport, and is
     // fully drawn as the reader continues past it. Scrolling up rewinds.
-    const begin = viewport * 0.82;
+    const begin = viewport * 0.58;
     // Complete the reveal while the figure is still comfortably on screen,
     // rather than after the points have scrolled past the top.
-    const finish = viewport * 0.10;
+    const finish = viewport * 0.09;
     const progress = clamp((begin - rect.top) / (begin - finish));
 
     const quadraticProgress = phase(progress, 0.02, 0.41);
