@@ -48,37 +48,34 @@
         </button>
         <button type="button" class="visualizer-mode-card" data-visualizer-mode="circular" aria-pressed="false" aria-controls="circleWorkspace">
           <span class="visualizer-mode-thumb" aria-hidden="true"><svg viewBox="0 0 180 115" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="90" cy="57" r="48" fill="none" stroke="#8194a4" stroke-opacity=".5" stroke-width="1"/>
-  <g fill="none" stroke="#9eafbc" stroke-width="1.6" stroke-linecap="round">
-    <path d="M138 57L122 57L108 57L95 57L86 55L76 46L64 37L53 21"/>
-    <path d="M86 55L76 66L64 80L54 95"/>
-    <path d="M76 46L63 53L50 58L43 75L39 90"/>
-    <path d="M64 37L56 33L45 24L39 13"/>
-    <path d="M64 80L74 91L87 101"/>
-    <path d="M95 57L92 43L91 29L91 11"/>
-    <path d="M76 66L93 73L110 83L125 97"/>
-    <path d="M50 58L37 49L29 38"/>
-  </g>
-  <g stroke="#435564" stroke-width=".5">
-    <circle cx="138" cy="57" r="6" fill="#1c202b"/>
-    <circle cx="122" cy="57" r="4" fill="#7d62af"/>
-    <circle cx="108" cy="57" r="4" fill="#358cbb"/>
-    <circle cx="95" cy="57" r="4" fill="#70b79e"/>
-    <circle cx="86" cy="55" r="4" fill="#b4d879"/>
-    <circle cx="76" cy="46" r="4" fill="#e8dc72"/>
-    <circle cx="64" cy="37" r="4" fill="#ffc06a"/>
-    <circle cx="53" cy="21" r="4" fill="#ef7863"/>
-    <circle cx="76" cy="66" r="4" fill="#ecbd62"/>
-    <circle cx="64" cy="80" r="4" fill="#db715f"/>
-    <circle cx="54" cy="95" r="4" fill="#b73165"/>
-    <circle cx="50" cy="58" r="4" fill="#c4d96c"/>
-    <circle cx="43" cy="75" r="3" fill="#d0a95e"/>
-    <circle cx="91" cy="11" r="3" fill="#67bdb4"/>
-    <circle cx="87" cy="101" r="3" fill="#aa4c80"/>
-    <circle cx="125" cy="97" r="3" fill="#e4c264"/>
-  </g>
-</svg></span>
-          <span class="visualizer-mode-copy"><small>02 · Circular orbit tree</small><strong>Circular Representation</strong><span>Follow genuine orbits through a radial canopy, with 1 on the outer rim.</span></span>
+ <circle cx="90" cy="57" r="47" fill="none" stroke="#7d96ad" stroke-opacity=".5" stroke-width="1"/>
+ <g fill="none" stroke="#a1b3bf" stroke-width="1.6" stroke-linecap="round">
+  <path d="M90 57 L90 43 L90 30 L80 19 L70 11"/>
+  <path d="M90 30 L106 18 L116 10"/>
+  <path d="M90 57 L105 66 L121 73 L135 84"/>
+  <path d="M121 73 L131 59 L137 48"/>
+  <path d="M90 57 L77 68 L66 82 L55 92"/>
+  <path d="M77 68 L69 55 L55 46 L43 36"/>
+  <path d="M90 57 L91 73 L94 89 L97 102"/>
+  <path d="M105 66 L113 48 L121 30"/>
+ </g>
+ <g stroke="#405364" stroke-width=".8">
+  <circle cx="90" cy="43" r="4" fill="#8f6bad"/><circle cx="90" cy="30" r="4" fill="#3586c4"/>
+  <circle cx="80" cy="19" r="3.5" fill="#67bdac"/><circle cx="106" cy="18" r="3.5" fill="#7bc6a4"/>
+  <circle cx="105" cy="66" r="4" fill="#a9d37b"/><circle cx="121" cy="73" r="4" fill="#f1d268"/>
+  <circle cx="131" cy="59" r="3.5" fill="#f4b869"/><circle cx="77" cy="68" r="4" fill="#eeca6f"/>
+  <circle cx="66" cy="82" r="3.5" fill="#eea46e"/><circle cx="69" cy="55" r="3.5" fill="#80c39b"/>
+  <circle cx="91" cy="73" r="4" fill="#bd4c8f"/><circle cx="94" cy="89" r="3.5" fill="#ca4d82"/>
+  <circle cx="70" cy="11" r="3" fill="#e5d67f"/><circle cx="116" cy="10" r="3" fill="#e7da78"/>
+  <circle cx="135" cy="84" r="3" fill="#e58777"/><circle cx="137" cy="48" r="3" fill="#e4aa79"/>
+  <circle cx="55" cy="92" r="3" fill="#e98b72"/><circle cx="43" cy="36" r="3" fill="#7bc4af"/>
+  <circle cx="97" cy="102" r="3" fill="#c95484"/><circle cx="121" cy="30" r="3" fill="#8cbb9a"/>
+ </g>
+ <circle cx="90" cy="57" r="9" fill="none" stroke="#d7b979" stroke-opacity=".55" stroke-dasharray="2 2"/>
+ <circle cx="90" cy="57" r="6" fill="#181925" stroke="#e1c987" stroke-width="1.5"/>
+ <text x="90" y="59.3" fill="#ffffff" font-size="7" text-anchor="middle" font-family="system-ui" font-weight="bold">1</text>
+ </svg></span>
+          <span class="visualizer-mode-copy"><small>02 · Circular orbit tree</small><strong>Circular Representation</strong><span>Explore a radial Collatz tree with 1 at the bullseye and real paths branching outward.</span></span>
         </button>
       </div>
     </section>
@@ -196,7 +193,7 @@
       <aside class="circle-controls">
         <p class="step-number">WORKSPACE · 02</p>
         <h2>Circular Representation</h2>
-        <p class="circle-controls-description">See a circular tree built from real forward Collatz orbits. The value 1 sits on the right-hand edge; unique number paths branch inward and around the circle. Selecting a node traces its orbit to 1.</p>
+        <p class="circle-controls-description">Explore a circular tree built from real forward Collatz orbits. The value 1 is the central bullseye, with distinct number paths branching outward toward the rim. Select any node to follow its orbit back to 1.</p>
 
         <h3 class="circle-controls-label">How many starting integers?</h3>
         <div class="circle-count-options" role="group" aria-label="Starting integer range">
@@ -220,7 +217,7 @@
           <span><i class="odd"></i> Gold when selected: odd step, 3n + 1</span>
           <span><i class="entry"></i> White labels: terminal values on the rim</span>
         </div>
-        <p class="circle-controls-note"><strong>How to read the circle.</strong> Black 1 sits at the right edge. Each coloured dot represents a distinct integer; fine grey lines join values that are consecutive Collatz iterates. The white labels identify the terminal branches. The layout positions come from the branching network rather than numerical size or iteration count. The dashed return arrow illustrates 1 → 4, completing the repeating cycle.</p>
+        <p class="circle-controls-note"><strong>How to read the circle.</strong> The black 1 is at the exact centre. Coloured dots are distinct integers, and fine grey connections link consecutive Collatz values. The terminal branches reach the outer ring, with white endpoint labels. Position and spacing make the branching structure visible; they do not encode the integer's magnitude. Follow the arrows of a selected orbit inward toward 1. A dashed return arc from 1 to 4 closes the familiar cycle.</p>
       </aside>
       <section class="circle-stage" aria-label="Interactive circular Collatz diagram">
         <div class="circle-stage-heading">
@@ -234,7 +231,7 @@
           <button id="circleFit" type="button">Fit</button>
         </div>
         <div class="circle-canvas-wrap">
-          <svg id="circleSvg" class="circle-canvas" viewBox="-500 -500 1000 1000" role="img" aria-label="Radial Collatz orbit tree with 1 on the right-hand rim"></svg>
+          <svg id="circleSvg" class="circle-canvas" viewBox="-500 -500 1000 1000" role="img" aria-label="Radial Collatz orbit tree with 1 at the exact centre and branches growing outward"></svg>
         </div>
         <div id="circleDetails" class="circle-details" aria-live="polite">Select a number on the diagram or from the menu to follow its orbit to 1.</div>
         <p id="circleStatus" class="circle-status" aria-live="polite">Ready.</p>
@@ -244,6 +241,6 @@
 
   <script src="visualizer.js?v=20261021-story-tree-1"></script>
   <script src="visualizer-animation-speed.js?v=20261013-1"></script>
-  <script src="orbit-circle.js?v=20261023-radial-2"></script>
+  <script src="orbit-circle.js?v=20261023-bullseye-1"></script>
 </body>
 </html>
