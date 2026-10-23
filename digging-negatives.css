@@ -471,3 +471,34 @@
   .negative-conjecture-card {padding:22px 18px;margin:26px 0 30px;}
   .negative-counterexample {padding:20px 18px;}
 }
+
+/* Scroll-led discovery: each negative starting value unfolds in reading order.
+ * Without JS, the content is immediately visible.
+ */
+.negative-orbits-motion-ready .negative-small-orbit-row {
+  opacity:0;
+  transform:translateX(-20px);
+  transition:opacity .42s ease,transform .42s ease;
+}
+.negative-orbits-motion-ready .negative-small-orbit-row.is-visible {
+  opacity:1;
+  transform:translateX(0);
+}
+.negative-orbits-motion-ready .negative-small-orbit-sequence {
+  clip-path:inset(0 100% 0 0);
+  transition:clip-path .65s ease .15s;
+}
+.negative-orbits-motion-ready .negative-small-orbit-row.is-visible .negative-small-orbit-sequence {
+  clip-path:inset(0 0 0 0);
+}
+@media(prefers-reduced-motion:reduce) {
+  .negative-orbits-motion-ready .negative-small-orbit-row {
+    opacity:1;
+    transform:none;
+    transition:none;
+  }
+  .negative-orbits-motion-ready .negative-small-orbit-sequence {
+    clip-path:none;
+    transition:none;
+  }
+}
