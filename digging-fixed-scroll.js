@@ -43,11 +43,11 @@
 
     const rect = svg.getBoundingClientRect();
     const viewport = window.innerHeight || document.documentElement.clientHeight || 760;
-    // Graph starts blank when the figure enters the lower viewport, and is
-    // fully drawn as the reader continues past it. Scrolling up rewinds.
+    // Anchor timing to the SVG grid, not the surrounding figure card.
+    // The chart stays blank until its top reaches 58% of viewport height;
+    // scrolling farther draws the graph, and scrolling upward rewinds.
     const begin = viewport * 0.58;
-    // Complete the reveal while the figure is still comfortably on screen,
-    // rather than after the points have scrolled past the top.
+    // Complete the reveal while the chart is still comfortably on screen.
     const finish = viewport * 0.09;
     const progress = clamp((begin - rect.top) / (begin - finish));
 
