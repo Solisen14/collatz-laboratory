@@ -29,6 +29,8 @@
     mode: 'standard', count: 250, selected: null, hovered: null,
     model: null, elements: null, timer: null, revealed: null
   };
+  const defaultCamera = { x:-500,y:-500,width:1000,height:1000 };
+  let circularCamera = { ...defaultCamera };
 
   const colours = { even: '#7ae7ff', odd: '#ffd479' };
   const point = (radius, angle) => ({
@@ -206,7 +208,8 @@
   function createModelSvg() {
     const model = state.model;
     svg.replaceChildren();
-    svg.setAttribute('viewBox', '-500 -500 1000 1000');
+    svg.setAttribute('viewBox', [circularCamera.x,circularCamera.y,
+      circularCamera.width,circularCamera.height].join(' '));
     svg.setAttribute('role','img');
     svg.setAttribute('aria-labelledby','radialDiagramTitle radialDiagramDesc');
     element('title',{id:'radialDiagramTitle'},svg,
@@ -422,6 +425,7 @@
   function render(count) {
     stopAnimation();
     state.count = count;
+    circularCamera = { ...defaultCamera };
     state.model = buildOrbitModel(count);
     state.selected = null;
     state.hovered = null;
@@ -535,6 +539,55 @@
     focus.value = '';
     updateEmphasis();
   });
+
+  // Pan, wheel zoom, buttons and fit. The mathematical node geometry is
+  // unchanged: only the viewport moves.
+  function setCircularCamera(next) {
+    circularCamera = { ...next };
+    svg.setAttribute('viewBox',[next.x,next.y,next.width,next.height].join(' '));
+  }
+  function zoomCircular(factor,clientX=null,clientY=null) {
+    const rect=svg.getBoundingClientRect();
+    const rx=clientX===null?0.5:Math.min(1,Math.max(0,(clientX-rect.left)/rect.width));
+    const ry=clientY===null?0.5:Math.min(1,Math.max(0,(clientY-rect.top)/rect.height));
+    const old=circularCamera, w=Math.max(130,Math.min(2300,old.width*factor));
+    const h=old.height*w/old.width;
+    const anchorX=old.x+rx*old.width,anchorY=old.y+ry*old.height;
+    setCircularCamera({x:anchorX-rx*w,y:anchorY-ry*h,width:w,height:h});
+  }
+  document.getElementById('circleFit')?.addEventListener('click',()=>
+    setCircularCamera(defaultCamera));
+  document.getElementById('circleZoomIn')?.addEventListener('click',()=>
+    zoomCircular(.78));
+  document.getElementById('circleZoomOut')?.addEventListener('click',()=>
+    zoomCircular(1.28));
+  svg.addEventListener('wheel',event=>{
+    event.preventDefault();
+    zoomCircular(event.deltaY>0?1.13:0.885,event.clientX,event.clientY);
+  },{passive:false});
+  let circularDrag=null;
+  svg.addEventListener('pointerdown',event=>{
+    if(event.button!==0 || event.target.closest?.('.orbit-node-group,.orbit-start'))return;
+    circularDrag={id:event.pointerId,x:event.clientX,y:event.clientY,
+      original:{...circularCamera}};
+    svg.setPointerCapture(event.pointerId);
+  });
+  svg.addEventListener('pointermove',event=>{
+    if(!circularDrag || event.pointerId!==circularDrag.id)return;
+    const bounds=svg.getBoundingClientRect(),d=circularDrag;
+    setCircularCamera({
+      x:d.original.x-(event.clientX-d.x)*d.original.width/bounds.width,
+      y:d.original.y-(event.clientY-d.y)*d.original.height/bounds.height,
+      width:d.original.width,height:d.original.height
+    });
+  });
+  function finishCircularDrag(event){
+    if(!circularDrag||event.pointerId!==circularDrag.id)return;
+    try{svg.releasePointerCapture(event.pointerId);}catch(_){}
+    circularDrag=null;
+  }
+  svg.addEventListener('pointerup',finishCircularDrag);
+  svg.addEventListener('pointercancel',finishCircularDrag);
 
   // Load Standard Visualization by default, or Circular Representation from
   // a link ending in #circular.
