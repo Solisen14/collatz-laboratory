@@ -97,3 +97,34 @@
     });
   }
 })();
+/* Reveal the three example orbits individually as they enter the viewport.
+ * The cards are left visible when IntersectionObserver is unavailable.
+ */
+(() => {
+  'use strict';
+  const figure = document.querySelector('.negative-small-orbits');
+  if (!figure || !('IntersectionObserver' in window)) return;
+  const rows = [...figure.querySelectorAll('.negative-small-orbit-row')];
+  if (!rows.length) return;
+  const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (media.matches) return;
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const row = entry.target;
+      const index = rows.indexOf(row);
+      // When multiple rows become visible together, unfold them in order.
+      window.setTimeout(() => row.classList.add('is-visible'), index * 140);
+      observer.unobserve(row);
+    });
+  }, { threshold: 0.35 });
+
+  figure.classList.add('negative-orbits-motion-ready');
+  rows.forEach(row => observer.observe(row));
+  media.addEventListener?.('change', event => {
+    if (!event.matches) return;
+    observer.disconnect();
+    figure.classList.remove('negative-orbits-motion-ready');
+  });
+})();
