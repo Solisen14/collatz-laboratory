@@ -1,0 +1,300 @@
+/* Digging Deeper · Section 04: Below Zero.
+ * Additive styles only: Sections 01–03 remain unchanged.
+ */
+.digging-article-negative {
+  margin-top: 57px;
+  padding-top: 67px;
+  --negative-violet: #bc9af0;
+  --negative-pink: #f1a8da;
+  --negative-gold: #ffd479;
+  --negative-cyan: #7ae7ff;
+}
+.digging-article-negative .article-heading {margin-bottom:34px;}
+.digging-article-negative .article-overline span {color:var(--negative-violet);}
+.digging-article-negative .article-prose h3:first-child {margin-top:0;}
+.negative-math {
+  font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;
+  font-size:1.10em;
+  color:#f3f8ff;
+  white-space:nowrap;
+}
+.negative-math .operator {color:var(--negative-cyan);}
+.negative-fig {
+  position:relative;
+  max-width:900px;
+  margin:36px 0 48px;
+  padding:26px 27px 22px;
+  border:1px solid rgba(188,154,240,.24);
+  border-radius:17px;
+  background:
+    radial-gradient(ellipse at 78% 18%,rgba(90,61,132,.13),transparent 56%),
+    linear-gradient(128deg,rgba(16,24,43,.94),rgba(7,13,25,.97));
+}
+.negative-fig .diagram-topline {color:#b4a1d0;}
+.negative-fig svg {display:block;width:100%;height:auto;}
+.negative-fig figcaption {
+  padding-top:15px;
+  margin:11px 0 0;
+  border-top:1px solid rgba(255,255,255,.09);
+  font-size:14px;
+  line-height:1.73;
+  color:#a7b7ca;
+}
+.negative-domain-figure {
+  padding:22px 29px 21px;
+  border-color:rgba(122,231,255,.15);
+}
+.negative-domain-figure svg {
+  width:min(100%,810px);
+  margin:8px auto 3px;
+}
+.negative-domain-figure figcaption {margin-top:3px;}
+.negative-surprise-tag {
+  display:inline-flex;
+  gap:10px;
+  align-items:center;
+  color:#c6adea;
+  font-size:11px;
+  font-weight:780;
+  letter-spacing:.17em;
+  text-transform:uppercase;
+}
+.negative-surprise-tag::before {
+  content:"";
+  width:6px;height:6px;border-radius:50%;
+  background:var(--negative-violet);
+  box-shadow:0 0 17px rgba(188,154,240,.7);
+}
+.negative-zero-figure {
+  max-width:750px;
+  border-color:rgba(164,208,236,.22);
+}
+.negative-zero-layout {
+  display:grid;
+  grid-template-columns:minmax(180px,.8fr) minmax(0,1.1fr);
+  align-items:center;
+  gap:10px 26px;
+  margin:8px 0 12px;
+}
+.negative-zero-layout svg {
+  width:min(100%,330px);
+  margin:auto;
+}
+.negative-zero-math {
+  display:grid;
+  gap:7px;
+}
+.negative-zero-math strong {
+  color:#d7eaff;
+  font-size:13px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.negative-zero-math .negative-eq {
+  color:#f2f9ff;
+  font:580 clamp(30px,4vw,47px) "Cambria Math","STIX Two Math",serif;
+  white-space:nowrap;
+}
+.negative-zero-math p {
+  font-size:16px;
+  color:#b2c5d7;
+  line-height:1.7;
+  margin:8px 0 0;
+}
+.negative-figure-heading {
+  display:flex;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:10px 20px;
+}
+.negative-figure-heading .negative-period {
+  padding:5px 10px;
+  color:#f4d38b;
+  border:1px solid rgba(255,212,121,.27);
+  border-radius:100px;
+  background:rgba(70,51,30,.35);
+  letter-spacing:.12em;
+  font-size:10px;
+  font-weight:780;
+  white-space:nowrap;
+}
+.negative-figure-viewport {
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:thin;
+  margin:8px 0 0;
+}
+.negative-figure-viewport svg {min-width:390px;}
+.negative-figure-viewport.large svg {min-width:740px;}
+.negative-nodes {
+  stroke-width:2;
+  fill:#101a2d;
+}
+.negative-cycle-even {stroke:#7ae7ff;fill:none;}
+.negative-cycle-odd {stroke:#ffd479;fill:none;}
+.negative-orbit-inline {
+  max-width:795px;
+  margin:22px 0 36px;
+  padding:19px 24px;
+  border-left:3px solid rgba(188,154,240,.8);
+  border-radius:0 12px 12px 0;
+  background:rgba(36,25,55,.35);
+  color:#e7d9f2;
+  font:530 clamp(21px,2.7vw,29px)/1.65 "Cambria Math","STIX Two Math",serif;
+  overflow-x:auto;
+  white-space:nowrap;
+  scrollbar-width:thin;
+}
+.negative-orbit-inline strong {color:#ffd479;font-weight:600;}
+.negative-legend {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px 22px;
+  margin:5px 0 12px;
+  font-size:12px;
+  color:#b3c5d4;
+}
+.negative-legend span {display:inline-flex;align-items:center;gap:8px;}
+.negative-legend i {width:19px;height:2px;display:inline-block;border-radius:3px;}
+.negative-legend i.odd {background:#ffd479;}
+.negative-legend i.even {background:#7ae7ff;}
+.negative-cycle-large {
+  border-color:rgba(188,154,240,.34);
+  background:
+    radial-gradient(ellipse at 50% 50%,rgba(86,46,131,.19),transparent 53%),
+    linear-gradient(135deg,#11182b,#0a1020);
+}
+.negative-cycle-large .negative-figure-viewport {margin:0 0 -3px;}
+.negative-long-note {
+  max-width:790px;
+  padding:20px 25px;
+  margin:26px 0 40px;
+  border-left:3px solid #bc9af0;
+  border-radius:0 12px 12px 0;
+  background:rgba(50,29,73,.28);
+  color:#c8bbd8;
+  font-size:16px;
+  line-height:1.75;
+}
+.negative-long-note strong {color:#f6eaff;}
+.negative-rule-panel {
+  max-width:795px;
+  border:1px solid rgba(122,231,255,.18);
+  background:linear-gradient(120deg,rgba(14,35,51,.75),rgba(25,19,44,.62));
+  border-radius:15px;
+  padding:27px 29px 25px;
+  margin:25px 0 34px;
+}
+.negative-rule-panel .diagram-topline {color:#9dbfcd;}
+.negative-rule-panel .negative-eq {
+  display:block;
+  margin:18px 0;
+  color:#e8f8ff;
+  font:560 clamp(22px,2.7vw,31px)/1.4 "Cambria Math","STIX Two Math",serif;
+}
+.negative-rule-panel p:not(.diagram-topline) {
+  margin:8px 0 0;
+  color:#b5c9d8;
+  font-size:15px;
+  line-height:1.7;
+}
+.negative-rule-panel strong {color:#f1f9ff;}
+.negative-reference {
+  max-width:790px;
+  margin:22px 0 28px;
+  color:#8fa2b5;
+  font-size:13px;
+  line-height:1.7;
+}
+.negative-reference a {color:#87dff2;text-underline-offset:3px;}
+.negative-reference a:hover {color:#cbf9ff;}
+.negative-takeaway {
+  max-width:790px;
+  margin:37px 0 43px;
+  padding:27px 30px;
+  border-left:3px solid #bc9af0;
+  border-radius:0 13px 13px 0;
+  background:linear-gradient(100deg,rgba(64,42,95,.32),rgba(18,24,44,.55));
+}
+.negative-takeaway .negative-takeaway-label {
+  display:block;
+  color:#c5a4f2;
+  font-size:10px;
+  font-weight:780;
+  letter-spacing:.19em;
+  margin-bottom:11px;
+}
+.negative-takeaway p {
+  color:#e0e8f4;
+  margin:0;
+  font-size:clamp(18px,2vw,22px);
+  line-height:1.7;
+}
+.negative-takeaway strong {color:#e8cbff;}
+.negative-ending {
+  max-width:795px;
+  font-style:italic;
+  font-size:clamp(20px,2.4vw,27px);
+  line-height:1.65;
+  color:#f0e2fb;
+  margin:22px 0 50px;
+}
+.negative-scroll-tag {
+  color:#9fb2c8;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.14em;
+}
+.negative-cycle-node, .negative-cycle-edge {
+  transition:opacity .5s ease,transform .5s ease,stroke-dashoffset .8s ease;
+}
+.negative-motion-ready .negative-reveal:not(.is-revealed) [data-negative-animate] {
+  opacity:0;
+}
+.negative-motion-ready .negative-reveal.is-revealed [data-negative-animate] {
+  opacity:1;
+}
+.negative-motion-ready .negative-reveal [data-negative-animate="node"] {
+  transition-delay:calc(var(--negative-i,0) * 45ms);
+  transform-origin:center;
+  transform-box:fill-box;
+}
+.negative-motion-ready .negative-reveal:not(.is-revealed) [data-negative-animate="node"] {
+  transform:scale(.72);
+}
+.negative-motion-ready .negative-reveal.is-revealed [data-negative-animate="node"] {
+  transform:scale(1);
+}
+.negative-motion-ready .negative-reveal [data-negative-animate="edge"] {
+  transition-delay:calc(var(--negative-i,0) * 45ms + 140ms);
+  stroke-dasharray:1;
+}
+.negative-motion-ready .negative-reveal:not(.is-revealed) [data-negative-animate="edge"] {
+  stroke-dashoffset:1;
+}
+.negative-motion-ready .negative-reveal.is-revealed [data-negative-animate="edge"] {
+  stroke-dashoffset:0;
+}
+@media(max-width:740px) {
+  .negative-zero-layout {grid-template-columns:1fr;}
+  .negative-zero-layout svg {max-height:230px;}
+}
+@media(max-width:690px) {
+  .digging-article-negative {margin-top:35px;padding-top:47px;}
+  .negative-fig {padding:20px 14px;margin:30px 0 38px;}
+  .negative-domain-figure {padding:18px 13px;}
+  .negative-zero-math {text-align:center;}
+  .negative-orbit-inline {padding:17px 16px;}
+  .negative-rule-panel,.negative-takeaway {padding:20px 18px;}
+  .negative-long-note {padding:18px 19px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .negative-motion-ready .negative-reveal [data-negative-animate] {
+    opacity:1 !important;
+    transition:none !important;
+    transform:none !important;
+    stroke-dasharray:none !important;
+    stroke-dashoffset:0 !important;
+  }
+}
