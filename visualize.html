@@ -7,7 +7,7 @@
   <title>The Collatz Laboratory · Visualize</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
   <link rel="stylesheet" href="visualizer.css?v=20261021-story-tree-1" />
-  <link rel="stylesheet" href="orbit-circle.css?v=20261023-radial-2" />
+  <link rel="stylesheet" href="orbit-circle.css?v=20261023-dark-lab-1" />
   <link rel="stylesheet" href="angle-path.css?v=20261023-1" />
 </head>
 <body class="visualizer-body">
@@ -213,7 +213,7 @@
       </section>
     </section>
 
-    <section id="circleWorkspace" class="circle-workspace" aria-label="Circular representation of Collatz orbits" hidden>
+    <section id="circleWorkspace" class="circle-workspace" data-canvas-theme="dark" aria-label="Circular representation of Collatz orbits" hidden>
       <aside class="circle-controls">
         <p class="step-number">WORKSPACE · 02</p>
         <h2>Circular Representation</h2>
@@ -225,6 +225,13 @@
           <button type="button" data-orbit-count="50" aria-pressed="false">1–50</button>
           <button type="button" data-orbit-count="100" aria-pressed="false">1–100</button>
           <button type="button" data-orbit-count="250" aria-pressed="true" class="is-active">1–250</button>
+        </div>
+        <div class="circle-theme">
+          <p class="circle-theme-label">Canvas appearance</p>
+          <div class="circle-theme-options" role="group" aria-label="Canvas appearance">
+            <button type="button" data-circle-theme="dark" class="is-active" aria-pressed="true">Dark Laboratory</button>
+            <button type="button" data-circle-theme="light" aria-pressed="false">Light Atlas</button>
+          </div>
         </div>
         <div class="circle-select-wrap">
           <label for="circleFocus">Highlight a starting number</label>
@@ -239,9 +246,9 @@
         <div class="circle-mini-legend" aria-label="Orbit diagram legend">
           <span><i class="even"></i> Cyan when selected: even step, divide by 2</span>
           <span><i class="odd"></i> Gold when selected: odd step, 3n + 1</span>
-          <span><i class="entry"></i> White labels: terminal values on the rim</span>
+          <span><i class="entry"></i> Rim labels: terminal values</span>
         </div>
-        <p class="circle-controls-note"><strong>How to read the circle.</strong> The black 1 is at the exact centre. Coloured dots are distinct integers, and fine grey connections link consecutive Collatz values. The terminal branches reach the outer ring, with white endpoint labels. Position and spacing make the branching structure visible; they do not encode the integer's magnitude. Follow the arrows of a selected orbit inward toward 1. A dashed return arc from 1 to 4 closes the familiar cycle.</p>
+        <p class="circle-controls-note"><strong>How to read the circle.</strong> The gold-ringed 1 is at the exact centre. Coloured dots are distinct integers, and fine connections link consecutive Collatz values. The terminal branches reach the outer ring, with labelled endpoints. Position and spacing make the branching structure visible; they do not encode the integer's magnitude. Follow the arrows of a selected orbit inward toward 1. A dashed return arc from 1 to 4 closes the familiar cycle.</p>
       </aside>
       <section class="circle-stage" aria-label="Interactive circular Collatz diagram">
         <div class="circle-stage-heading">
@@ -335,7 +342,7 @@
 
   <script src="visualizer.js?v=20261021-story-tree-1"></script>
   <script src="visualizer-animation-speed.js?v=20261013-1"></script>
-  <script src="orbit-circle.js?v=20261023-third-mode-1"></script>
+  <script src="orbit-circle.js?v=20261023-dark-lab-1"></script>
   <script src="angle-path.js?v=20261023-2"></script>
 </body>
 </html>
