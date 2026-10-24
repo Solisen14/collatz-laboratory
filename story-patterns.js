@@ -144,27 +144,89 @@
     return [...numbers].sort((a,b)=>(((a+100)*47)%201)-(((b+100)*47)%201));
   }
 
+  // The original first Collatz node is in a 1000×118 SVG, with its first
+  // circle at (36,59). The SVG uses preserveAspectRatio="xMidYMid meet",
+  // so the centred letterboxing matters when computing the landing point.
+  // This anchor matches the existing Story renderer rather than guessing.
+  function collatzFirstNodeAnchor() {
+    const rect=holder.getBoundingClientRect();
+    const gridLabel=92, gridGap=24;
+    const innerWidth=Math.max(0,rect.width-gridLabel-gridGap);
+    const svgScale=Math.min(innerWidth/1000,1);
+    const horizontalInset=(innerWidth-1000*svgScale)/2;
+    const stageRect=stage.getBoundingClientRect();
+    return {
+      x:rect.left+gridLabel+gridGap+horizontalInset+36*svgScale,
+      y:stageRect.top+stageRect.height*.48
+    };
+  }
+
   function focusOnThree() {
     const field=holder.querySelector('.pattern-integer-field');
     if(!field)return;
     const chosen=field.querySelector('[data-value="3"]');
     if(!chosen)return;
     const bounds=field.getBoundingClientRect();
-    const rect=chosen.getBoundingClientRect();
-    // Use its UNTRANSFORMED grid position, even after a visitor scrolls
-    // back up from the focused 3.
-    const shiftX=parseFloat(chosen.style.getPropertyValue('--focus-x'))||0;
-    const shiftY=parseFloat(chosen.style.getPropertyValue('--focus-y'))||0;
-    const currentPhase=field.dataset.phase;
-    const translated=currentPhase==='three';
-    // Scaling is centred, so the bounding box midpoint remains the true
-    // tile midpoint; subtract only a previous focus translation.
-    const centreX=rect.left+rect.width/2-(translated?shiftX:0);
-    const centreY=rect.top+rect.height/2-(translated?shiftY:0);
-    const targetX=bounds.left+bounds.width*.31;
-    const targetY=bounds.top+bounds.height*.51;
-    chosen.style.setProperty('--focus-x',(targetX-centreX).toFixed(2)+'px');
-    chosen.style.setProperty('--focus-y',(targetY-centreY).toFixed(2)+'px');
+    // offsetLeft / offsetTop are layout coordinates: unaffected by CSS
+    // transforms, including an in-flight scroll animation or window resize.
+    const centreX=bounds.left+chosen.offsetLeft+chosen.offsetWidth/2;
+    const centreY=bounds.top+chosen.offsetTop+chosen.offsetHeight/2;
+    const target=collatzFirstNodeAnchor();
+    chosen.style.setProperty('--focus-x',(target.x-centreX).toFixed(2)+'px');
+    chosen.style.setProperty('--focus-y',(target.y-centreY).toFixed(2)+'px');
+  }
+
+  // Animate the real handoff even though the original scene renderer
+  // replaces sequence-area's contents. Keep one temporary circular node
+  // in a fixed layer until the destination SVG node takes over.
+  let handoff=null;
+  function stopHandoff(){
+    if(!handoff)return;
+    const ongoing=handoff;
+    handoff=null;
+    if(ongoing.animation) ongoing.animation.cancel();
+    ongoing.ghost.remove();
+    stage.classList.remove('pattern-handoff-running');
+  }
+  function beginHandoff(from){
+    if(!from||reduced.matches)return;
+    const target=holder.querySelector(
+      '.primary-node[data-row-start="3"][data-node-index="0"] circle'
+    );
+    if(!target||!target.isConnected)return;
+    const to=target.getBoundingClientRect();
+    if(!(from.width>0&&from.height>0&&to.width>0&&to.height>0))return;
+    const ghost=document.createElement('div');
+    ghost.className='pattern-handoff-ghost';
+    ghost.textContent='3';
+    ghost.setAttribute('aria-hidden','true');
+    ghost.style.left=from.left+'px';
+    ghost.style.top=from.top+'px';
+    ghost.style.width=from.width+'px';
+    ghost.style.height=from.height+'px';
+    ghost.style.fontSize=Math.max(18,from.height*.37)+'px';
+    stage.classList.add('pattern-handoff-running');
+    document.body.appendChild(ghost);
+    const dx=to.left+to.width/2-(from.left+from.width/2);
+    const dy=to.top+to.height/2-(from.top+from.height/2);
+    const size=to.width/from.width;
+    if(typeof ghost.animate!=='function'){
+      ghost.remove();
+      stage.classList.remove('pattern-handoff-running');
+      return;
+    }
+    const animation=ghost.animate([
+      {transform:'translate(0px,0px) scale(1)',opacity:1},
+      {transform:'translate('+dx+'px,'+dy+'px) scale('+size+')',opacity:1}
+    ],{
+      duration:780,
+      easing:'cubic-bezier(.2,.8,.2,1)',
+      fill:'forwards'
+    });
+    handoff={ghost,animation};
+    animation.addEventListener('finish',()=>{
+      if(handoff&&handoff.animation===animation)stopHandoff();
+    },{once:true});
   }
 
   function buildIntegerField() {
@@ -202,7 +264,7 @@
 
   const phaseDetails = {
     all: {
-      footer:'144 possible starting integers · −100 to 100',
+      footer:'Some random integers between −100 and 100',
       accessibility:'144 distinct integers between negative 100 and positive 100, including both negative and positive values.'
     },
     positive: {
@@ -265,16 +327,28 @@
     stage.classList.add('is-pattern-prologue');
   };
 
-  // Remove the visual mode once existing Story scenes resume. This is
-  // independent of the downstream scripted rule-discovery sequence.
+  // Crossfade/handoff only for the natural pattern-three → intro edge.
+  // If the user scrolls away rapidly, clean up immediately and allow
+  // the normal scene machinery to take over without any stale ghost.
   const currentHandler=setScene;
   setScene=function(scene){
+    const was=state.scene;
     const isPattern=patternScenes.has(scene);
+    const shouldHandoff=was==='pattern-three'&&scene==='intro'
+      &&holder.dataset.mode==='pattern-prologue'&&!reduced.matches;
+    let source=null;
+    if(shouldHandoff){
+      const chosen=holder.querySelector('.pattern-integer-field [data-value="3"]');
+      if(chosen)source=chosen.getBoundingClientRect();
+    }
+    stopHandoff();
     if(!isPattern) {
       stage.classList.remove('is-pattern-prologue');
       holder.classList.remove('pattern-number-field-mode');
     }
-    return currentHandler(scene);
+    const result=currentHandler(scene);
+    if(source && state.scene==='intro')beginHandoff(source);
+    return result;
   };
 
   // Keep focus alignment responsive without recentering the page on resize.
