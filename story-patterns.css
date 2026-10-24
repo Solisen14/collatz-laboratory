@@ -207,3 +207,166 @@
   letter-spacing:.16em;
   line-height:1.45;
 }
+
+
+/* Revised Scene 4: integer constellation, narrowed by scrolling.
+ * All four beats use the SAME DOM grid so numbers fade instead of resetting.
+ */
+.sequence-area.pattern-number-field-mode {
+  top:57%;
+  left:5vw;
+  right:5vw;
+  width:90vw;
+  overflow:visible;
+}
+.pattern-integer-universe {
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  height:min(65vh,590px);
+  min-height:385px;
+  padding:8px 2px 4px;
+  border:0;
+  background:transparent;
+  position:relative;
+  pointer-events:none;
+}
+.pattern-universe-overline {
+  color:#c8abf9;
+  font-size:11px;
+  letter-spacing:.18em;
+  font-weight:800;
+  margin:0 0 7px;
+  text-align:center;
+}
+.pattern-universe-intro {
+  color:#a7bfd8;
+  font-size:12px;
+  letter-spacing:.1em;
+  font-weight:680;
+  text-align:center;
+  margin-bottom:18px;
+}
+.pattern-integer-field {
+  position:relative;
+  display:grid;
+  flex:1;
+  min-height:0;
+  width:100%;
+  grid-template-columns:repeat(16,minmax(0,1fr));
+  grid-template-rows:repeat(9,minmax(0,1fr));
+  gap:clamp(3px,.65vw,9px);
+  align-items:stretch;
+  justify-items:stretch;
+  isolation:isolate;
+  -webkit-mask-image:linear-gradient(to right,black 0%,black 72%,rgba(0,0,0,.42) 100%);
+  mask-image:linear-gradient(to right,black 0%,black 72%,rgba(0,0,0,.42) 100%);
+}
+.pattern-integer-tile {
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:100%;
+  min-width:0;
+  min-height:0;
+  border:1px solid rgba(122,231,255,.25);
+  border-radius:7px;
+  background:linear-gradient(145deg,rgba(27,43,65,.62),rgba(7,18,34,.72));
+  color:#b5e8f4;
+  font-size:clamp(13px,1.4vw,19px);
+  line-height:1;
+  font-weight:640;
+  font-variant-numeric:tabular-nums;
+  transition:opacity .83s ease,transform .95s cubic-bezier(.18,.76,.18,1),
+    border-color .7s ease,background .7s ease,box-shadow .7s ease;
+  animation:pattern-integer-enter .52s ease both;
+  animation-delay:calc(var(--tile-i)*16ms);
+  transform-origin:center;
+  will-change:opacity,transform;
+}
+.pattern-integer-tile[data-negative="true"] {
+  color:#c5b3e8;
+  border-color:rgba(186,157,239,.32);
+  background:linear-gradient(145deg,rgba(48,34,68,.58),rgba(19,12,34,.68));
+}
+.pattern-integer-tile[data-value="0"] {
+  color:#ffe0a4;
+  border-color:rgba(255,218,155,.5);
+}
+.pattern-integer-tile[data-value="3"] {
+  color:#f3fcff;
+  border-color:rgba(122,231,255,.72);
+  background:linear-gradient(145deg,rgba(27,73,96,.91),rgba(13,34,61,.89));
+}
+@keyframes pattern-integer-enter {
+  from {opacity:0;filter:blur(4px);}
+  to {opacity:1;filter:blur(0);}
+}
+/* Stage 2: remove negative candidates, leave 0 and positive integers. */
+.pattern-integer-field[data-phase="positive"] .pattern-integer-tile[data-negative="true"],
+.pattern-integer-field[data-phase="small"] .pattern-integer-tile[data-negative="true"],
+.pattern-integer-field[data-phase="three"] .pattern-integer-tile[data-negative="true"] {
+  opacity:0;
+  transform:scale(.55);
+}
+/* Stage 3: the candidate set becomes 0 through 20. */
+.pattern-integer-field[data-phase="small"] .pattern-integer-tile[data-large="true"],
+.pattern-integer-field[data-phase="three"] .pattern-integer-tile[data-large="true"] {
+  opacity:0;
+  transform:scale(.55);
+}
+/* Stage 4: everything except 3 fades. The original 3 tile moves
+ * toward the left-centre focus while the existing card stays readable.
+ */
+.pattern-integer-field[data-phase="three"] .pattern-integer-tile:not([data-value="3"]) {
+  opacity:0;
+  transform:scale(.55);
+}
+.pattern-integer-field[data-phase="three"] .pattern-integer-tile[data-value="3"] {
+  opacity:1;
+  z-index:3;
+  color:white;
+  border-color:#7ae7ff;
+  background:linear-gradient(140deg,rgba(22,82,115,.97),rgba(12,28,56,.98));
+  box-shadow:0 0 0 5px rgba(122,231,255,.12),0 0 60px rgba(122,231,255,.46);
+  transform:translate(var(--focus-x,0px),var(--focus-y,0px)) scale(2.65);
+}
+.pattern-universe-footer {
+  min-height:33px;
+  text-align:center;
+  color:#b1c5db;
+  font-size:clamp(12px,1.2vw,15px);
+  line-height:1.5;
+  margin:17px 0 0;
+  letter-spacing:.02em;
+}
+.story-step.pattern-bridge-step .step-card {
+  border-left:3px solid rgba(190,165,247,.72);
+  background:linear-gradient(135deg,rgba(17,23,42,.97),rgba(9,16,31,.96));
+}
+.story-step.pattern-bridge-step .step-card > p:not(.step-number) {
+  color:#d0deed;
+}
+.story-step.pattern-bridge-step h3 {
+  font-size:clamp(26px,2.5vw,35px);
+}
+@media(max-width:900px) {
+  .sequence-area.pattern-number-field-mode {top:53%;}
+  .pattern-integer-universe {height:55vh;min-height:345px;}
+  .pattern-integer-field {gap:3px;}
+  .pattern-integer-tile {font-size:12px;border-radius:4px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .pattern-integer-tile {
+    animation:none!important;
+    opacity:1;
+    transition:none!important;
+    will-change:auto;
+  }
+  .pattern-integer-field[data-phase="positive"] .pattern-integer-tile[data-negative="true"],
+  .pattern-integer-field[data-phase="small"] .pattern-integer-tile[data-negative="true"],
+  .pattern-integer-field[data-phase="small"] .pattern-integer-tile[data-large="true"],
+  .pattern-integer-field[data-phase="three"] .pattern-integer-tile:not([data-value="3"]) {
+    opacity:0;
+  }
+}
