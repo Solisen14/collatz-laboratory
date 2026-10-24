@@ -1,5 +1,6 @@
 /* Digging Deeper · Section 05, narrative Collatz landscape.
    Visual language and positive trajectories intentionally echo the Story finale. */
+.digging-page {min-width:0;}
 .digging-page .digging-shell {overflow:clip;}
 .landscape-finale {
   position:relative;
