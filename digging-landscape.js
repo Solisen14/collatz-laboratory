@@ -169,7 +169,6 @@
     const a=treePos.get(item.n);
     node(into,item.n,a.x,a.y,'negative',18);
   }
-  caption(layers['negative-tail'],'−3 → −8 → −4 → −2',640,1175,'negative',16);
 
   // Separate period-five orbit, explicitly closed, with true directions.
   function cycle(group,nums,cx,cy,r,nodeRadius=19){
@@ -190,47 +189,60 @@
     return points;
   }
   const five=[-5,-14,-7,-20,-10];
-  const fivePoints=cycle(layers['negative-five'],five,183,1510,100,22);
-  caption(layers['negative-five'],'PERIOD 5',120,1659,'negative',19);
+  // Give each negative component its own horizontal lane.
+  // The period-five basin lives LEFT of the -2 inverse tree, not inside it.
+  const fivePoints=cycle(layers['negative-five'],five,-330,1480,108,22);
+  caption(layers['negative-five'],'ANOTHER CYCLE · PERIOD 5',-535,1318,'negative',19);
 
   // The third known negative orbit, already encountered in Section 04.
   const eighteen=[-17,-50,-25,-74,-37,-110,-55,-164,-82,-41,-122,-61,-182,-91,-272,-136,-68,-34];
-  const eighteenPoints=cycle(layers['negative-eighteen'],eighteen,928,1605,120,17);
-  caption(layers['negative-eighteen'],'PERIOD 18',861,1768,'negative',18);
+  // The period-eighteen basin occupies a separate RIGHT lane.
+  const eighteenPoints=cycle(layers['negative-eighteen'],eighteen,1390,1480,158,17);
+  caption(layers['negative-eighteen'],'PERIOD 18',1307,1264,'negative',20);
 
-  // A few rigorously checked inverse limbs of the other negative cycles.
-  // Notice depth is not necessarily the numerical magnitude of the predecessor.
+  // Extend both isolated cycles outwards, never crossing their rings.
+  // Choose nodes on each circle's lower/outside boundary as entry points.
+  // Arrows still point FORWARD toward the cycles.
   const limbs=[
-    [-28,-14,98,1677],[-40,-20,268,1677],
-    [-56,-28,98,1782],[-80,-40,268,1782],
-    [-112,-56,53,1890],[-19,-56,164,1890],[-160,-80,290,1890],
-    [-100,-50,783,1885],[-148,-74,925,1885],[-220,-110,1056,1885],
-    [-200,-100,776,1995],[-296,-148,923,1995],[-440,-220,1065,1995]
+    // Five-cycle: independent growing roots off -14 and -20.
+    [-28,-14,-125,1660],[-40,-20,-475,1660],
+    [-56,-28,-125,1780],[-80,-40,-475,1780],
+    [-112,-56,-202,1900],[-19,-56,-36,1900],[-160,-80,-475,1900],
+    // Eighteen-cycle: three downward limbs from the lower arc.
+    [-364,-182,1220,1760],[-244,-122,1340,1810],[-328,-164,1520,1760],
+    [-728,-364,1215,1910],[-488,-244,1340,1950],[-656,-328,1520,1910]
   ];
   const extra=new Map();
   fivePoints.concat(eighteenPoints).forEach(p=>extra.set(p.n,p));
-  for(const [n,parent,x,y] of limbs) extra.set(n,{n,x,y,parent});
+  for(const [n,parent,x,y] of limbs) {
+    if (extra.has(n)) throw Error('Duplicate inverse node '+n);
+    extra.set(n,{n,x,y,parent});
+  }
   for(const [n,parent] of limbs){
     if(f(n)!==parent) throw Error('Invalid inverse limb '+n+' -> '+parent);
-    arrow(layers['negative-growth'],extra.get(n),extra.get(parent),n,'negative',parent===-50||parent===-74||parent===-110||five.includes(parent)?20:18,110);
+    const a=extra.get(n),b=extra.get(parent);
+    if(!a||!b) throw Error('Missing inverse endpoint '+n);
+    arrow(layers['negative-growth'],a,b,n,'negative',18,110);
   }
-  limbs.forEach(([n,parent,x,y])=>node(layers['negative-growth'],n,x,y,'negative',18));
-  caption(layers['negative-growth'],'BACKWARD BRANCHES · FORWARD ARROWS',58,2162,'negative',19);
+  limbs.forEach(([n,parent,x,y])=>node(layers['negative-growth'],n,x,y,'negative',19));
+  caption(layers['negative-growth'],'INVERSE BRANCHES',225,2050,'negative',20);
 
   // One canvas, seven zoom/pan chapters. The inverse growth is revealed
   // below the negative cycles rather than inventing a false central root.
+  // Camera follows the central -2 component first. The two isolated
+  // components sit outside that close-up; no overlapping diagrams.
   const regions=[
     {x:-55,y:-835,w:1150,h:1260,label:'01 / THE POSITIVE TREE'},
     {x:-55,y:160,w:1150,h:780,label:'02 / ZERO'},
-    {x:-55,y:460,w:1150,h:805,label:'03 / A NEGATIVE LOOP'},
-    {x:-55,y:760,w:1150,h:785,label:'04 / JOINING THE LOOP'},
-    {x:-55,y:840,w:1150,h:970,label:'05 / ANOTHER CYCLE'},
-    {x:-55,y:1030,w:1150,h:1200,label:'06 / BACKWARD BRANCHES'},
-    {x:-55,y:-840,w:1150,h:3100,label:'07 / THE WHOLE LANDSCAPE'}
+    {x:-55,y:660,w:1150,h:665,label:'03 / A NEGATIVE LOOP'},
+    {x:-55,y:830,w:1150,h:740,label:'04 / JOINING THE LOOP'},
+    {x:-610,y:1155,w:1320,h:780,label:'05 / ANOTHER CYCLE'},
+    {x:-55,y:850,w:1150,h:1130,label:'06 / BACKWARD BRANCHES'},
+    {x:-620,y:-860,w:2360,h:3050,label:'07 / THE WHOLE LANDSCAPE'}
   ];
   const visibility={
     positive:1,zero:2,'negative-two':3,'negative-tail':4,
-    'negative-five':5,'negative-eighteen':6,'negative-growth':6
+    'negative-five':5,'negative-eighteen':7,'negative-growth':6
   };
   const beats=[...host.querySelectorAll('[data-landscape-step]')];
   const phase=document.getElementById('landscape-phase');
@@ -241,8 +253,8 @@
     'Negative one and negative two repeat forever: a separate period-two cycle.',
     '−3 reaches −8, then −4, then −2. We are beginning to see the inverse branches.',
     '−5 enters a different five-number cycle that never meets −2.',
-    'Work backward from the known negative cycles to find more predecessors. Follow each arrow forward into its cycle.',
-    'The apparent reflection is structural, not an exact symmetry. Unknown orbits may still exist.'
+    'Focus on the growing inverse branches of the −2 cycle. Each arrow still runs forward into that cycle.',
+    'Pull back to see the period-2, period-5 and period-18 basins, each with independent branches. The resemblance is structural, not an exact symmetry.'
   ];
   const reduced=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
   let current=0,activeCamera=regions[0],animation=0,scrollFrame=0;
