@@ -1,0 +1,251 @@
+/* Digging Deeper · Section 05, narrative Collatz landscape.
+   Visual language and positive trajectories intentionally echo the Story finale. */
+.digging-page .digging-shell {overflow:clip;}
+.landscape-finale {
+  position:relative;
+  width:min(1270px,calc(100vw - 56px));
+  max-width:none;
+  left:50%;transform:translateX(-50%);
+  margin:106px 0 66px;
+  padding-top:73px;
+  border-top:1px solid rgba(122,231,255,.25);
+}
+.landscape-heading {max-width:940px;margin:0 0 39px;}
+.landscape-heading .article-lede {font-size:clamp(19px,2.2vw,25px);line-height:1.7;}
+.landscape-story {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(305px,365px);
+  align-items:start;
+  gap:24px;
+  position:relative;
+}
+.landscape-stage {
+  position:sticky;
+  top:65px;
+  grid-column:1;grid-row:1;
+  height:calc(100dvh - 88px);
+  min-height:480px;
+  max-height:830px;
+  border:1px solid rgba(126,165,218,.32);
+  border-radius:18px;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% 30%,rgba(41,54,100,.3),transparent 85%),
+    linear-gradient(180deg,#10172b 0%,#080e1c 100%);
+  box-shadow:0 18px 55px rgba(1,4,12,.2);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  padding:20px 18px 16px;
+  z-index:1;
+}
+.landscape-stage-head {
+  display:flex;align-items:center;justify-content:space-between;
+  gap:20px;flex-wrap:wrap;
+  padding:0 3px 12px;
+  color:#d8c7f6;
+  font-size:12px;
+  line-height:1.45;
+  letter-spacing:.13em;
+  font-weight:790;
+}
+#landscape-phase {color:#9ddcec;letter-spacing:.08em;}
+#landscape-svg {
+  flex:1;
+  min-height:0;
+  width:100%;
+  display:block;
+  overflow:hidden;
+}
+.landscape-node text {
+  fill:#f3faff;
+  font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+  font-weight:650;
+  font-variant-numeric:tabular-nums;
+}
+.landscape-node circle {filter:drop-shadow(0 0 5px rgba(156,190,245,.16));}
+.landscape-region-title {
+  font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.1em;
+  font-weight:780;
+}
+.landscape-layer {opacity:0;transition:opacity 1.0s cubic-bezier(.2,.72,.22,1);}
+.landscape-layer.is-visible {opacity:1;}
+.landscape-edge {stroke-linecap:round;stroke-linejoin:round;}
+.landscape-draw {
+  stroke-dasharray:1;
+  stroke-dashoffset:1;
+  transition:stroke-dashoffset 1.3s ease;
+  transition-delay:var(--line-delay,0ms);
+}
+.is-visible .landscape-draw {stroke-dashoffset:0;}
+.landscape-return-arc {
+  stroke-dasharray:1;stroke-dashoffset:1;
+  transition:stroke-dashoffset 1.45s ease 1.2s;
+}
+.is-visible .landscape-return-arc {stroke-dashoffset:0;}
+.landscape-footer {padding:12px 4px 0;}
+.landscape-footer .landscape-key {
+  display:flex;justify-content:center;flex-wrap:wrap;
+  gap:10px 23px;
+  font-size:14px;font-weight:650;
+  color:#c5d2e1;
+}
+.landscape-key span {white-space:nowrap;}
+.landscape-key i {
+  display:inline-block;
+  vertical-align:middle;
+  width:9px;height:9px;
+  border-radius:50%;
+  margin-right:7px;
+}
+.landscape-key i.positive {background:#7ae7ff;}
+.landscape-key i.zero {background:#eddaa6;}
+.landscape-key i.negative {background:#bfa2f1;}
+#landscape-caption {
+  max-width:700px;
+  min-height:36px;
+  margin:12px auto 0;
+  color:#c1cce0;
+  font-size:15px;
+  line-height:1.55;
+  text-align:center;
+}
+.landscape-beats {
+  grid-column:2;grid-row:1;
+  position:relative;
+  margin:0;
+  padding:0 0 18vh;
+  z-index:2;
+}
+.landscape-beat {
+  min-height:84vh;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  max-width:none;
+  width:100%;
+  margin:0;
+}
+.landscape-beat .landscape-card {
+  padding:27px 26px 28px;
+  border:1px solid rgba(158,173,215,.24);
+  border-left:3px solid rgba(164,168,204,.7);
+  border-radius:0 16px 16px 0;
+  background:linear-gradient(130deg,rgba(20,27,49,.98),rgba(9,17,31,.98));
+  box-shadow:0 12px 30px rgba(0,0,0,.24);
+  transition:border-color .4s ease,background .4s ease;
+}
+.landscape-beat.is-current .landscape-card {
+  border-left-color:#c4a7f7;
+  border-color:rgba(185,157,238,.42);
+  background:linear-gradient(130deg,rgba(29,34,62,.98),rgba(11,19,35,.98));
+}
+.landscape-step {
+  display:block;
+  font-size:12px;
+  letter-spacing:.15em;
+  font-weight:750;
+  color:#c1a6ed;
+  margin:0 0 14px;
+}
+.landscape-beat h3 {
+  margin:0 0 15px;
+  font-size:clamp(26px,2.5vw,34px);
+  line-height:1.15;
+  letter-spacing:-.035em;
+  color:#faf8ff;
+}
+.landscape-beat p {
+  margin:0;
+  color:#d4e0ec;
+  font-size:clamp(17px,1.55vw,19px);
+  line-height:1.73;
+}
+.landscape-beat p strong {color:#fff;}
+.landscape-beat .landscape-note {
+  color:#aabed0;
+  margin-top:15px;
+  font-size:15px;
+  line-height:1.6;
+}
+.landscape-closing {
+  margin:50px auto 0;
+  max-width:960px;
+  padding:48px 35px 50px;
+  text-align:center;
+  border:1px solid rgba(188,154,240,.38);
+  border-radius:22px;
+  background:radial-gradient(ellipse at 50% 0,rgba(81,56,126,.24),transparent 75%),linear-gradient(120deg,#131a30,#090f1d);
+}
+.landscape-closing h3 {
+  margin:14px auto 16px;
+  font-size:clamp(30px,4.6vw,50px);
+  line-height:1.12;
+  color:#f8f4ff;
+  letter-spacing:-.035em;
+}
+.landscape-closing p:not(.diagram-topline) {
+  max-width:740px;margin:0 auto;color:#cbd9e7;
+  font-size:19px;line-height:1.7;
+}
+.landscape-paths {
+  display:flex;flex-wrap:wrap;justify-content:center;gap:18px;
+  margin-top:32px;
+}
+.landscape-paths a {
+  text-decoration:none;
+  display:flex;align-items:center;justify-content:center;gap:13px;
+  border-radius:12px;
+  min-height:58px;
+  padding:15px 21px;
+  color:#091321;background:#b9ecfc;
+  font-size:16px;font-weight:780;
+  transition:filter .2s ease,transform .2s ease;
+}
+.landscape-paths a + a {background:#dfc8fd;}
+.landscape-paths a:hover,.landscape-paths a:focus-visible {
+  filter:brightness(1.09);transform:translateY(-2px);
+}
+.landscape-paths a:focus-visible {outline:3px solid white;outline-offset:4px;}
+@media(max-width:950px) {
+  .landscape-finale {width:calc(100vw - 28px);padding-top:45px;}
+  .landscape-story {display:grid;grid-template-columns:minmax(0,1fr);gap:0;}
+  .landscape-stage {
+    grid-column:1;grid-row:1;
+    position:sticky;
+    top:7px;
+    height:64dvh;
+    min-height:330px;
+    max-height:690px;
+    padding:10px 10px 12px;
+  }
+  .landscape-stage-head {font-size:10px;padding-bottom:4px;}
+  .landscape-footer .landscape-key {gap:8px 14px;font-size:11px;}
+  #landscape-caption {font-size:12px;min-height:30px;}
+  .landscape-beats {
+    grid-column:1;grid-row:1;
+    pointer-events:none;
+    padding:49vh 0 9vh;
+  }
+  .landscape-beat {
+    justify-content:flex-end;
+    padding:0 0 5vh;
+    min-height:85vh;
+    margin:0 auto;
+    max-width:min(650px,94%);
+  }
+  .landscape-card {pointer-events:auto;}
+  .landscape-beat .landscape-card {
+    padding:18px 21px 20px;
+    background:rgba(11,18,33,.97);
+  }
+  .landscape-beat h3 {font-size:25px;}
+  .landscape-beat p {font-size:16px;line-height:1.55;}
+  .landscape-beat .landscape-note {font-size:13px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .landscape-layer {opacity:1!important;transition:none!important;}
+  .landscape-draw,.landscape-return-arc {stroke-dashoffset:0!important;transition:none!important;}
+  .landscape-card {transition:none!important;}
+}
