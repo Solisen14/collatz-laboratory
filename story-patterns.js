@@ -184,9 +184,16 @@
     if(!handoff)return;
     const ongoing=handoff;
     handoff=null;
+    const target=holder.querySelector(
+      '.primary-node[data-row-start="3"][data-node-index="0"]'
+    );
+    // Commit the genuine SVG node instantly under the finished ghost.
+    // Otherwise its built-in opacity transition creates a one-frame blink.
+    if(target)target.style.transition='none';
+    stage.classList.remove('pattern-handoff-running');
     if(ongoing.animation) ongoing.animation.cancel();
     ongoing.ghost.remove();
-    stage.classList.remove('pattern-handoff-running');
+    if(target)requestAnimationFrame(()=>target.style.removeProperty('transition'));
   }
   function beginHandoff(from){
     if(!from||reduced.matches)return;
