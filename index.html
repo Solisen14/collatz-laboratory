@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#07090f" />
   <title>The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
-  <link rel="stylesheet" href="story-patterns.css?v=20261024-patterns-2" />
+  <link rel="stylesheet" href="story-patterns.css?v=20261024-pick-1" />
 </head>
 <body>
   <header class="site-header">
@@ -100,8 +100,8 @@
           <div class="step-card">
             <p class="step-number">BEFORE WE BEGIN · 01</p>
             <h3>What comes next?</h3>
-            <p>Look at these numbers in order. Can you predict the next one?</p>
             <p>A <strong>sequence</strong> is an ordered list of numbers. A <strong>pattern</strong> is a regularity we notice within it.</p>
+            <p>Look at these numbers in order. Can you predict the next one?</p>
             <button type="button" class="pattern-reveal-button" data-pattern-reveal aria-expanded="false" aria-controls="pattern-twos-feedback">Reveal next number</button>
             <p class="pattern-feedback" id="pattern-twos-feedback" role="status" hidden>10. Each number is 2 more than the previous one.</p>
           </div>
@@ -121,18 +121,43 @@
           <div class="step-card">
             <p class="step-number">PATTERN · 03</p>
             <h3>But not every pattern adds a constant.</h3>
-            <p>These are the first terms of the Fibonacci sequence. Instead of a fixed increase, can you find a rule using the previous terms?</p>
+            <p>These are the first terms of a famous sequence. Instead of a fixed increase, can you find a rule using the previous terms?</p>
             <button type="button" class="pattern-reveal-button" data-pattern-reveal aria-expanded="false" aria-controls="pattern-fibonacci-feedback">Reveal next number</button>
-            <p class="pattern-feedback" id="pattern-fibonacci-feedback" role="status" hidden>13. Add the previous two terms: 5 + 8 = 13.</p>
+            <p class="pattern-feedback" id="pattern-fibonacci-feedback" role="status" hidden>13. Add the previous two terms: 5 + 8 = 13. This is the Fibonacci sequence.</p>
           </div>
         </article>
+
 
         <article class="story-step pattern-step pattern-bridge-step" data-scene="pattern-bridge">
           <div class="step-card">
             <p class="step-number">AND NOW · SOMETHING DIFFERENT</p>
-            <h3>What if the rule itself could change?</h3>
-            <p>Sometimes we add a fixed amount. Sometimes we combine two previous terms. But what if the next step depends on <em>the number we're looking at</em>?</p>
-            <p>Let's begin with one number and investigate. No rule revealed yet.</p>
+            <h3>Let's explore another kind of pattern.</h3>
+            <p>I'll pick a starting value. Can you determine what happens next?</p>
+            <p>Look at all these integers. Each one could be the beginning of a sequence.</p>
+          </div>
+        </article>
+
+        <article class="story-step pattern-step pattern-bridge-step" data-scene="pattern-positive">
+          <div class="step-card">
+            <p class="step-number">NARROWING OUR CHOICE · 01</p>
+            <h3>I'm going to pick a starting integer.</h3>
+            <p>Let's set aside the negative integers.</p>
+          </div>
+        </article>
+
+        <article class="story-step pattern-step pattern-bridge-step" data-scene="pattern-small">
+          <div class="step-card">
+            <p class="step-number">NARROWING OUR CHOICE · 02</p>
+            <h3>I'm going to start small.</h3>
+            <p>Let's keep only the integers from 0 through 20.</p>
+          </div>
+        </article>
+
+        <article class="story-step pattern-step pattern-bridge-step" data-scene="pattern-three">
+          <div class="step-card">
+            <p class="step-number">ONE STARTING VALUE</p>
+            <h3>I'm going to start with 3.</h3>
+            <p>What might happen when we follow this number through a new sequence?</p>
             <a class="pattern-continue" href="#collatz-first-number">Follow the number 3 ↓</a>
           </div>
         </article>
@@ -341,6 +366,6 @@
   <script src="story-meta-sync.js?v=20261020-1"></script>
   <script src="choice-fix.js?v=20261013-1324"></script>
   <script src="collatz-tree-story.js?v=20261021-finale-4"></script>
-  <script src="story-patterns.js?v=20261024-patterns-2"></script>
+  <script src="story-patterns.js?v=20261024-pick-1"></script>
 </body>
 </html>
