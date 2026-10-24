@@ -75,6 +75,8 @@
       last.classList.add('is-solved');
       last.setAttribute('aria-label','The next term is '+patterns[scene].next);
     }
+    const row=holder.querySelector('.pattern-numbers');
+    if(row)row.setAttribute('aria-label','Sequence: '+patterns[scene].terms.join(', ')+', '+patterns[scene].next);
     const explanation=holder.querySelector('[data-pattern-explanation]');
     if(explanation) {
       explanation.textContent=patterns[scene].explanation;
