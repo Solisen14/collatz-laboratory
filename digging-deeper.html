@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="digging-fixed-points.css?v=20261023-scroll-1" />
   <link rel="stylesheet" href="digging-negatives.css?v=20261023-universe-2" />
   <link rel="stylesheet" href="digging-landscape.css?v=20261023-reflection-1" />
+  <link rel="stylesheet" href="digging-motion.css?v=20261024-1" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -147,7 +148,7 @@
           <p>We also write <span class="iterate-math">C⁰(3) = 3</span> for the starting value, before any steps have taken place.</p>
         </div>
 
-        <figure class="iterates-figure">
+        <figure class="iterates-figure" data-motion-source="iterates">
           <p class="diagram-topline">SEVEN ITERATIONS · STARTING AT 3</p>
           <div class="iterates-figure-viewport">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1030 188" role="img" aria-labelledby="iterates-figure-title iterates-figure-description">
@@ -396,7 +397,7 @@
           <p>Now look again at the orbit starting at 3. The number 3 never returns, so it is <em>not</em> periodic. But after a few steps, its orbit enters the familiar cycle.</p>
         </div>
 
-        <figure class="periodic-figure">
+        <figure class="periodic-figure" data-motion-source="periodic">
           <p class="diagram-topline">STARTING AT 3 · ENTERING THE PERIOD-3 CYCLE</p>
           <div class="periodic-viewport">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 975 369" role="img" aria-labelledby="periodic-title periodic-desc">
@@ -463,7 +464,7 @@
         </figure>
 
         <div class="article-prose">
-          <p>We call this <strong>eventually periodic</strong> behaviour: an orbit follows some initial steps before entering a repeating cycle.</p>
+          <p>An orbit is <strong>eventually periodic</strong> if it enters a repeating cycle after finitely many steps. Periodic orbits are included: they begin inside the cycle, with no initial tail.</p>
           <p>Think back to <span class="fixed-math">f(x) = x²</span>. The orbit <span class="fixed-math">−1 → 1 → 1 → ⋯</span> eventually reaches a fixed point, while the orbit of 3 under Collatz eventually enters a three-number cycle. Both are eventually periodic.</p>
           <p>There's a useful connection here: <strong>a fixed point is simply a periodic point of period 1.</strong> Collatz's familiar cycle has period 3 instead.</p>
 
@@ -832,7 +833,7 @@
           <p>Here's a curious connection. Write a negative number as <span class="negative-math">−m</span>, where <span class="negative-math">m</span> is positive. For an odd <span class="negative-math">m</span>, the usual rule gives:</p>
         </div>
 
-        <div class="negative-rule-panel" role="group" aria-label="The odd Collatz rule for negative inputs has the magnitude of three m minus one">
+        <div class="negative-rule-panel" data-motion-source="reflection" role="group" aria-label="The odd Collatz rule for negative inputs has the magnitude of three m minus one">
           <p class="diagram-topline">THE SAME RULE · VIEWED FROM THE OTHER SIDE</p>
           <span class="negative-eq">C(−m) = 3(−m) + 1 = −(3m − 1)</span>
           <p>The absolute value behaves according to <strong>3m − 1</strong>, rather than <strong>3m + 1</strong>. Dividing by 2 works the same way for even values. Thus, reflecting the negative orbit into positive magnitudes turns it into a related <span class="negative-math">3m − 1</span> system.</p>
@@ -959,6 +960,8 @@
       </nav>
     </div>
   </main>
+  <script src="digging-motion-model.js?v=20261024-1" defer></script>
+  <script src="digging-motion.js?v=20261024-1" defer></script>
   <script src="digging-fixed-scroll.js?v=20261023-scroll-3" defer></script>
   <script src="digging-negatives.js?v=20261023-universe-2" defer></script>
   <script src="digging-landscape.js?v=20261024-separated-1" defer></script>

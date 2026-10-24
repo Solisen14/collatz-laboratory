@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Digging Deeper controller regression tests</title>
+<style>
+  body {font:16px system-ui;margin:30px;background:#091322;color:#e5f4ff}
+  #fixtures {position:absolute;left:-10000px;width:1000px}
+  .deeper-motion-beat {height:500px}
+</style>
+<h1>Running controller tests…</h1>
+<p>Open this file through a local static server. These tests control animation time and the motion preference; visual layout is checked separately.</p>
+<pre id="results"></pre>
+<div id="fixtures">
+  <figure data-motion-source="iterates">Iteration fallback</figure>
+  <figure data-motion-source="periodic">Periodicity fallback</figure>
+  <div data-motion-source="reflection">Reflection fallback</div>
+</div>
+<script>
+  const preferenceListeners=[];
+  const preference={matches:false,addEventListener:(type,fn)=>preferenceListeners.push(fn)};
+  const narrowListeners=[];
+  const narrowPreference={matches:false,addEventListener:(type,fn)=>narrowListeners.push(fn)};
+  const nativeMatchMedia=window.matchMedia.bind(window);
+  window.matchMedia=q=>q==='(prefers-reduced-motion: reduce)'?preference:q==='(max-width: 600px)'?narrowPreference:nativeMatchMedia(q);
+  const frames=new Map();let frameId=0;
+  window.requestAnimationFrame=fn=>{frames.set(++frameId,fn);return frameId;};
+  window.cancelAnimationFrame=id=>frames.delete(id);
+  function frame(time){const batch=[...frames.values()];frames.clear();batch.forEach(fn=>fn(time));}
+  function motion(reduced){preference.matches=reduced;preferenceListeners.forEach(fn=>fn({matches:reduced}));}
+  function narrowScreen(matches){narrowPreference.matches=matches;narrowListeners.forEach(fn=>fn({matches}));}
+</script>
+<script src="../digging-motion-model.js"></script>
+<script src="../digging-motion.js"></script>
+<script>
+  const output=document.querySelector('#results');
+  let passed=0;
+  function check(condition,message){if(!condition)throw new Error(message);output.textContent+='PASS '+message+'\n';passed++;}
+  const scene=key=>document.querySelector('#deeper-'+key);
+  const click=(key,action)=>scene(key).querySelector('[data-action="'+action+'"]').click();
+  const step=key=>Number(scene(key).dataset.step);
+  try {
+    check(document.querySelectorAll('.deeper-motion-story').length===3,'All three scenes mount');
+    check([...document.querySelectorAll('[data-motion-source]')].every(s=>s.hidden),'Fallbacks hide after successful mounting');
+    const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);
+    check(new Set(ids).size===ids.length,'Scene and SVG IDs are unique');
+    motion(true);
+    for(const [key,max] of [['iterates',10],['periodic',14],['reflection',9]]) {
+      check(step(key)===max&&scene(key).dataset.mode==='reduced',key+': reduced motion starts with complete diagram');
+      check(scene(key).querySelector('[data-action="play"]').disabled&&scene(key).querySelector('[data-action="scroll"]').disabled,key+': automatic motion controls disabled');
+      click(key,'previous');window.dispatchEvent(new Event('scroll'));frame(100);
+      check(step(key)===max-1,key+': manual reduced-motion step survives scrolling');
+    }
+    scene('periodic').querySelector('[data-start="4"]').click();
+    check(step('periodic')===9&&scene('periodic').dataset.start==='4','Reduced-motion starting-point switch updates complete example');
+    motion(false);
+    scene('periodic').querySelector('[data-start="3"]').click();
+    click('periodic','play');frame(100);frame(1000);
+    check(step('periodic')===1&&scene('periodic').dataset.mode==='play','Playback advances one application per tick');
+    click('periodic','play');frame(2000);
+    check(step('periodic')===1&&frames.size===0,'Pause cancels playback without advancing');
+    click('periodic','play');
+    scene('periodic').querySelector('[data-start="4"]').click();frame(3000);
+    check(step('periodic')===0&&frames.size===0,'Changing the starting point cancels the previous timer');
+    click('periodic','play');motion(true);frame(4000);
+    check(step('periodic')===9&&frames.size===0,'Changing motion preference cancels playback and shows complete view');
+    motion(false);
+    scene('periodic').querySelector('[data-start="3"]').click();click('periodic','play');
+    scene('periodic').getBoundingClientRect=()=>({top:innerHeight+100,bottom:innerHeight+600});
+    window.dispatchEvent(new Event('scroll'));frame(5000);
+    check(scene('periodic').dataset.mode==='manual'&&frames.size===0,'Leaving the viewport pauses playback');
+    narrowScreen(true);
+    check(step('iterates')===10&&scene('iterates').dataset.mode==='manual','Narrow screens begin with the complete diagram');
+    check(!scene('iterates').querySelector('[data-action="play"]').disabled&&scene('iterates').querySelector('[data-action="scroll"]').disabled,'Narrow screens retain manual playback without scroll following');
+    click('iterates','previous');window.dispatchEvent(new Event('scroll'));frame(6000);
+    check(step('iterates')===9,'Narrow-screen manual step survives scrolling');
+    document.querySelector('h1').textContent=passed+' controller checks passed';
+    document.body.dataset.result='pass';
+  } catch(error) {
+    output.textContent+='FAIL '+error.message+'\n';
+    document.querySelector('h1').textContent='Controller regression failed';
+    document.body.dataset.result='fail';throw error;
+  }
+</script>
+</html>
