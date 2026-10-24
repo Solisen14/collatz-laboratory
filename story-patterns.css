@@ -53,7 +53,7 @@
   padding:2px;
   color:#f2f8ff;
   border:1px solid color-mix(in srgb,var(--pattern-accent) 33%,rgba(255,255,255,.15));
-  border-radius:14px;
+  border-radius:50%;
   background:rgba(6,16,30,.81);
   font-size:clamp(20px,2.25vw,34px);
   font-weight:650;
@@ -184,7 +184,7 @@
 @media(max-width:1250px) {
   .pattern-stage {padding:26px 19px;min-height:270px;width:55vw;}
   .pattern-stage-top {margin-bottom:30px;}
-  .pattern-number {border-radius:11px;}
+  .pattern-number {border-radius:50%;}
   .story-step.pattern-step .step-card {padding:21px 20px;}
 }
 @media(max-height:800px) {
