@@ -8,7 +8,7 @@
     'pattern-twos': {
       title: 'What comes next?',
       kicker: 'PATTERNS & SEQUENCES',
-      eyebrow: '01 / COUNT BY TWO',
+      eyebrow: '01 / HOW ARE WE COUNTING',
       terms: [2,4,6,8],
       next: 10,
       explanation: 'Add 2 each time. A sequence is an ordered list of terms, and a pattern may help us predict what comes next.',
@@ -18,7 +18,7 @@
     'pattern-sevens': {
       title: 'Can you find the rule?',
       kicker: 'A DIFFERENT STEP',
-      eyebrow: '02 / FIND THE DIFFERENCE',
+      eyebrow: '02 / WHAT IS ALWAYS THE SAME',
       terms: [3,10,17,24],
       next: 31,
       explanation: 'Add 7 each time. The numbers are different, but the same kind of rule works: add a fixed amount.',
@@ -28,18 +28,24 @@
     'pattern-fibonacci': {
       title: 'A different kind of pattern.',
       kicker: 'LOOK BACK TWO TERMS',
-      eyebrow: '03 / THE FIBONACCI SEQUENCE',
+      eyebrow: '03 / A DIFFERENT SEQUENCE',
       terms: [1,1,2,3,5,8],
       next: 13,
-      explanation: 'Each term is the sum of the two terms before it. The amount we add changes at each step.',
+      explanation: 'This is the Fibonacci sequence. Each term is the sum of the two terms before it. The amount we add changes at each step.',
       color: 'gold',
       label: 'TWO PREVIOUS TERMS'
     }
   };
-  const patternScenes = new Set([...Object.keys(patterns), 'pattern-bridge']);
+  const bridgePhases = {
+    'pattern-bridge': {phase:'all',title:'A new kind of sequence.'},
+    'pattern-positive': {phase:'positive',title:'Choose a starting integer.'},
+    'pattern-small': {phase:'small',title:'Start small.'},
+    'pattern-three': {phase:'three',title:'Start with 3.'}
+  };
+  const patternScenes = new Set([...Object.keys(patterns), ...Object.keys(bridgePhases)]);
   const solved = new Set();
   const stepElements = [...document.querySelectorAll('.story-step[data-scene^="pattern-"]')];
-  if (stepElements.length !== 4 || !stepElements.every(s=>patternScenes.has(s.dataset.scene))) return;
+  if (stepElements.length !== 7 || !stepElements.every(s=>patternScenes.has(s.dataset.scene))) return;
 
   const stage = document.querySelector('.sticky-stage');
   const holder = document.getElementById('sequence-area');
@@ -77,6 +83,10 @@
     }
     const row=holder.querySelector('.pattern-numbers');
     if(row)row.setAttribute('aria-label','Sequence: '+patterns[scene].terms.join(', ')+', '+patterns[scene].next);
+    if (scene === 'pattern-fibonacci') {
+      const eyebrow=holder.querySelector('.pattern-stage-kicker');
+      if(eyebrow)eyebrow.textContent='03 / THE FIBONACCI SEQUENCE';
+    }
     const explanation=holder.querySelector('[data-pattern-explanation]');
     if(explanation) {
       explanation.textContent=patterns[scene].explanation;
@@ -94,7 +104,7 @@
     const top=document.createElement('div');
     top.className='pattern-stage-top';
     top.innerHTML='<span class="pattern-stage-kicker"></span><span class="pattern-stage-label"></span>';
-    top.querySelector('.pattern-stage-kicker').textContent=p.eyebrow;
+    top.querySelector('.pattern-stage-kicker').textContent=scene==='pattern-fibonacci'&&answered?'03 / THE FIBONACCI SEQUENCE':p.eyebrow;
     top.querySelector('.pattern-stage-label').textContent=p.label;
     const row=document.createElement('div');
     row.className='pattern-numbers';
@@ -125,18 +135,101 @@
     reflectSolved(scene);
   }
 
-  function renderBridge() {
+  // Produce a dense but entirely deterministic sample of 144 distinct
+  // integers in [-100,100]. Every 0..20 is included so filtering always
+  // leaves all 21 small nonnegative candidates, including the future 3.
+  function integerSample() {
+    const numbers=new Set(Array.from({length:21},(_,i)=>i));
+    for(let i=0;numbers.size<144;i++)numbers.add(((i*73+11)%201)-100);
+    return [...numbers].sort((a,b)=>(((a+100)*47)%201)-(((b+100)*47)%201));
+  }
+
+  function focusOnThree() {
+    const field=holder.querySelector('.pattern-integer-field');
+    if(!field)return;
+    const chosen=field.querySelector('[data-value="3"]');
+    if(!chosen)return;
+    const bounds=field.getBoundingClientRect();
+    const rect=chosen.getBoundingClientRect();
+    // Use its UNTRANSFORMED grid position, even after a visitor scrolls
+    // back up from the focused 3.
+    const shiftX=parseFloat(chosen.style.getPropertyValue('--focus-x'))||0;
+    const shiftY=parseFloat(chosen.style.getPropertyValue('--focus-y'))||0;
+    const currentPhase=field.dataset.phase;
+    const translated=currentPhase==='three';
+    const left=rect.left-(translated?shiftX:0);
+    const top=rect.top-(translated?shiftY:0);
+    const centreX=left+rect.width/(translated?2.65:2);
+    const centreY=top+rect.height/(translated?2.65:2);
+    const targetX=bounds.left+bounds.width*.31;
+    const targetY=bounds.top+bounds.height*.51;
+    chosen.style.setProperty('--focus-x',(targetX-centreX).toFixed(2)+'px');
+    chosen.style.setProperty('--focus-y',(targetY-centreY).toFixed(2)+'px');
+  }
+
+  function buildIntegerField() {
     holder.innerHTML='';
     holder.dataset.mode='pattern-prologue';
-    holder.classList.add('pattern-prologue-mode');
+    holder.classList.add('pattern-prologue-mode','pattern-number-field-mode');
+
     const shell=document.createElement('div');
-    shell.className='pattern-stage pattern-bridge-stage';
-    shell.innerHTML =
-      '<p class="pattern-bridge-overline">SAME IDEA · A SURPRISING TWIST</p>'+
-      '<p class="pattern-bridge-thought">What if the rule we use <strong>changes depending on the number?</strong></p>'+
-      '<div class="pattern-bridge-number" aria-label="Our next starting number is three">3</div>'+
-      '<p class="pattern-bridge-closer">One starting value. Let’s investigate what happens next.</p>';
+    shell.className='pattern-integer-universe';
+    shell.innerHTML=
+      '<p class="pattern-universe-overline">SAME IDEA · A SURPRISING TWIST</p>'+
+      '<div class="pattern-universe-intro">LET’S EXPLORE ANOTHER KIND OF PATTERN</div>';
+    const field=document.createElement('div');
+    field.className='pattern-integer-field';
+    field.setAttribute('role','img');
+    field.setAttribute('aria-label','A field of integers between minus 100 and 100.');
+    integerSample().forEach((n,i)=>{
+      const tile=document.createElement('span');
+      tile.className='pattern-integer-tile';
+      tile.textContent=String(n).replace('-','−');
+      tile.dataset.value=String(n);
+      tile.dataset.negative=String(n<0);
+      tile.dataset.large=String(n>20);
+      tile.style.setProperty('--tile-i',String(i%27));
+      tile.setAttribute('aria-hidden','true');
+      field.appendChild(tile);
+    });
+    const footer=document.createElement('p');
+    footer.className='pattern-universe-footer';
+    footer.id='pattern-universe-footer';
+    shell.append(field,footer);
     holder.appendChild(shell);
+    requestAnimationFrame(focusOnThree);
+  }
+
+  const phaseDetails = {
+    all: {
+      footer:'144 possible starting integers · −100 to 100',
+      accessibility:'144 distinct integers between negative 100 and positive 100, including both negative and positive values.'
+    },
+    positive: {
+      footer:'Negative integers fade away. Zero and the positive integers remain.',
+      accessibility:'Negative integers have faded. Zero and positive values remain.'
+    },
+    small: {
+      footer:'Only the numbers 0 through 20 remain.',
+      accessibility:'Only the 21 integers from zero through 20 remain.'
+    },
+    three: {
+      footer:'One starting value: 3.',
+      accessibility:'All other values have faded away. The integer 3 moves into focus.'
+    }
+  };
+
+  function renderBridge(scene) {
+    const existing=holder.querySelector('.pattern-integer-field');
+    if(!existing)buildIntegerField();
+    const field=holder.querySelector('.pattern-integer-field');
+    const phase=bridgePhases[scene].phase;
+    // Configure the focus destination before beginning the final tile motion.
+    if(phase==='three'&&field.dataset.phase!=='three') focusOnThree();
+    field.dataset.phase=phase;
+    field.setAttribute('aria-label',phaseDetails[phase].accessibility);
+    const footer=holder.querySelector('.pattern-universe-footer');
+    if(footer)footer.textContent=phaseDetails[phase].footer;
   }
 
   document.addEventListener('click',event=>{
@@ -161,11 +254,14 @@
     state.scene=scene;
     clearTimers();
     hideTransientUI();
-    heading.textContent=scene==='pattern-bridge'?'A new kind of sequence.':patterns[scene].title;
+    heading.textContent=bridgePhases[scene]?bridgePhases[scene].title:patterns[scene].title;
     chapter.textContent='00';
-    kicker.textContent=scene==='pattern-bridge'?'NOW, SOMETHING DIFFERENT':patterns[scene].kicker;
-    if(scene==='pattern-bridge')renderBridge();
-    else renderPattern(scene);
+    kicker.textContent=bridgePhases[scene]?'NOW, SOMETHING DIFFERENT':patterns[scene].kicker;
+    if(bridgePhases[scene])renderBridge(scene);
+    else {
+      holder.classList.remove('pattern-number-field-mode');
+      renderPattern(scene);
+    }
     stage.classList.add('is-pattern-prologue');
   };
 
@@ -174,9 +270,15 @@
   const currentHandler=setScene;
   setScene=function(scene){
     const isPattern=patternScenes.has(scene);
-    if(!isPattern)stage.classList.remove('is-pattern-prologue');
+    if(!isPattern) {
+      stage.classList.remove('is-pattern-prologue');
+      holder.classList.remove('pattern-number-field-mode');
+    }
     return currentHandler(scene);
   };
+
+  // Keep focus alignment responsive without recentering the page on resize.
+  window.addEventListener('resize',()=>requestAnimationFrame(focusOnThree),{passive:true});
 
   // The base script may have selected the first scene during initialization.
   if(patternScenes.has(state.scene)){
