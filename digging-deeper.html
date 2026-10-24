@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="chapters.css?v=20261021-iterates-1" />
   <link rel="stylesheet" href="digging-fixed-points.css?v=20261023-scroll-1" />
   <link rel="stylesheet" href="digging-negatives.css?v=20261023-universe-2" />
+  <link rel="stylesheet" href="digging-landscape.css?v=20261023-reflection-1" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -853,39 +854,101 @@
       </article>
 
 
-      <section class="collatz-universe" id="integer-landscape" aria-labelledby="universe-heading">
-        <header class="article-heading universe-heading">
+
+      <section class="landscape-finale" id="integer-landscape" aria-labelledby="landscape-heading">
+        <header class="article-heading landscape-heading">
           <p class="article-overline"><span>05</span> THE BIG REVEAL</p>
-          <h2 id="universe-heading">One Rule. An Entire Landscape.</h2>
-          <p class="article-lede">We began with positive integers. Then we let zero in. Then we crossed below zero. Now put everything we have discovered into the same picture.</p>
+          <h2 id="landscape-heading">The Whole Integer Landscape.</h2>
+          <p class="article-lede">We started with the positive integers and followed them toward 1. Now keep moving down. The same simple rule has more to show us.</p>
         </header>
-        <div class="universe-scrollstory" id="universe-scrollstory">
-          <div class="universe-sticky">
-            <div class="universe-topline">THE INTEGER LANDSCAPE <span id="universe-phase-label" aria-live="off">01 / POSITIVE INTEGERS</span></div>
-            <svg id="universe-map" viewBox="0 0 1000 530" role="img" aria-labelledby="universe-svg-title universe-svg-desc" preserveAspectRatio="xMidYMid meet">
-              <title id="universe-svg-title">A connected view of positive, zero, and negative Collatz dynamics</title>
-              <desc id="universe-svg-desc">A positive branching inverse Collatz graph feeding the 1, 4, 2 cycle; zero as its own fixed point; and distinct negative components containing cycles of lengths 2, 5 and 18. Components are not connected to each other.</desc>
-              <g id="universe-positive" class="universe-layer"></g>
-              <g id="universe-zero" class="universe-layer"></g>
-              <g id="universe-negative" class="universe-layer"></g>
+        <div class="landscape-story" id="landscape-scrollstory">
+          <div class="landscape-stage">
+            <div class="landscape-stage-head">
+              <span>THE COLLATZ LABORATORY · ONE RULE</span>
+              <span id="landscape-phase">01 / THE POSITIVE TREE</span>
+            </div>
+            <svg id="landscape-svg" viewBox="-55 -835 1150 1260" preserveAspectRatio="xMidYMid meet"
+                 role="img" aria-labelledby="landscape-svg-title landscape-svg-description">
+              <title id="landscape-svg-title">Collatz integer landscape, revealed through scrolling</title>
+              <desc id="landscape-svg-description">A familiar positive Collatz tree with a central vertical spine descending to 1, plus the return arrow from 1 to 4. Below it lie the isolated zero fixed point, the negative two-number cycle with branches from negative four and negative three, a separate negative five-number cycle, and an eighteen-number cycle. Further inverse branches grow away from each known negative cycle. All visible arrows represent genuine forward Collatz iterations; the diagram does not claim to show every orbit.</desc>
+              <g id="landscape-positive" class="landscape-layer"></g>
+              <g id="landscape-zero" class="landscape-layer"></g>
+              <g id="landscape-negative-two" class="landscape-layer"></g>
+              <g id="landscape-negative-tail" class="landscape-layer"></g>
+              <g id="landscape-negative-five" class="landscape-layer"></g>
+              <g id="landscape-negative-eighteen" class="landscape-layer"></g>
+              <g id="landscape-negative-growth" class="landscape-layer"></g>
             </svg>
-            <div class="universe-key"><span><i class="universe-dot positive"></i>Positive</span><span><i class="universe-dot zero"></i>Zero</span><span><i class="universe-dot negative"></i>Negative</span></div>
-            <p class="universe-caption" id="universe-caption">Branches feed toward the familiar positive cycle. Each arrow indicates one Collatz step.</p>
+            <div class="landscape-footer">
+              <div class="landscape-key" aria-label="Colour key">
+                <span><i class="positive"></i>Positive orbit</span>
+                <span><i class="zero"></i>Fixed point</span>
+                <span><i class="negative"></i>Negative orbits</span>
+              </div>
+              <p id="landscape-caption">Follow the arrows toward 1, then watch the golden return to 4.</p>
+            </div>
           </div>
-          <div class="universe-beats">
-            <section class="universe-beat" data-universe-step="1"><span class="universe-stepno">01 / ABOVE ZERO</span><h3>The tree we know</h3><p>Follow the arrows: many positive starting values flow toward the <strong>1 → 4 → 2 → 1</strong> cycle. Draw the arrows backward and a branching tree emerges. We can draw as many tested branches as we like, but no finite picture proves the conjecture for all positives.</p></section>
-            <section class="universe-beat" data-universe-step="2"><span class="universe-stepno">02 / THE ORIGIN</span><h3>And then there is zero.</h3><p><strong>0 → 0.</strong> It is neither part of the positive tree nor a gateway between positive and negative orbits. It stays exactly where it is.</p></section>
-            <section class="universe-beat" data-universe-step="3"><span class="universe-stepno">03 / BELOW ZERO</span><h3>Another world beneath</h3><p>The same rule produces at least three distinct negative cycles: <strong>periods 2, 5 and 18</strong>. Their surrounding branches lead into different loops. They do not connect to zero or the positive tree.</p></section>
-            <section class="universe-beat" data-universe-step="4"><span class="universe-stepno">04 / THE WHOLE PICTURE</span><h3>Same function. Different fates.</h3><p>One domain of integers, one piecewise rule, and several disconnected regions of behaviour. These are <strong>illustrated orbits and known cycles</strong>, not a proof that we have found every possible orbit.</p></section>
+          <div class="landscape-beats">
+            <section class="landscape-beat" data-landscape-step="1">
+              <div class="landscape-card">
+                <span class="landscape-step">01 / ABOVE ZERO</span>
+                <h3>Back to the tree.</h3>
+                <p>Remember this from our story? Every branch shown here flows <strong>downward toward 1</strong>. The central column is the familiar chain of powers of two. At the base, a curved arrow returns <strong>1 → 4</strong>, closing the cycle.</p>
+              </div>
+            </section>
+            <section class="landscape-beat" data-landscape-step="2">
+              <div class="landscape-card">
+                <span class="landscape-step">02 / THE ORIGIN</span>
+                <h3>Now, make room for zero.</h3>
+                <p>Beneath 1, another orbit appears. But it never joins our tree: <strong>0 → 0</strong>. It is an entirely separate fixed point.</p>
+              </div>
+            </section>
+            <section class="landscape-beat" data-landscape-step="3">
+              <div class="landscape-card">
+                <span class="landscape-step">03 / BELOW ZERO</span>
+                <h3>A new loop.</h3>
+                <p>Watch what happens at −1. The odd rule takes it to −2, and dividing −2 by two brings us back to −1. This is a <strong>period-two cycle</strong>, separate from both zero and the positive tree.</p>
+              </div>
+            </section>
+            <section class="landscape-beat" data-landscape-step="4">
+              <div class="landscape-card">
+                <span class="landscape-step">04 / THE FIRST BRANCHES</span>
+                <h3>More paths lead into it.</h3>
+                <p>The orbit of −4 reaches −2 immediately. The orbit of −3 takes a longer route: <strong>−3 → −8 → −4 → −2</strong>. Now the negative cycle has branches of its own.</p>
+              </div>
+            </section>
+            <section class="landscape-beat" data-landscape-step="5">
+              <div class="landscape-card">
+                <span class="landscape-step">05 / A DIFFERENT DESTINATION</span>
+                <h3>But not every path leads there.</h3>
+                <p>−5 belongs to a completely different loop: <strong>−5 → −14 → −7 → −20 → −10 → −5</strong>. It never joins the −2 cycle. We now have two distinct negative destinations.</p>
+              </div>
+            </section>
+            <section class="landscape-beat" data-landscape-step="6">
+              <div class="landscape-card">
+                <span class="landscape-step">06 / TURN THE QUESTION AROUND</span>
+                <h3>What numbers lead here?</h3>
+                <p>Instead of following a starting value forward, ask <strong>which earlier integers could lead to each number</strong>. New branches grow outward from the negative cycles, including the period-18 loop we discovered earlier.</p>
+                <p class="landscape-note">The branches grow downward on the screen, but their arrows point back toward the cycles. And moving backward does not always mean a larger absolute value.</p>
+              </div>
+            </section>
+            <section class="landscape-beat" data-landscape-step="7">
+              <div class="landscape-card">
+                <span class="landscape-step">07 / THE WHOLE LANDSCAPE</span>
+                <h3>It almost looks like a reflection.</h3>
+                <p>A tree converging on the positive cycle above. Several branching structures surrounding negative cycles below. And zero in between.</p>
+                <p class="landscape-note">This is a visual resemblance, <strong>not an exact mathematical symmetry</strong>. We do not know whether every positive orbit reaches 1, or whether every negative orbit reaches one of the known cycles.</p>
+              </div>
+            </section>
           </div>
         </div>
-        <div class="universe-outro">
-          <p class="diagram-topline">WHERE WILL YOU GO NEXT?</p>
-          <h3>The picture is only the beginning.</h3>
-          <p>Trace new orbits, follow the branches, or leave the integers entirely. The next questions are yours to explore.</p>
-          <div class="universe-actions">
+        <div class="landscape-closing">
+          <p class="diagram-topline">THE DISCOVERY CONTINUES</p>
+          <h3>Where do you want to go next?</h3>
+          <p>There is more to see, and even more that we don't yet understand. Follow the numbers into new visualizations, or venture beyond the real axis to discover what iteration looks like in the complex plane.</p>
+          <div class="landscape-paths">
             <a href="visualize.html">Explore the visualizations <span aria-hidden="true">↗</span></a>
-            <a href="fractals.html">Venture off the real axis <span aria-hidden="true">→</span></a>
+            <a href="fractals.html">Explore beyond the real axis <span aria-hidden="true">→</span></a>
           </div>
         </div>
       </section>
@@ -898,5 +961,6 @@
   </main>
   <script src="digging-fixed-scroll.js?v=20261023-scroll-3" defer></script>
   <script src="digging-negatives.js?v=20261023-universe-2" defer></script>
+  <script src="digging-landscape.js?v=20261023-reflection-1" defer></script>
 </body>
 </html>
