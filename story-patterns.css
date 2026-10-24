@@ -1,0 +1,201 @@
+/* The Collatz Laboratory · Patterns & Sequences prologue (Story chapter 00).
+ * Contained within the existing sticky stage; no change to later scenes.
+ */
+.sequence-area.pattern-prologue-mode {
+  top:49%;
+  pointer-events:none;
+}
+.pattern-stage {
+  --pattern-accent:#7ae7ff;
+  position:relative;
+  width:min(55vw,785px);
+  min-height:300px;
+  margin:0;
+  padding:31px 27px 26px;
+  border:1px solid color-mix(in srgb,var(--pattern-accent) 25%,rgba(255,255,255,.08));
+  border-radius:21px;
+  background:
+    radial-gradient(ellipse at 70% 0%,color-mix(in srgb,var(--pattern-accent) 9%,transparent),transparent 68%),
+    linear-gradient(140deg,rgba(15,22,40,.94),rgba(8,13,24,.96));
+  box-shadow:0 30px 90px rgba(1,5,15,.38);
+}
+.pattern-stage.pattern-violet {--pattern-accent:#bba2fa;}
+.pattern-stage.pattern-gold {--pattern-accent:#ffd479;}
+.pattern-stage-top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:40px;
+  font-size:10px;
+  font-weight:780;
+  letter-spacing:.16em;
+}
+.pattern-stage-kicker {color:var(--pattern-accent);}
+.pattern-stage-label {color:#a1adc2;}
+.pattern-numbers {
+  display:flex;
+  flex-wrap:nowrap;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(6px,.9vw,14px);
+  min-width:0;
+}
+.pattern-number {
+  flex:1 1 0;
+  min-width:0;
+  max-width:91px;
+  aspect-ratio:1;
+  display:grid;
+  place-items:center;
+  padding:2px;
+  color:#f2f8ff;
+  border:1px solid color-mix(in srgb,var(--pattern-accent) 33%,rgba(255,255,255,.15));
+  border-radius:14px;
+  background:rgba(6,16,30,.81);
+  font-size:clamp(20px,2.25vw,34px);
+  font-weight:650;
+  font-variant-numeric:tabular-nums;
+  box-shadow:0 0 19px color-mix(in srgb,var(--pattern-accent) 8%,transparent);
+}
+.pattern-arrow {color:#889ab5;font-size:clamp(17px,2vw,27px);flex:0 0 auto;}
+.pattern-answer {
+  color:var(--pattern-accent);
+  border-style:dashed;
+  border-color:color-mix(in srgb,var(--pattern-accent) 70%,white 5%);
+  transition:background .35s ease,box-shadow .35s ease,color .35s ease,transform .4s ease;
+}
+.pattern-answer.is-solved {
+  border-style:solid;
+  background:color-mix(in srgb,var(--pattern-accent) 14%,rgba(5,14,26,.94));
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--pattern-accent) 7%,transparent),
+    0 0 36px color-mix(in srgb,var(--pattern-accent) 22%,transparent);
+  transform:scale(1.06);
+}
+.pattern-appear {
+  opacity:0;
+  animation:pattern-stage-enter .55s cubic-bezier(.16,.82,.25,1) forwards;
+  animation-delay:calc(180ms + var(--pattern-index)*125ms);
+}
+@keyframes pattern-stage-enter {
+  from {opacity:0;translate:0 15px;}
+  to {opacity:1;translate:0 0;}
+}
+.pattern-stage-explanation {
+  min-height:52px;
+  margin:38px 0 0;
+  padding-top:17px;
+  color:#bfcfe1;
+  border-top:1px solid rgba(255,255,255,.09);
+  font-size:clamp(13px,1.23vw,16px);
+  line-height:1.55;
+  opacity:0;
+  transform:translateY(7px);
+  transition:opacity .45s ease,transform .45s ease;
+}
+.pattern-stage-explanation.is-visible {opacity:1;transform:none;}
+.story-step.pattern-step .step-card {
+  border-left:3px solid rgba(122,231,255,.58);
+  background:linear-gradient(145deg,rgba(17,24,43,.93),rgba(10,15,29,.92));
+}
+.story-step.pattern-step .step-number {font-size:11px;letter-spacing:.16em;color:#a5c8e5;}
+.story-step.pattern-step h3 {font-size:clamp(26px,2.45vw,35px);line-height:1.16;}
+.story-step.pattern-step .step-card > p {font-size:16px;line-height:1.65;color:#bfcfe0;}
+.story-step.pattern-step .step-card .pattern-feedback {
+  margin-top:18px;
+  color:#bce9e6;
+  font-size:15px;
+  line-height:1.6;
+}
+.story-step.pattern-step .step-card .pattern-feedback[hidden] {display:none;}
+.pattern-reveal-button {
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:23px;
+  padding:13px 19px;
+  min-height:45px;
+  border-radius:10px;
+  border:1px solid rgba(122,231,255,.45);
+  background:rgba(32,59,83,.4);
+  color:#d5f2ff;
+  cursor:pointer;
+  font:720 14px Inter,ui-sans-serif,system-ui,sans-serif;
+  transition:background .2s ease,border-color .2s ease;
+}
+.pattern-reveal-button:hover:not(:disabled) {
+  background:rgba(50,94,123,.52);border-color:#7ae7ff;
+}
+.pattern-reveal-button:focus-visible {
+  outline:3px solid #ffd479;outline-offset:3px;
+}
+.pattern-reveal-button:disabled {
+  cursor:default;
+  color:#bceacf;
+  border-color:rgba(134,240,189,.38);
+  background:rgba(21,63,53,.36);
+}
+.pattern-bridge-stage {
+  min-height:360px;
+  text-align:center;
+  padding:27px 45px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  border-color:rgba(188,154,240,.4);
+}
+.pattern-bridge-overline {
+  margin:0 0 20px;
+  color:#c4adf7;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.18em;
+}
+.pattern-bridge-thought {
+  max-width:610px;
+  margin:0;
+  color:#c5d8ea;
+  font-size:clamp(21px,2.35vw,31px);
+  line-height:1.4;
+}
+.pattern-bridge-thought strong {color:#f1efff;font-weight:650;}
+.pattern-bridge-number {
+  margin:22px 0 17px;
+  color:#7ae7ff;
+  font:600 clamp(85px,9vw,132px)/1 "Cambria Math",Inter,serif;
+  text-shadow:0 0 36px rgba(122,231,255,.26);
+}
+.pattern-bridge-closer {margin:0;color:#b6c7d9;font-size:16px;line-height:1.55;}
+.story-step.pattern-bridge-step .step-card {border-left-color:#bba2fa;}
+.pattern-continue {
+  display:inline-block;
+  margin-top:19px;
+  color:#cbb7ff;
+  font-weight:730;
+  font-size:14px;
+  text-decoration:underline;
+  text-underline-offset:4px;
+}
+.pattern-continue:focus-visible {outline:2px solid #ffd479;outline-offset:5px;}
+@media(max-width:1250px) {
+  .pattern-stage {padding:26px 19px;min-height:270px;width:55vw;}
+  .pattern-stage-top {margin-bottom:30px;}
+  .pattern-number {border-radius:11px;}
+  .story-step.pattern-step .step-card {padding:21px 20px;}
+}
+@media(max-height:800px) {
+  .pattern-stage {min-height:235px;}
+  .pattern-stage-top {margin-bottom:18px;}
+  .pattern-stage-explanation {margin-top:20px;}
+  .pattern-bridge-stage {min-height:275px;}
+  .pattern-bridge-number {margin:12px 0;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .pattern-appear,.pattern-stage.reduce-motion .pattern-appear {
+    animation:none!important;opacity:1!important;translate:none!important;
+  }
+  .pattern-answer,.pattern-stage-explanation {transition:none!important;}
+}
