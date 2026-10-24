@@ -157,10 +157,10 @@
     const shiftY=parseFloat(chosen.style.getPropertyValue('--focus-y'))||0;
     const currentPhase=field.dataset.phase;
     const translated=currentPhase==='three';
-    const left=rect.left-(translated?shiftX:0);
-    const top=rect.top-(translated?shiftY:0);
-    const centreX=left+rect.width/(translated?2.65:2);
-    const centreY=top+rect.height/(translated?2.65:2);
+    // Scaling is centred, so the bounding box midpoint remains the true
+    // tile midpoint; subtract only a previous focus translation.
+    const centreX=rect.left+rect.width/2-(translated?shiftX:0);
+    const centreY=rect.top+rect.height/2-(translated?shiftY:0);
     const targetX=bounds.left+bounds.width*.31;
     const targetY=bounds.top+bounds.height*.51;
     chosen.style.setProperty('--focus-x',(targetX-centreX).toFixed(2)+'px');
