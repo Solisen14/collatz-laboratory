@@ -199,3 +199,11 @@
   }
   .pattern-answer,.pattern-stage-explanation {transition:none!important;}
 }
+
+/* Preserve the compact scene labels against the general step-card paragraph rule. */
+.story-step.pattern-step .step-card > .step-number {
+  font-size:11px;
+  color:#a5c8e5;
+  letter-spacing:.16em;
+  line-height:1.45;
+}
