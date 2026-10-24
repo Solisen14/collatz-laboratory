@@ -279,7 +279,7 @@
   font-variant-numeric:tabular-nums;
   transition:opacity .83s ease,transform .95s cubic-bezier(.18,.76,.18,1),
     border-color .7s ease,background .7s ease,box-shadow .7s ease;
-  animation:pattern-integer-enter .52s ease both;
+  animation:pattern-integer-enter .52s ease backwards;
   animation-delay:calc(var(--tile-i)*16ms);
   transform-origin:center;
   will-change:opacity,transform;
