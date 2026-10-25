@@ -98,7 +98,7 @@
       S('line',{x1:box.left,x2:box.right,y1:py,y2:py,'class':'trajectory-gridline'});
       S('text',{x:box.left-12,y:py+4,'text-anchor':'end','class':'trajectory-axis-text'},chart,fmt(v));
     }
-    const xStep=niceStep(geo.steps/9);
+    const xStep=Math.max(1,niceStep(geo.steps/9));
     for(let k=0;k<=geo.steps;k+=xStep){
       const px=geo.x(k);
       S('line',{x1:px,x2:px,y1:box.top,y2:box.bottom,'class':'trajectory-gridline'});
