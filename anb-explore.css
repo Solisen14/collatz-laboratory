@@ -137,7 +137,7 @@ body.anb-page{min-width:0;overflow-x:clip;background:linear-gradient(155deg,#090
 .anb-stage-scroll:active{cursor:grabbing}
 .anb-stage-scroll svg{
   width:100%;min-width:0;
-  height:clamp(530px,67vh,800px);
+  height:clamp(720px,80vh,980px);
   aspect-ratio:auto;
   display:block;overflow:hidden;
   touch-action:none;user-select:none;
@@ -173,7 +173,7 @@ body.anb-page{min-width:0;overflow-x:clip;background:linear-gradient(155deg,#090
 .anb-stage-footer{gap:18px;line-height:1.6}
 .anb-stage-footer strong{color:#e8f7ff}
 @media(max-width:680px){
-  .anb-stage-scroll svg{height:550px}
+  .anb-stage-scroll svg{height:620px}
   .anb-stage-toolbar p{letter-spacing:0;font-size:9px}
   .anb-stage-footer{flex-direction:column;gap:6px}
   .anb-graph-controls{padding:9px 12px}
