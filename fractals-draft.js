@@ -343,8 +343,9 @@
     });
   });
 
-  // SECTION 05: Chamberland interpolation, evaluated for z=3+iy.
-  const slider=$('imag-offset');
+  // SECTION 05: Complex Collatz interpolation shared by the five-step
+  // orbit animation and full complex-landscape explorer.
+  // The former one-step slider was replaced and has no DOM listeners.
   function cxMultiply(a,b){return {re:a.re*b.re-a.im*b.im,im:a.re*b.im+a.im*b.re};}
   function chamberland(real,imag){
     const a=Math.PI*real/2,b=Math.PI*imag/2;
@@ -355,19 +356,6 @@
     const q=cxMultiply({re:3*real+1,im:3*imag},s2);
     return {re:p.re+q.re,im:p.im+q.im};
   }
-  function writeComplex(v) {
-    const real=Math.abs(v.re)<1e-9?0:v.re,imag=Math.abs(v.im)<1e-9?0:v.im;
-    return real.toFixed(3)+(imag<0?' − ':' + ')+Math.abs(imag).toFixed(3)+'i';
-  }
-  function updateComplexCollatz(){
-    const im=Number(slider.value);
-    $('imag-offset-value').textContent=im.toFixed(2)+'i';
-    $('complex-start').textContent='3 + '+im.toFixed(2)+'i';
-    $('complex-output').textContent=writeComplex(chamberland(3,im));
-  }
-  slider.addEventListener('input',updateComplexCollatz);
-  updateComplexCollatz();
-
 
   // SECTION 05A: Five steps starting at z₀ = 3 + ti.
   // A true linear complex plane is used. Large iterates are reported as
