@@ -359,12 +359,15 @@
   }
   function clearAnimation(){
     cancelAnimationFrame(state.animFrame);
-    root.querySelectorAll('.anb-trace-overlay,.anb-trace-dot').forEach(e=>e.remove());
+    graphState.timers.forEach(clearTimeout);
+    graphState.timers=[];
+    root.querySelectorAll('.anb-graph-edge.is-animated,.anb-graph-node.is-animated')
+      .forEach(el=>el.classList.remove('is-animated'));
   }
   function selectSeed(n){
     clearAnimation();
     state.selected=n;
-    renderGraph();
+    renderGraph(true);
     renderSeedButtons();
     renderInspector();
   }
@@ -385,7 +388,7 @@
     document.querySelectorAll('.anb-preset').forEach(b=>{
       b.classList.toggle('is-current',Number(b.dataset.a)===state.a&&Number(b.dataset.b)===state.b);
     });
-    renderStats();renderGraph();renderSeedButtons();renderInspector();
+    renderStats();renderGraph(false);renderSeedButtons();renderInspector();
     try{window.history.replaceState(null,'',settingsURL());}catch(_){}
   }
   async function copyText(textToCopy,element,okMessage){
@@ -399,36 +402,31 @@
     }
   }
   function saveSVG(){
-    // Embed all chart styling so the download works outside this website.
     const clone=root.cloneNode(true);
     clone.setAttribute('xmlns',NS);
-    clone.setAttribute('width','1280');
-    clone.setAttribute('height','700');
+    clone.setAttribute('width','1200');
+    clone.setAttribute('height','730');
     const style=document.createElementNS(NS,'style');
     style.textContent=[
-      '.anb-path-gridline{stroke:rgba(139,173,215,.16);stroke-width:1}',
-      '.anb-path-axis{stroke:#8ca6c3;stroke-width:1.6}',
-      '.anb-path-tick{fill:#96acc6;font:500 15px system-ui,sans-serif}',
-      '.anb-path-axis-label{fill:#c6daee;font:700 15px system-ui,sans-serif}',
-      '.anb-trajectory{fill:none;stroke-opacity:.63;stroke-linejoin:round;stroke-linecap:round}',
-      '.anb-trajectory.is-muted{stroke-opacity:.09}',
-      '.anb-trajectory.is-selected{stroke-opacity:1;stroke-width:4.8}',
-      '.anb-endpoint{stroke:#071120;stroke-width:2}',
-      '.anb-trace-overlay{fill:none;stroke:#fff2c0;stroke-width:4.5}',
-      '.anb-trace-dot{fill:#fff1c4;stroke:#ffcf7c;stroke-width:3}'
+      '.anb-graph-edge{fill:none;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}',
+      '.anb-even-edge{stroke:#7ae7ff}.anb-odd-edge{stroke:#ffd479}',
+      '.anb-cycle-edge{stroke:#ff78b8;stroke-dasharray:8 6}',
+      '.anb-graph-edge.is-muted{opacity:.12}.anb-graph-edge.is-highlight{stroke-width:5;opacity:1}',
+      '.anb-graph-node-shape{fill:#111d31;stroke:#9bb7d2;stroke-width:2}',
+      '.anb-graph-node.is-seed .anb-graph-node-shape{stroke:#ffd479}',
+      '.anb-graph-node.is-one .anb-graph-node-shape{stroke:#7ae7ff;stroke-width:3}',
+      '.anb-graph-node.is-cycle .anb-graph-node-shape{stroke:#ff78b8}',
+      '.anb-graph-node.is-highlight .anb-graph-node-shape{stroke:#fff0b9;stroke-width:3}',
+      '.anb-graph-node.is-muted{opacity:.2}',
+      '.anb-graph-node-label{font:700 16px system-ui,sans-serif;fill:#f2faff}',
+      '.anb-graph-tail{font:600 10px system-ui,sans-serif;fill:#ffbb89}'
     ].join('');
     clone.insertBefore(style,clone.firstChild);
-    // Export a solid dark background to keep labels and paths readable.
-    const bg=document.createElementNS(NS,'rect');
-    bg.setAttribute('width','1280');
-    bg.setAttribute('height','700');
-    bg.setAttribute('fill','#071120');
-    clone.insertBefore(bg,style.nextSibling);
     const svgText=new XMLSerializer().serializeToString(clone);
     const blob=new Blob([svgText],{type:'image/svg+xml;charset=utf-8'});
     const link=document.createElement('a');
     const obj=URL.createObjectURL(blob);
-    link.href=obj;link.download='anb-'+state.a+'n-plus-'+state.b+'-paths-1-to-25.svg';
+    link.href=obj;link.download='anb-'+state.a+'n-plus-'+state.b+'-directed-graph.svg';
     document.body.appendChild(link);link.click();link.remove();
     setTimeout(()=>URL.revokeObjectURL(obj),1500);
   }
@@ -436,27 +434,26 @@
     const p=state.paths.find(q=>q.start===state.selected);
     if(!p||p.values.length<2)return;
     clearAnimation();
-    const g=state.geometry;
-    const d=plotString(p,g);
-    const overlay=svg('path',{d,'class':'anb-trace-overlay',fill:'none',
-      stroke:'#fff2c0','stroke-width':4.5,'stroke-linecap':'round','stroke-linejoin':'round',
-      'pathLength':1},root);
-    const marker=svg('circle',{'class':'anb-trace-dot',r:6,cx:g.x(0),cy:g.y(p.values[0])},root);
-    const length=overlay.getTotalLength();
-    if(!length||!Number.isFinite(length))return;
-    overlay.style.strokeDasharray=length;
-    overlay.style.strokeDashoffset=length;
-    const duration=reduced?50:Math.min(8000,Math.max(1500,p.values.length*55));
-    const begin=performance.now();
-    function frame(now){
-      const t=Math.max(0,Math.min(1,(now-begin)/duration));
-      const traveled=t*length;
-      overlay.style.strokeDashoffset=length-traveled;
-      const point=overlay.getPointAtLength(traveled);
-      marker.setAttribute('cx',point.x);marker.setAttribute('cy',point.y);
-      if(t<1)state.animFrame=requestAnimationFrame(frame);
+    const limit=Math.min(GRAPH_EDGES_PER_START,p.values.length-1);
+    const base=graphState.stats;
+    const playStep=i=>{
+      if(i<limit){
+        const from=nodeKey(p.values[i]),to=nodeKey(p.values[i+1]);
+        const edge=graphState.edges.get(from+'>'+to);
+        if(edge)edge.classList.add('is-animated');
+        const node=graphState.nodes.get(to);
+        if(node)node.classList.add('is-animated');
+        els.mapStats.textContent='Tracing '+p.start+' · step '+(i+1)+' / '+limit+
+          (p.values.length-1>limit?' shown in graph':'');
+      }else els.mapStats.textContent=base;
+    };
+    const startNode=graphState.nodes.get(nodeKey(p.values[0]));
+    if(startNode)startNode.classList.add('is-animated');
+    for(let i=0;i<limit;i++){
+      const timer=setTimeout(()=>playStep(i),i*(reduced?30:135));
+      graphState.timers.push(timer);
     }
-    state.animFrame=requestAnimationFrame(frame);
+    graphState.timers.push(setTimeout(()=>{els.mapStats.textContent=base;},limit*(reduced?30:135)+220));
   }
 
   function initialNumber(name,defaultValue,min,max){
@@ -486,8 +483,24 @@
   });
   els.animate.addEventListener('click',animateSelected);
   root.addEventListener('click',event=>{
-    const element=event.target.closest('[data-seed]');
-    if(element)selectSeed(Number(element.dataset.seed));
+    if(graphState.suppressClick)return;
+    const node=event.target.closest('[data-node-value]');
+    if(!node)return;
+    const id=node.dataset.nodeValue;
+    let seed=state.paths.find(p=>String(p.start)===id);
+    if(!seed)seed=state.paths.find(p=>p.values.some(n=>nodeKey(n)===id));
+    if(seed)selectSeed(seed.start);
   });
+  root.addEventListener('keydown',event=>{
+    if(event.key!=='Enter'&&event.key!==' ')return;
+    const node=event.target.closest('[data-node-value]');
+    if(!node)return;
+    event.preventDefault();
+    const id=node.dataset.nodeValue;
+    let seed=state.paths.find(p=>String(p.start)===id);
+    if(!seed)seed=state.paths.find(p=>p.values.some(n=>nodeKey(n)===id));
+    if(seed)selectSeed(seed.start);
+  });
+
   updateRules();
 })();
