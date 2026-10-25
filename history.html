@@ -1,171 +1,123 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#07090f" />
-  <title>History · Early Draft | The Collatz Laboratory</title>
-  <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
-  <link rel="stylesheet" href="chapters.css?v=20261021-piecewise-2" />
-  <link rel="stylesheet" href="history-draft.css?v=20261025-paul-1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07090f">
+<meta name="description" content="A history of the Collatz conjecture, from its origins to the work of Terence Tao, with mathematics, research, biographies, and a scrolling timeline.">
+<title>History · Early Draft | The Collatz Laboratory</title>
+<link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
+<link rel="stylesheet" href="chapters.css?v=20261021-piecewise-2">
+<link rel="stylesheet" href="history-draft.css?v=20261025-paul-1">
+<link rel="stylesheet" href="history-timeline.css?v=20261025-timeline-2">
+<script defer src="history-timeline.js?v=20261025-timeline-1"></script>
 </head>
 <body class="chapter-page digging-page history-page">
-  <header class="site-header">
-    <a class="brand" href="index.html" aria-label="The Collatz Laboratory home">
-      <span class="brand-mark"></span><span>THE COLLATZ LABORATORY</span>
-    </a>
-    <nav aria-label="Primary navigation">
-      <a href="index.html#story">STORY</a>
-      <a class="active" aria-current="page" href="history.html">HISTORY</a>
-      <a href="digging-deeper.html">DIGGING DEEPER</a>
-      <a href="fractals.html">FRACTALS</a>
-      <a href="visualize.html">VISUALIZE</a>
-      <a href="experiment.html">EXPERIMENT</a>
-      <a href="about.html">ABOUT</a>
-    </nav>
-  </header>
-  <main class="chapter-shell digging-shell">
-    <div class="chapter-content">
-      <header class="digging-hero">
-        <p class="chapter-crumb">THE COLLATZ LABORATORY · BACKGROUND AND ORIGINS</p>
-        <h1 id="chapter-heading" class="chapter-title"><span>History</span>.</h1>
-        <p class="chapter-deck">Where did this deceptively simple problem come from, and how did it capture mathematicians’ attention?</p>
-      </header>
-
-      <aside class="history-early-draft" role="note" aria-label="Early draft status">
-        <strong>EARLY DRAFT</strong>
-        <p>Historical research and narration in development. Paul's manuscript is preserved here for collaborative review; citations and mathematical details are still being checked.</p>
-      </aside>
-      <article class="history-manuscript" aria-labelledby="history-manuscript-title">
-        <header class="history-manuscript-head">
-          <p class="history-section-overline">BACKGROUND · THE HISTORY OF AN UNFINISHED QUESTION</p>
-          <h2 id="history-manuscript-title">Brief History of the 3n+1 Problem</h2>
-        </header>
-        <div class="history-history-opening">
-          <div class="history-manuscript-prose"><p>One of the most famous unsolved problems in mathematics, the Collatz conjecture or 3n+1 problem, determines if every positive integer will iterate to 1 after performing repeated arithmetic operations. This problem has a simple procedure: an even iterate is halved; an odd iterate is multiplied by 3 and increased by 1, and the process repeats and generates a sequence. As an open, unproven problem, computer simulations indicate that this conjecture holds for positive integers up to 2<sup>71</sup> ≈ 2.36×10<sup>21</sup>. All of these values tested converge to 1, though a counterexample could still exist. Sequences can be depicted via corresponding graphs and conjecture tree visualizations.</p></div>
-          <figure class="history-licensed-figure history-orbit-art">
-        <a class="history-image-link" href="https://commons.wikimedia.org/wiki/File:Collatz_Conjecture_Vizualization.png" target="_blank" rel="noopener noreferrer" aria-label="View the original Collatz paths · visualization for starting values up to 10,000 on Wikimedia Commons">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Collatz_Conjecture_Vizualization.png" alt="Green branching curves visualizing hailstone sequences of starting integers, forming an intricate flowing web." width="626" height="626" loading="lazy" decoding="async">
-        </a>
-        <figcaption>
-          <strong>Collatz paths · visualization for starting values up to 10,000</strong>
-          <span>Image: Damourchris · <a href="https://commons.wikimedia.org/wiki/File:Collatz_Conjecture_Vizualization.png" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0 1.0</a>. No modifications.</span>
-        </figcaption>
-      </figure>
-        </div>
-        <section class="history-history-milestone history-history-origins" aria-label="Origins and names of the problem">
-          <figure class="history-licensed-figure history-collatz-portrait">
-        <a class="history-image-link" href="https://commons.wikimedia.org/wiki/File:Lothar_Collatz.jpg" target="_blank" rel="noopener noreferrer" aria-label="View the original Lothar Collatz · undated archival photograph on Wikimedia Commons">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Lothar_Collatz.jpg" alt="Black-and-white archival photograph of mathematician Lothar Collatz seated before a blackboard." width="305" height="400" loading="lazy" decoding="async">
-        </a>
-        <figcaption>
-          <strong>Lothar Collatz · undated archival photograph</strong>
-          <span>Image: Konrad Jacobs · <a href="https://commons.wikimedia.org/wiki/File:Lothar_Collatz.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en" target="_blank" rel="noopener noreferrer">CC BY-SA 2.0 DE</a>. No modifications.</span>
-        </figcaption>
-      </figure>
-          <div class="history-manuscript-prose"><p>From his study of graph theory and iterative functions in the 1930s, Lothar Collatz, from the University of Hamburg, developed these concepts and used directed graphs to represent these sequences. Despite not publishing his work, this information circulated throughout mathematics communities via oral presentations like the 1950 International Congress of Mathematicians in Cambridge, Massachusetts. Other names for this flourished such as the Syracuse Problem and the Hasse algorithm, while the 3n+1 problem was independently devised in 1952 and called the Ulam’s problem by Sir Bryan Thwaites. Another popular name given to this is the &quot;Kakutani property&quot; due to work in the 1960s by Japanese-American mathematician Shizuo Kakutani.</p></div>
-        </section>
-        <section class="history-history-milestone history-history-modern" aria-label="Recent mathematical advances">
-          <div class="history-manuscript-prose"><p>Despite its popularity, many such as Paul Erdős raised doubt that this could be proved using standard axioms of mathematics. In 2019 Fields Medalist Terrence Tao made the most modern advance attempting to show the orbits are bounded, while computers continue to verify the conjecture for increasingly massive positive integers. Recently, an AI-generated formal proof claimed to &quot;disprove&quot; the conjecture, but it was discovered to be a kernel bug.</p></div>
-          <figure class="history-licensed-figure history-tao-portrait">
-        <a class="history-image-link" href="https://commons.wikimedia.org/wiki/File:Terence_Tao.jpg" target="_blank" rel="noopener noreferrer" aria-label="View the original Terence Tao · ICM Madrid, 2006 on Wikimedia Commons">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Terence_Tao.jpg" alt="Photograph of mathematician Terence Tao at the International Congress of Mathematicians in Madrid, 2006." width="321" height="300" loading="lazy" decoding="async">
-        </a>
-        <figcaption>
-          <strong>Terence Tao · ICM Madrid, 2006</strong>
-          <span>Image: Gert-Martin Greuel · <a href="https://commons.wikimedia.org/wiki/File:Terence_Tao.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en" target="_blank" rel="noopener noreferrer">CC BY-SA 2.0 DE</a>. Wikimedia Commons version was cropped before reuse; no further changes here.</span>
-        </figcaption>
-      </figure>
-        </section>
-        <blockquote class="history-lagarias-quote">
-        <p>The following quotation via John Lagarias captures the complexity of this problem: “The difficulty of settling the 3x+1 problem seems connected to the fact that it is a deterministic process that simulates ``random'' behavior. We face this dilemma: On the one hand, to the extent that the problem has structure, we can analyze it --- yet it is precisely this structure that seems to prevent us from proving that it behaves ``randomly.'' On the other hand, to the extent that the problem is structureless and ``random,'' we have nothing to analyze and consequently cannot rigorously prove anything.”</p>
-        <footer><a href="https://doi.org/10.1080/00029890.1985.11971528" target="_blank" rel="noopener noreferrer">Jeffrey C. Lagarias, <cite>The 3x + 1 Problem and Its Generalizations</cite> (1985)</a></footer>
-      </blockquote>
-        <div class="history-image-context"><p>Images illustrate the people and visual history of the problem. The visualized Collatz paths are computational artwork, not a proof that every positive starting integer reaches 1.</p></div>
-        <details class="history-review-notes">
-        <summary>Research checks for the authors <span>Items to confirm before treating this draft as finalized</span></summary>
-        <div class="history-review-content">
-          <p><strong>Computational verification:</strong> The threshold is typeset as 2<sup>71</sup>; David Barina’s 2025 paper documents this milestone. <a href="https://doi.org/10.1007/s11227-025-07337-0" target="_blank" rel="noopener noreferrer">Source</a>.</p>
-          <p><strong>Historical names:</strong> Lagarias’s historical account distinguishes Thwaites’s independent discovery from the names associated with Ulam, Hasse, Syracuse, and Kakutani. This passage merits another look with Paul. <a href="https://doi.org/10.1080/00029890.1985.11971528" target="_blank" rel="noopener noreferrer">Source</a>.</p>
-          <p><strong>Erdős and Tao:</strong> Erdős’s remark described the problem’s difficulty, not a known limitation of standard axioms. Tao’s 2019 theorem concerns orbits reaching almost-bounded values for almost all inputs in logarithmic density; it does not prove that every orbit is bounded. The correct spelling is Terence Tao. <a href="https://arxiv.org/abs/1909.03562" target="_blank" rel="noopener noreferrer">Tao’s paper</a>.</p>
-          <p><strong>AI formal-disproof incident:</strong> The 2026 claim resulted from a proof-checking kernel bug rather than a valid disproof. <a href="https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/" target="_blank" rel="noopener noreferrer">Original postmortem</a>.</p>
-          <p><strong>Editorial status:</strong> These checks are separate from Paul's manuscript. The original wording is preserved for collaborative review; only mathematical superscripts were restored for display.</p>
-        </div>
-      </details>
-      </article>
-      
-      <aside class="history-legacy-bridge" aria-label="Background mathematical definition">
-        <span>ADDITIONAL MATHEMATICAL BACKGROUND</span>
-        <p>The original Collatz definition and examples are retained below as reference material.</p>
-      </aside>
-      
-      <article class="digging-article history-draft" aria-labelledby="definition-heading">
-        <header class="article-heading">
-          <p class="article-overline"><span>DRAFT</span> INTRODUCTORY MATERIAL</p>
-          <h2 id="definition-heading">Defining the Collatz Function</h2>
-          <p class="article-lede">This introductory mathematical explanation has been moved here temporarily while the History section is developed.</p>
-        </header>
-
-        <div class="article-prose">
-          <p>Begin with any <strong>positive integer</strong>. If the number is even, divide it by 2. If it is odd, multiply it by 3 and add 1. Because the rule depends on the input, we describe the process with a <em>piecewise-defined function</em>.</p>
-        </div>
-
-        <figure class="definition-figure">
-          <figcaption>THE COLLATZ FUNCTION</figcaption>
-          <div class="definition-formula">
-            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="C of n equals n over 2 for even n, and 3 n plus 1 for odd n">
-              <mrow>
-                <mi>C</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo>
-                <mo fence="true" stretchy="true">{</mo>
-                <mtable columnalign="left left" columnspacing="1.1em" rowspacing=".7em">
-                  <mtr><mtd><mfrac><mi>n</mi><mn>2</mn></mfrac></mtd><mtd><mtext>if&nbsp;</mtext><mi>n</mi><mtext>&nbsp;is even,</mtext></mtd></mtr>
-                  <mtr><mtd><mrow><mn>3</mn><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mtd><mtd><mtext>if&nbsp;</mtext><mi>n</mi><mtext>&nbsp;is odd.</mtext></mtd></mtr>
-                </mtable>
-              </mrow>
-            </math>
-          </div>
-          <p class="definition-domain">We write <span> C : ℤ<sup>+</sup> → ℤ<sup>+</sup></span>, where ℤ<sup>+</sup> denotes the set of positive integers.</p>
-        </figure>
-
-        <div class="article-prose">
-          <p>The notation <span class="inline-math">C(n)</span> means the result of applying the Collatz rule once to <span class="inline-math">n</span>. Every positive integer is either odd or even, so exactly one case applies.</p>
-          <p>For example, starting at 8 gives <span class="inline-math">C(8) = 8 ÷ 2 = 4</span>. Starting at 3 gives <span class="inline-math">C(3) = 3(3) + 1 = 10</span>.</p>
-        </div>
-
-        <figure class="definition-diagram">
-          <p class="diagram-topline">ONE FUNCTION · TWO POSSIBLE RULES</p>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 240" role="img" aria-labelledby="rules-diagram-title rules-diagram-desc">
-            <title id="rules-diagram-title">Examples of the two Collatz rules</title>
-            <desc id="rules-diagram-desc">An even input of 8 leads to 4 by division by 2. An odd input of 3 leads to 10 by multiplying by 3 and adding 1.</desc>
-            <defs>
-              <marker id="even-tip" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#7ae7ff"/></marker>
-              <marker id="odd-tip" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#ffd479"/></marker>
-            </defs>
-            <text x="38" y="73" class="diagram-label" fill="#7ae7ff">EVEN</text>
-            <text x="38" y="183" class="diagram-label" fill="#ffd479">ODD</text>
-            <circle cx="230" cy="65" r="28" class="diagram-node" stroke="#7ae7ff"/>
-            <circle cx="635" cy="65" r="28" class="diagram-node" stroke="#7ae7ff"/>
-            <text x="230" y="73" class="diagram-value">8</text>
-            <text x="635" y="73" class="diagram-value">4</text>
-            <path d="M 263 65 H 598" class="diagram-path" stroke="#7ae7ff" marker-end="url(#even-tip)"/>
-            <text x="430" y="46" class="diagram-rule">Divide by 2</text>
-            <circle cx="230" cy="178" r="28" class="diagram-node" stroke="#ffd479"/>
-            <circle cx="635" cy="178" r="28" class="diagram-node" stroke="#ffd479"/>
-            <text x="230" y="186" class="diagram-value">3</text>
-            <text x="635" y="186" class="diagram-value">10</text>
-            <path d="M 263 178 H 598" class="diagram-path" stroke="#ffd479" marker-end="url(#odd-tip)"/>
-            <text x="430" y="160" class="diagram-rule">Multiply by 3, then add 1</text>
-          </svg>
-          <figcaption>Each arrow represents one application of the same function, <span class="inline-math">C</span>.</figcaption>
-        </figure>
-
-      </article>
-
-      <nav class="chapter-next digging-bottom-nav" aria-label="Continue exploring">
-        <a href="index.html#story"><span aria-hidden="true">←</span> Back to the story</a>
-        <a href="digging-deeper.html">Digging Deeper <span aria-hidden="true">→</span></a>
-      </nav>
-    </div>
-  </main>
-</body>
-</html>
+<header class="site-header">
+<a class="brand" href="index.html" aria-label="The Collatz Laboratory home"><span class="brand-mark"></span><span>THE COLLATZ LABORATORY</span></a>
+<nav aria-label="Primary navigation">
+<a href="index.html#story">STORY</a>
+<a class="active" aria-current="page" href="history.html">HISTORY</a>
+<a href="digging-deeper.html">DIGGING DEEPER</a>
+<a href="fractals.html">FRACTALS</a>
+<a href="visualize.html">VISUALIZE</a>
+<a href="experiment.html">EXPERIMENT</a>
+<a href="about.html">ABOUT</a>
+</nav>
+</header>
+<main class="chapter-shell digging-shell">
+<div class="chapter-content">
+<header class="digging-hero">
+<p class="chapter-crumb">THE COLLATZ LABORATORY · BACKGROUND AND ORIGINS</p>
+<h1 id="chapter-heading" class="chapter-title"><span>History</span>.</h1>
+<p class="chapter-deck">How did a simple arithmetic question become one of mathematics' most enduring mysteries?</p>
+</header>
+<aside class="history-early-draft" role="note" aria-label="Early draft status"><strong>EARLY DRAFT</strong><p>A developing chronology based on Paul's original manuscript. Sources, transitions and presentation are open for collaborative review.</p></aside>
+<section class="history-rule-reset" aria-labelledby="history-rule-heading">
+<div><p class="history-kicker">First, remember the question</p>
+<h2 id="history-rule-heading">Defining the Collatz conjecture.</h2>
+<p>Begin with any <strong>positive integer</strong>. If the number is even, divide it by two. If it is odd, multiply it by three and add one. Repeat.</p>
+<p>The conjecture is that <strong>every positive integer eventually reaches 1</strong>. No one has proved this for every positive starting value.</p>
+</div>
+<div class="history-formula">
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="C of n equals n divided by two if n is even, and three n plus one if n is odd">
+<mrow><mi>C</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mo fence="true" stretchy="true">{</mo>
+<mtable columnalign="left left" columnspacing="0.85em" rowspacing=".9em">
+<mtr><mtd><mfrac><mi>n</mi><mn>2</mn></mfrac></mtd><mtd><mtext>if n is even</mtext></mtd></mtr>
+<mtr><mtd><mrow><mn>3</mn><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mtd><mtd><mtext>if n is odd</mtext></mtd></mtr>
+</mtable></mrow></math>
+<p class="formula-note">Once a sequence reaches 1, the same rules continue.</p>
+<p class="history-cycle">1 → 4 → 2 → 1 → ⋯</p>
+</div></section>
+<header class="history-timeline-intro">
+<p class="history-kicker">Almost a century of curiosity</p>
+<h2>One question. Generations of mathematicians.</h2>
+<p>The problem spread from person to person, drawing new questions, new mathematical methods and new ways of seeing the same two rules.</p>
+</header>
+<section class="history-timeline" id="history-timeline" aria-label="Collatz conjecture history in chronological order">
+<div class="history-timeline-rail" aria-hidden="true"></div>
+<article class="history-milestone" id="origin"><div class="history-year"><strong>1930s</strong><span>Origins</span></div><span class="history-node" aria-hidden="true"></span><div class="history-event"><p class="history-era">Origins</p><h3>An idea takes shape</h3>
+<p>In his student years, <strong>Lothar Collatz</strong> investigated graph theory and iterative functions. He became interested in drawing directed graphs of repeated arithmetic rules and asking what their paths might do.</p>
+<p>As Paul's manuscript observes, those ideas travelled into the mathematical study of sequences. The exact origin of the familiar <em>3n + 1</em> formulation is uncertain, but the question became associated with Collatz.</p>
+<figure class="history-feature-image "><a href="https://commons.wikimedia.org/wiki/File:Lothar_Collatz.jpg" target="_blank" rel="noopener noreferrer"><img loading="lazy" decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/7/75/Lothar_Collatz.jpg" alt="Photograph of Lothar Collatz."></a><figcaption>Lothar Collatz, undated photograph · <a href="https://commons.wikimedia.org/wiki/File:Lothar_Collatz.jpg" target="_blank" rel="noopener noreferrer">Konrad Jacobs, Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en" target="_blank" rel="noopener noreferrer">CC BY-SA 2.0 DE</a></figcaption></figure>
+<aside class="history-bio no-photo" aria-label="Meet the mathematician Lothar Collatz"><div><p class="history-bio-kicker">Meet the mathematician</p><h4>Lothar Collatz</h4><p class="history-bio-sub">1910–1990 · Germany</p><p class="history-bio-text">A German mathematician whose research spanned numerical methods, graph theory and mathematical modelling. His interest in iteration helped give this enduring puzzle its name.</p></div></aside>
+<div class="history-source-links"><a href="https://www.cecm.sfu.ca/organics/papers/lagarias/paper/html/node1-an.shtml" target="_blank" rel="noopener noreferrer">Read the history ↗</a></div></div></article>
+<article class="history-milestone" id="names"><div class="history-year"><strong>1950s–60s</strong><span>The problem travels</span></div><span class="history-node" aria-hidden="true"></span><div class="history-event"><p class="history-era">The problem travels</p><h3>One problem. Many names.</h3>
+<p>Collatz circulated his questions among mathematicians, including at the <strong>1950 International Congress of Mathematicians</strong> in Cambridge, Massachusetts. Much of the problem's early history travelled by word of mouth.</p>
+<p>Paul's manuscript follows its many names: the <strong>Syracuse problem</strong>, <strong>Hasse's algorithm</strong>, <strong>Ulam's problem</strong> and <strong>Kakutani's problem</strong>. Bryan Thwaites independently encountered the problem in 1952. Each name records a different route through the mathematical community.</p>
+<div class="history-source-links"><a href="https://www.cecm.sfu.ca/organics/papers/lagarias/paper/html/node1-an.shtml" target="_blank" rel="noopener noreferrer">Names and origins ↗</a></div></div></article>
+<article class="history-milestone" id="history-negative"><div class="history-year"><strong>1978</strong><span>Other cycles</span></div><span class="history-node" aria-hidden="true"></span><div class="history-event"><p class="history-era">Other cycles</p><h3>Beyond the positive integers</h3>
+<p>The original conjecture concerns <strong>positive integers</strong>. The same arithmetic rules also apply to zero and negative integers, where different repeating cycles appear.</p>
+<div class="history-orbit-chips"><span>0 → 0</span><span>−1 ↔ −2</span><span>−5 → −14 → … → −5</span><span>−17 → … → −17</span></div>
+<p>In 1978, <strong>Corrado Böhm and Giovanna Sontacchi</strong> studied the mathematics of cycles in generalized iterative systems. The known negative cycles open another line of investigation, but do not classify every negative orbit.</p>
+<a class="history-explore-link" href="digging-deeper.html#below-zero">Explore negative integer cycles ↗</a>
+<div class="history-source-links"><a href="https://www.bdim.eu/item?id=RLINA_1978_8_64_3_260_0" target="_blank" rel="noopener noreferrer">Böhm and Sontacchi (1978) ↗</a></div></div></article>
+<article class="history-milestone" id="erdos-lagarias"><div class="history-year"><strong>1985</strong><span>Difficulty and insight</span></div><span class="history-node" aria-hidden="true"></span><div class="history-event"><p class="history-era">Difficulty and insight</p><h3>Mathematics is not yet ready</h3>
+<p><strong>Paul Erdős</strong> captured the extraordinary difficulty of the problem in a remark quoted by <strong>Jeffrey C. Lagarias</strong> in his influential 1985 survey.</p>
+<figure class="history-quotation"><blockquote>“Mathematics is not yet ready for such problems.”</blockquote><figcaption>Paul Erdős, as quoted by Jeffrey C. Lagarias (1985)</figcaption></figure>
+<p>This is a comment on the limitations of mathematical methods, not a proof that ordinary axioms cannot settle the problem.</p>
+<figure class="history-feature-image "><a href="https://commons.wikimedia.org/wiki/File:Paul_Erdos_with_Terence_Tao.jpg" target="_blank" rel="noopener noreferrer"><img loading="lazy" decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/c/c4/Paul_Erdos_with_Terence_Tao.jpg" alt="Paul Erdős speaking with ten-year-old Terence Tao about mathematics in 1985."></a><figcaption>Erdős and ten-year-old Tao, 1985 · <a href="https://commons.wikimedia.org/wiki/File:Paul_Erdos_with_Terence_Tao.jpg" target="_blank" rel="noopener noreferrer">Billy or Grace Tao, Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 2.0</a></figcaption></figure>
+<aside class="history-bio no-photo" aria-label="Meet the mathematician Paul Erdős"><div><p class="history-bio-kicker">Meet the mathematician</p><h4>Paul Erdős</h4><p class="history-bio-sub">1913–1996 · Hungary</p><p class="history-bio-text">A prolific mathematician known for remarkable collaborations and deceptively difficult problems. He travelled widely to think and work alongside other mathematicians.</p></div></aside>
+<p>Lagarias described the puzzle as <em>a deterministic process that simulates random behaviour</em>. The fixed rule is straightforward; its long-term consequences remain stubbornly elusive.</p>
+<figure class="history-quotation"><blockquote>“a deterministic process that simulates ‘random’ behavior”</blockquote><figcaption>Jeffrey C. Lagarias, <cite>The 3x + 1 Problem and Its Generalizations</cite> (1985)</figcaption></figure>
+<aside class="history-bio no-photo" aria-label="Meet the mathematician Jeffrey C. Lagarias"><div><p class="history-bio-kicker">Meet the mathematician</p><h4>Jeffrey C. Lagarias</h4><p class="history-bio-sub">American mathematician</p><p class="history-bio-text">A number theorist who collected the history, terminology and mathematics of Collatz. He described how curiosity and frustration led him to become a historian of the problem.</p></div></aside>
+<div class="history-source-links"><a href="https://doi.org/10.1080/00029890.1985.11971528" target="_blank" rel="noopener noreferrer">Lagarias's 1985 paper ↗</a></div></div></article>
+<article class="history-milestone" id="complex-extensions"><div class="history-year"><strong>1999–2004</strong><span>New landscapes</span></div><span class="history-node" aria-hidden="true"></span><div class="history-event"><p class="history-era">New landscapes</p><h3>Into the complex plane</h3>
+<p>Researchers explored <strong>complex extensions</strong> of Collatz-like iteration. Work by <strong>Letherman, Schleicher and Wood</strong>, <strong>Dumont and Reiter</strong>, and <strong>Joseph L. Pe</strong> investigated how related rules can generate rich and sometimes fractal-like structures.</p>
+<p>These are mathematical extensions, not a proof about the original positive-integer problem. And the familiar quadratic Julia and Mandelbrot sets illustrate a <em>different</em> iterative rule.</p>
+<a class="history-explore-link" href="fractals.html#complex-collatz">Explore complex Collatz and Fractals ↗</a>
+<div class="history-source-links"><a href="https://doi.org/10.1080/10586458.1999.10504402" target="_blank" rel="noopener noreferrer">1999 study ↗</a><a href="https://doi.org/10.1016/S0097-8493(01)00129-7" target="_blank" rel="noopener noreferrer">2001 visualization ↗</a><a href="https://doi.org/10.1016/j.cag.2004.03.010" target="_blank" rel="noopener noreferrer">2004 fractal paper ↗</a></div></div></article>
+<article class="history-milestone" id="visualizations"><div class="history-year"><strong>2015</strong><span>Seeing the sequences</span></div><span class="history-node" aria-hidden="true"></span><div class="history-event"><p class="history-era">Seeing the sequences</p><h3>When mathematics becomes an image</h3>
+<p>As computers grew more capable, mathematical visualizations revealed the branching and shared portions of Collatz trajectories. A 2015 Wolfram Community post discussed <strong>Anton Bogatskiy's</strong> technique for drawing orbits with parity-dependent turns.</p>
+<p>The resulting images can be astonishing. But a visualization, however detailed, cannot establish the fate of every integer.</p>
+<figure class="history-feature-image "><a href="https://commons.wikimedia.org/wiki/File:Collatz_Conjecture_Vizualization.png" target="_blank" rel="noopener noreferrer"><img loading="lazy" decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Collatz_Conjecture_Vizualization.png" alt="Illustration of branching curved paths based on Collatz sequences."></a><figcaption>Collatz trajectories from starting values up to 10,000 · <a href="https://commons.wikimedia.org/wiki/File:Collatz_Conjecture_Vizualization.png" target="_blank" rel="noopener noreferrer">Damourchris, Wikimedia Commons</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0 1.0</a></figcaption></figure>
+<a class="history-explore-link" href="visualize.html">Explore the Laboratory's Visualizer ↗</a>
+<div class="history-source-links"><a href="https://community.wolfram.com/t/a-beautiful-picture-related-to-collatz-conjecture/6591" target="_blank" rel="noopener noreferrer">Wolfram discussion ↗</a></div></div></article>
+<article class="history-milestone" id="tao-result"><div class="history-year"><strong>2019</strong><span>A modern breakthrough</span></div><span class="history-node" aria-hidden="true"></span><div class="history-event"><p class="history-era">A modern breakthrough</p><h3>Almost all is not all.</h3>
+<p><strong>Terence Tao</strong> showed that for almost all positive starting numbers, in the precise sense of <em>logarithmic density</em>, a Collatz orbit eventually reaches a value below any prescribed function tending to infinity.</p>
+<p>This major result does <strong>not</strong> prove that every orbit reaches 1, or that the orbits remain bounded forever.</p>
+<div class="history-tao-result"><div><strong>Almost all</strong><span>A precise mathematical result</span></div><div><strong>Every one</strong><span>The conjecture is still open</span></div></div>
+<figure class="history-feature-image "><a href="https://commons.wikimedia.org/wiki/File:Terence_Tao.jpg" target="_blank" rel="noopener noreferrer"><img loading="lazy" decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/1/12/Terence_Tao.jpg" alt="Portrait of Terence Tao in 2006."></a><figcaption>Terence Tao at ICM 2006, Wikimedia-cropped version · <a href="https://commons.wikimedia.org/wiki/File:Terence_Tao.jpg" target="_blank" rel="noopener noreferrer">Gert-Martin Greuel, Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en" target="_blank" rel="noopener noreferrer">CC BY-SA 2.0 DE</a></figcaption></figure>
+<aside class="history-bio no-photo" aria-label="Meet the mathematician Terence Tao"><div><p class="history-bio-kicker">Meet the mathematician</p><h4>Terence Tao</h4><p class="history-bio-sub">Born 1975 · Australia</p><p class="history-bio-text">A Fields Medal–winning mathematician whose work spans number theory and analysis. His 2019 result brought new insight without resolving Collatz.</p></div></aside>
+<p>There's a remarkable connection: the ten-year-old pictured earlier beside Erdős in 1985 is Tao, decades before this breakthrough.</p>
+<div class="history-source-links"><a href="https://arxiv.org/abs/1909.03562" target="_blank" rel="noopener noreferrer">Tao's paper ↗</a><a href="https://terrytao.wordpress.com/2019/09/10/almost-all-collatz-orbits-attain-almost-bounded-values/" target="_blank" rel="noopener noreferrer">Tao explains ↗</a></div></div></article>
+</section>
+<section class="history-today" aria-labelledby="history-today-title">
+<p class="history-kicker">Epilogue · What followed</p><h2 id="history-today-title">The search continues.</h2>
+<div class="history-today-grid">
+<article class="history-today-note"><span class="history-current-year">2025 · Computation</span><h3>Immense verification, not proof</h3><p>David Barina's published computation verified that the conjecture holds for all positive integers below <strong>2<sup>71</sup></strong>, about 2.36 × 10<sup>21</sup>. This is a milestone, not a proof of the infinite claim.</p><a href="https://doi.org/10.1007/s11227-025-07337-0" target="_blank" rel="noopener noreferrer">Verification paper ↗</a></article>
+<article class="history-today-note"><span class="history-current-year">2026 · Proof checking</span><h3>The AI-assisted false disproof</h3><p>An AI-assisted purported disproof was accepted by a version of the Lean proof checker because of a software kernel bug, not because Collatz was disproved. The defect was fixed. Paul included this episode in his manuscript.</p><a href="https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/" target="_blank" rel="noopener noreferrer">Read the postmortem ↗</a></article>
+</div></section>
+<section class="history-ending"><p class="history-kicker">The question remains</p><h2>Almost all is not all.</h2><p>From early graphs through modern computation and Tao's deep mathematics, the rule has inspired generations of ideas. The central conjecture remains open.</p><p>The next chapter explores what those repeated steps can tell us about orbits, fixed points and cycles.</p><a class="history-explore-link" href="digging-deeper.html">Continue to Digging Deeper ↗</a></section>
+<details class="history-original-manuscript">
+<summary>Read Paul's original History manuscript <span>Full working text preserved verbatim for comparison. Some claims still need historical or mathematical verification.</span></summary>
+<div class="history-original-body">
+<p class="history-original-source">Original paragraphs from the Collatz Laboratory Story Script. These are retained as draft source material, not presented as independently verified claims.</p>
+<p data-manuscript-paragraph="1">One of the most famous unsolved problems in mathematics, the Collatz conjecture or 3n+1 problem, determines if every positive integer will iterate to 1 after performing repeated arithmetic operations. This problem has a simple procedure: an even iterate is halved; an odd iterate is multiplied by 3 and increased by 1, and the process repeats and generates a sequence. As an open, unproven problem, computer simulations indicate that this conjecture holds for positive integers up to 271 ≈ 2.36×1021. All of these values tested converge to 1, though a counterexample could still exist. Sequences can be depicted via corresponding graphs and conjecture tree visualizations.</p>
+<p data-manuscript-paragraph="2">From his study of graph theory and iterative functions in the 1930s, Lothar Collatz, from the University of Hamburg, developed these concepts and used directed graphs to represent these sequences. Despite not publishing his work, this information circulated throughout mathematics communities via oral presentations like the 1950 International Congress of Mathematicians in Cambridge, Massachusetts. Other names for this flourished such as the Syracuse Problem and the Hasse algorithm, while the 3n+1 problem was independently devised in 1952 and called the Ulam’s problem by Sir Bryan Thwaites. Another popular name given to this is the &quot;Kakutani property&quot; due to work in the 1960s by Japanese-American mathematician Shizuo Kakutani.</p>
+<p data-manuscript-paragraph="3">Despite its popularity, many such as Paul Erdős raised doubt that this could be proved using standard axioms of mathematics. In 2019 Fields Medalist Terrence Tao made the most modern advance attempting to show the orbits are bounded, while computers continue to verify the conjecture for increasingly massive positive integers. Recently, an AI-generated formal proof claimed to &quot;disprove&quot; the conjecture, but it was discovered to be a kernel bug.</p>
+<p data-manuscript-paragraph="4">The following quotation via John Lagarias captures the complexity of this problem: “The difficulty of settling the 3x+1 problem seems connected to the fact that it is a deterministic process that simulates ``random'' behavior. We face this dilemma: On the one hand, to the extent that the problem has structure, we can analyze it --- yet it is precisely this structure that seems to prevent us from proving that it behaves ``randomly.'' On the other hand, to the extent that the problem is structureless and ``random,'' we have nothing to analyze and consequently cannot rigorously prove anything.”</p>
+<p class="history-original-source"><a href="https://docs.google.com/document/d/1nlhOzBbAXUVtN8TNwqm4iWsOSlgp34betckEldygdvc/edit?tab=t.s64sddt5qk4q" target="_blank" rel="noopener noreferrer">Open the editable source document ↗</a></p>
+</div></details>
+<nav class="chapter-next digging-bottom-nav" aria-label="Continue exploring"><a href="index.html#story"><span aria-hidden="true">←</span> Back to the Story</a><a href="digging-deeper.html">Digging Deeper <span aria-hidden="true">→</span></a></nav>
+</div></main></body></html>
