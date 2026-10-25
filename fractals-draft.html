@@ -7,8 +7,8 @@
   <meta name="description" content="Explore fractals, inverse Collatz trees, complex numbers, and the Julia and Mandelbrot sets through interactive mathematics.">
   <title>Fractals · Working Draft | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
-  <link rel="stylesheet" href="fractals-draft.css?v=20261024-1">
-  <script src="fractals-draft.js?v=20261024-1" defer></script>
+  <link rel="stylesheet" href="fractals-draft.css?v=20261024-palettes-1">
+  <script src="fractals-draft.js?v=20261024-palettes-1" defer></script>
 </head>
 <body class="fractal-page">
   <header class="site-header">
@@ -109,6 +109,36 @@
         <h2 id="fractal-sets-title">Julia and Mandelbrot: the same rule, two different questions.</h2>
         <p>Consider the deceptively simple iteration <strong>z<sub>n+1</sub> = z<sub>n</sub>² + c</strong>. Repeat it, and ask whether the values remain bounded or eventually escape. The answer depends on what we choose to hold fixed.</p>
       </div>
+      <fieldset class="fractal-palette-picker" id="fractal-palette-picker">
+        <legend>Choose a colour palette <span>Both explorers update together. Only the appearance changes, not the mathematics.</span></legend>
+        <div class="fractal-palette-options">
+          <label class="fractal-palette-option">
+            <input type="radio" name="fractal-palette" value="ocean">
+            <span class="fractal-palette-swatch palette-ocean" aria-hidden="true"></span>
+            <span class="fractal-palette-name">Midnight Ocean</span>
+          </label>
+          <label class="fractal-palette-option">
+            <input type="radio" name="fractal-palette" value="fire">
+            <span class="fractal-palette-swatch palette-fire" aria-hidden="true"></span>
+            <span class="fractal-palette-name">Cosmic Fire</span>
+          </label>
+          <label class="fractal-palette-option">
+            <input type="radio" name="fractal-palette" value="scientific">
+            <span class="fractal-palette-swatch palette-scientific" aria-hidden="true"></span>
+            <span class="fractal-palette-name">Scientific Gradient</span>
+          </label>
+          <label class="fractal-palette-option">
+            <input type="radio" name="fractal-palette" value="mono">
+            <span class="fractal-palette-swatch palette-mono" aria-hidden="true"></span>
+            <span class="fractal-palette-name">Monochrome</span>
+          </label>
+          <label class="fractal-palette-option">
+            <input type="radio" name="fractal-palette" value="amethyst" checked>
+            <span class="fractal-palette-swatch palette-amethyst" aria-hidden="true"></span>
+            <span class="fractal-palette-name">Amethyst <span class="fractal-palette-new">NEW</span></span>
+          </label>
+        </div>
+      </fieldset>
       <div class="fractal-dual">
         <section class="fractal-render-panel" aria-labelledby="julia-title">
           <div class="fractal-render-copy"><p class="fractal-render-kicker">FIX c · CHANGE z₀</p><h3 id="julia-title">Julia sets</h3><p>Choose one value of <strong>c</strong>. Test different starting points <strong>z₀</strong> across the complex plane. The dark region approximates the <em>filled Julia set</em>, whose boundary is the Julia set. <a href="#sources">[3]</a></p></div>
@@ -146,7 +176,7 @@
       </div>
       <div class="fractal-math-note">
         <span>WHAT ARE THE COLOURS?</span>
-        <p>These images are calculated here in your browser, not downloaded pictures. Colour indicates how many steps a tested point takes to escape past a chosen threshold. Dark points did not escape within the number of iterations calculated. That is an approximation, not a proof of boundedness at every dark pixel.</p>
+        <p>These images are calculated here in your browser, not downloaded pictures. Each palette assigns colours according to how quickly a tested point escapes past a chosen threshold. Changing palettes does not change the set, the current zoom, or the chosen Julia parameter. Dark points did not escape within the number of iterations calculated. That is an approximation, not a proof of boundedness at every dark pixel.</p>
         <p><strong>Julia changes the starting point.</strong> <strong>Mandelbrot changes the parameter.</strong> The iteration is the same; the experiment is different.</p>
       </div>
     </section>
