@@ -5,8 +5,7 @@
   'use strict';
   const $=id=>document.getElementById(id);
   const NS='http://www.w3.org/2000/svg';
-  const MAX_STEPS=200;
-  const MAX_VALUE=1000000000000n;
+  const {trace,MAX_STEPS,MAX_VALUE}=window.CollatzExperiment;
   const STARTS=Array.from({length:25},(_,i)=>i+1);
   const root=$('anb-path-map');
   if(!root)return;
@@ -15,6 +14,7 @@
     a:$('anb-a'),b:$('anb-b'),valueA:$('anb-a-value'),valueB:$('anb-b-value'),
     ruleA:$('anb-rule-a'),ruleB:$('anb-rule-b'),ruleCaption:$('anb-rule-caption'),
     currentTitle:$('anb-current-title'),mapStats:$('anb-map-stats'),
+    behaviour:$('anb-rule-behaviour'),
     seedGrid:$('anb-seed-grid'),showAll:$('anb-show-all'),
     save:$('anb-save-svg'),share:$('anb-share'),shareStatus:$('anb-share-status'),
     inspectorPlaceholder:$('anb-inspector-placeholder'),inspector:$('anb-inspector-data'),
@@ -30,7 +30,7 @@
   const numberText=n=>n.toLocaleString('en-CA');
   const colorFor=start=>'hsl('+(((start-1)*137.508+180)%360).toFixed(1)+' 92% 72%)';
   const labels={
-    one:'Reached 1',cycle:'Other cycle',cap:'Beyond value limit',limit:'Step limit'
+    one:'Cycle containing 1',cycle:'Other cycle',cap:'Value limit reached',limit:'Step limit reached'
   };
   function svg(tag,attrs,parent,text){
     const el=document.createElementNS(NS,tag);
@@ -38,28 +38,6 @@
     if(text!==undefined)el.textContent=String(text);
     if(parent)parent.appendChild(el);
     return el;
-  }
-  function trace(start,a,b){
-    const values=[BigInt(start)];
-    const seen=new Map([[BigInt(start),0]]);
-    let status=start===1?'one':null;
-    let repeatedAt=null,overshoot=null;
-    const aBig=BigInt(a),bBig=BigInt(b);
-    if(status==='one')return {start,values,status,cycleStart:null,peak:1n};
-    while(values.length-1<MAX_STEPS){
-      const n=values[values.length-1];
-      const next=n%2n===0n ? n/2n : aBig*n+bBig;
-      if(next>MAX_VALUE){
-        status='cap';overshoot=next;break;
-      }
-      values.push(next);
-      if(next===1n){status='one';break;}
-      if(seen.has(next)){status='cycle';repeatedAt=seen.get(next);break;}
-      seen.set(next,values.length-1);
-    }
-    if(status===null)status='limit';
-    const peak=values.reduce((best,v)=>v>best?v:best,0n);
-    return {start,values,status,cycleStart:repeatedAt,overshoot,peak};
   }
   function allPaths(a,b){return STARTS.map(n=>trace(n,a,b));}
   // Directed functional graph: one node per distinct integer. Arrows
@@ -84,7 +62,7 @@
     const nodes=new Map(),cycleCuts=new Set(),cycleNodes=new Set();
     const get=value=>{
       const id=nodeKey(value);
-      if(!nodes.has(id))nodes.set(id,{id,value,next:null,children:[],depth:0,x:0,y:0,seed:value>=1n&&value<=25n});
+      if(!nodes.has(id))nodes.set(id,{id,value,next:null,children:[],depth:0,x:0,y:0,boundaries:new Set(),seed:value>=1n&&value<=25n});
       return nodes.get(id);
     };
     let cutPaths=0;
@@ -96,7 +74,12 @@
         if(src.next!==null && src.next!==target.id)throw Error('Inconsistent rule at '+src.id);
         src.next=target.id;
       }
-      if(p.values.length>used.length)cutPaths++;
+      if(p.values.length>used.length){
+        cutPaths++;
+        get(used[used.length-1]).boundaries.add('Map limit');
+      }else if(p.status==='cap'||p.status==='limit'){
+        get(used[used.length-1]).boundaries.add(p.status==='cap'?'Value limit':'Step limit');
+      }
     }
     const examined=new Set(),cycles=[];
     for(const candidate of nodes.values()){
@@ -243,18 +226,19 @@
       svg('rect',{x:node.x-rx,y:node.y-23,width:2*rx,height:46,rx:23,'class':'anb-graph-node-shape'},group);
       svg('text',{x:node.x,y:node.y+5,'class':'anb-graph-node-label','text-anchor':'middle'},group,label);
       if(node.seed)svg('circle',{cx:node.x+rx-4,cy:node.y-18,r:4,fill:'#ffd479'},group);
-      if(node.next===null&&node.id!=='1'){
+      if(node.next===null){
         svg('text',{x:node.x,y:node.y+42,'class':'anb-graph-tail',
-          'text-anchor':'middle'},group,'finite endpoint');
+          'text-anchor':'middle'},group,[...node.boundaries].join(' / ')||'Map limit');
       }
       svg('title',{},group,'Integer '+node.id+(node.seed?' · one of the 25 starting values':'')+
-        (graph.cycleNodes.has(node.id)?' · observed cycle':''));
+        (graph.cycleNodes.has(node.id)?' · observed cycle':'')+
+        (node.next===null?' · '+[...node.boundaries].join(' / ')+': the rule continues beyond this boundary.':''));
       graphState.nodes.set(node.id,group);
     }
     if(!preserveCamera||!camera.fit)fitGraph();
     else cameraUpdate();
     graphState.stats=graph.nodes.size+' distinct integers · '+graph.totalArrows+
-      ' arrows · '+graph.roots.length+' component'+(graph.roots.length===1?'':'s')+
+      ' arrows · '+graph.roots.length+' visible component'+(graph.roots.length===1?'':'s')+
       (graph.cutPaths?' · '+graph.cutPaths+' paths truncated on graph':'');
     els.mapStats.textContent=graphState.stats;
   }
@@ -343,18 +327,25 @@
     }
     // Format only the observed outcome. The cap value is null for all
     // other outcomes, so building every note eagerly would throw.
-    if(p.status==='one'){
-      els.detailNote.textContent='This tested trajectory reaches 1. We stop at its first visit to 1; the rule may continue afterward.';
-    }else if(p.status==='cycle'){
-      els.detailNote.textContent='A value repeated. The displayed ending closes a cycle of '+
-        (p.values.length-1-p.cycleStart)+' steps. It was not observed to reach 1 first.';
+    let note;
+    if(p.status==='one'||p.status==='cycle'){
+      note='A value repeated. The ending closes a cycle of '+
+        (p.values.length-1-p.cycleStart)+' steps. '+
+        (p.status==='one'?'This cycle contains 1.':p.reachedOne?
+          'The path visits 1, then continues into a cycle that does not contain 1.':
+          'This path enters a cycle that does not contain 1.');
     }else if(p.status==='cap'){
-      els.detailNote.textContent='The next value would be '+numberText(p.overshoot)+
-        ', above the exploration limit of '+numberText(MAX_VALUE)+'. This does not prove divergence.';
+      note='The next value would be '+numberText(p.overshoot)+
+        ', beyond our value boundary of '+numberText(MAX_VALUE)+
+        '. We stop calculating here.';
     }else{
-      els.detailNote.textContent='No 1 or repeated value was detected within '+
-        MAX_STEPS+' steps. This does not prove divergence.';
+      note='No repeated value was detected within '+MAX_STEPS+
+        ' steps. We stop at this step boundary.';
     }
+    if(p.tendsToInfinity)note+=' This rule does tend to infinity: every positive start eventually reaches an odd value, and each odd value produces a larger odd value from then on.';
+    else if(p.status==='cap'||p.status==='limit')note+=' The eventual outcome is unknown here. Reaching a boundary does not prove that the path tends to infinity.';
+    if(p.values.length-1>GRAPH_EDGES_PER_START)note+=' The map draws only the first '+GRAPH_EDGES_PER_START+' steps of this path; the calculation continues beyond the displayed branch.';
+    els.detailNote.textContent=note;
   }
   function renderStats(){
     const count={one:0,cycle:0,cap:0,limit:0};
@@ -392,6 +383,9 @@
     els.ruleA.textContent=state.a;els.ruleB.textContent=state.b;
     els.currentTitle.textContent=state.a+'n + '+state.b+'.';
     els.ruleCaption.textContent='Odd rule: multiply by '+state.a+', then add '+state.b+'.';
+    els.behaviour.hidden=!state.paths[0].tendsToInfinity;
+    els.behaviour.textContent=state.paths[0].tendsToInfinity?
+      'These paths tend to infinity. Every positive start eventually becomes odd. With this rule, each odd value produces a larger odd value, so the path keeps growing. The counts above record where our calculations stop.':'';
     document.querySelectorAll('.anb-preset').forEach(b=>{
       b.classList.toggle('is-current',Number(b.dataset.a)===state.a&&Number(b.dataset.b)===state.b);
     });

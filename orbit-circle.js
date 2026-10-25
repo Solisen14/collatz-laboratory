@@ -1,7 +1,7 @@
 /* The Collatz Laboratory | Circular Representation
  * Real forward Collatz orbits radiate from a single 1 at (0, 0).
  * Every visited integer is represented by one canonical node. Actual
- * terminal values sit on the outer ring and intermediate nodes occupy
+ * endpoints sit on the outer ring and intermediate nodes occupy
  * nested angular sectors, keeping the displayed tree free of crossings.
  * The separate 1 -> 4 return arc closes the cycle, outside the tree.
  */
@@ -241,7 +241,7 @@
     element('title',{id:'radialDiagramTitle'},svg,
       'Circular tree of the forward Collatz orbits for the first '+model.count+' positive integers');
     element('desc',{id:'radialDiagramDesc'},svg,
-      'The number 1 is in the exact centre. Unique positive integers branch outward in circular sectors, with actual terminal values around the perimeter. Select a node to trace its forward Collatz orbit into 1.');
+      'The number 1 is in the exact centre. Unique positive integers branch outward in circular sectors, with actual endpoints around the perimeter. Select a node to trace its forward Collatz orbit into 1.');
     element('style',{},svg,embeddedStyle);
     const defs=element('defs',{},svg);
     for(const type of ['even','odd']){
@@ -266,7 +266,7 @@
     const edgeLayer=element('g',{'aria-label':'Forward Collatz connections'},svg);
     const arcLayer=element('g',{'aria-label':'The 1 to 4 return cycle'},svg);
     const nodeLayer=element('g',{'aria-label':'Unique integer nodes'},svg);
-    const tipLayer=element('g',{'aria-label':'Terminal values around the circumference'},svg);
+    const tipLayer=element('g',{'aria-label':'Endpoints around the circumference'},svg);
     const edges=new Map(),nodes=new Map(),starts=new Map(),entries=new Map();
 
     // Draw every mathematical connection exactly once. Grey, straight
@@ -364,7 +364,7 @@
           event.preventDefault();selectStart(value);
         }
       });
-      element('title',{},group,'Terminal starting value '+value);
+      element('title',{},group,'Endpoint value '+value);
       starts.set(value,group);
     }
     state.elements={edges,nodes,starts,entries,returnArc};
@@ -380,7 +380,7 @@
 
   function detailFor(start) {
     if (start === null) {
-      return '<strong>Find the bullseye.</strong> The black 1 is at the exact centre. Select any coloured node or outer terminal label, or choose a number from the menu, to follow its forward orbit into 1. Shared paths are drawn once.';
+      return '<strong>Find the bullseye.</strong> The black 1 is at the exact centre. Select any coloured node or outer endpoint label, or choose a number from the menu, to follow its forward orbit into 1. Shared paths are drawn once.';
     }
     const path = orbitOf(start);
     const peak = Math.max(...path);
@@ -483,7 +483,7 @@
     }
     stats.textContent = count + ' starting integers · ' +
       state.model.nodes.size + ' distinct values · ' +
-      state.model.tips.length + ' terminal branches · ' +
+      state.model.tips.length + ' endpoints · ' +
       state.model.longest.steps + ' maximum steps (' +
       state.model.longest.starting + ') · peak ' +
       state.model.peak.toLocaleString();

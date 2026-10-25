@@ -8,7 +8,8 @@
   <title>Explore a n + b | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
   <link rel="stylesheet" href="anb-explore.css?v=20261025-directed-graph-2">
-  <script src="anb-explore.js?v=20261025-directed-graph-2" defer></script>
+  <script src="anb-model.js?v=20261025-review-1" defer></script>
+  <script src="anb-explore.js?v=20261025-review-1" defer></script>
 </head>
 <body class="anb-page">
 <header class="site-header">
@@ -67,11 +68,13 @@
       </div>
       <div class="anb-summary" aria-label="Outcome summary for starting values 1 through 25">
         <h3>25 paths at a glance</h3>
-        <div class="anb-metric-row"><span><i class="anb-status-dot one"></i> Reached 1</span><strong id="anb-reached">0</strong></div>
+        <div class="anb-metric-row"><span><i class="anb-status-dot one"></i> Cycle containing 1</span><strong id="anb-reached">0</strong></div>
         <div class="anb-metric-row"><span><i class="anb-status-dot cycle"></i> Other cycles</span><strong id="anb-cycles">0</strong></div>
-        <div class="anb-metric-row"><span><i class="anb-status-dot cap"></i> Beyond value limit</span><strong id="anb-capped">0</strong></div>
-        <div class="anb-metric-row"><span><i class="anb-status-dot limit"></i> Step limit</span><strong id="anb-limited">0</strong></div>
+        <div class="anb-metric-row"><span><i class="anb-status-dot cap"></i> Value limit reached</span><strong id="anb-capped">0</strong></div>
+        <div class="anb-metric-row"><span><i class="anb-status-dot limit"></i> Step limit reached</span><strong id="anb-limited">0</strong></div>
       </div>
+      <p class="anb-control-note">We continue through 1 until a value repeats or a calculation limit is reached. A limit tells us where we stopped, not whether the path tends to infinity.</p>
+      <p id="anb-rule-behaviour" class="anb-control-note" role="status" aria-live="polite" hidden></p>
       <button id="anb-share" class="anb-share" type="button"><span aria-hidden="true">↗</span> Copy link to these settings</button>
       <p id="anb-share-status" class="anb-share-status" role="status" aria-live="polite"></p>
     </aside>
@@ -96,6 +99,8 @@
         <div class="anb-stage-footer"><span>ARROWS SHOW <strong>n → T(n)</strong></span><span><strong>Drag</strong> to pan · <strong>Scroll</strong> to zoom · <strong>Click</strong> a node to trace</span></div>
       </div>
 
+      <p class="anb-control-note">A branch labelled “Map limit” continues beyond the 32 steps drawn for that start. “Value limit” and “Step limit” mark calculation boundaries. Separate visible components may connect beyond the part we have drawn.</p>
+
       <section class="anb-seeds" aria-labelledby="anb-seeds-heading">
         <div class="anb-seeds-heading"><div><p class="anb-panel-eyebrow">03 / PICK A STARTING VALUE</p><h3 id="anb-seeds-heading">Which path do you want to follow?</h3></div><p>Select any starting integer to highlight its directed path through the shared graph.</p></div>
         <div id="anb-seed-grid" class="anb-seed-grid" role="group" aria-label="Select one of the first 25 positive integers"></div>
@@ -108,7 +113,7 @@
         </div>
         <div id="anb-inspector-placeholder" class="anb-inspector-placeholder">Choose a starting integer above, or click a node in the graph, to see the exact values and outcome.</div>
         <div id="anb-inspector-data" hidden>
-          <div class="anb-inspector-metrics"><div><span>START</span><strong id="anb-detail-start">1</strong></div><div><span>STEPS SHOWN</span><strong id="anb-detail-steps">0</strong></div><div><span>HIGHEST VALUE</span><strong id="anb-detail-peak">1</strong></div><div><span>OUTCOME</span><strong id="anb-detail-outcome">Reached 1</strong></div></div>
+          <div class="anb-inspector-metrics"><div><span>START</span><strong id="anb-detail-start">1</strong></div><div><span>STEPS CALCULATED</span><strong id="anb-detail-steps">0</strong></div><div><span>HIGHEST VALUE</span><strong id="anb-detail-peak">1</strong></div><div><span>OUTCOME</span><strong id="anb-detail-outcome">Cycle containing 1</strong></div></div>
           <div id="anb-path-values" class="anb-path-values" aria-label="Integer sequence for selected path"></div>
           <p id="anb-detail-note" class="anb-detail-note"></p>
         </div>
@@ -122,7 +127,7 @@
     <div class="anb-notes-grid">
       <p><strong>Only positive starts.</strong> We use starting numbers 1 to 25, positive a and b, and ordinary integer arithmetic. All subsequent values are positive.</p>
       <p><strong>A shared directed graph.</strong> Every integer is one node, even when multiple starting values visit it. Each arrow points to the next value; cyclic arrows are shown explicitly.</p>
-      <p><strong>Stopping rules.</strong> We stop at the first 1, the first repeated value, 200 steps, or before exceeding 1,000,000,000,000. To keep large graphs readable, the map draws at most the first 32 edges per starting value; the path inspector retains the full calculated sequence. Limits do not prove divergence.</p>
+      <p><strong>Stopping rules.</strong> We continue through 1 and stop at the first repeated value, after 200 steps, or before exceeding 1,000,000,000,000. A repeated value closes a cycle; the outcome tells us whether that cycle contains 1. The map draws at most the first 32 edges per starting value, while the inspector reports the calculated path and its outcome. Reaching a boundary does not establish that a path tends to infinity.</p>
       <p><strong>No proof by picture.</strong> Changing a and b creates different dynamical systems. Seeing 25 paths does not establish what happens for all starting values.</p>
     </div>
     <nav class="anb-bottom-nav" aria-label="Continue exploring"><a href="visualize.html">Explore the original Collatz visualizer <span aria-hidden="true">↗</span></a><a href="fractals.html">Fractals <span aria-hidden="true">↗</span></a></nav>

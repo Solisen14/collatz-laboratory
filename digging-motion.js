@@ -163,11 +163,13 @@
       <div class="deeper-motion-controls" role="group" aria-label="${key==='periodic'?'Periodicity':'Reflection'} animation controls">
         <button type="button" data-action="previous">Previous step</button><button type="button" data-action="play">Play</button><button type="button" data-action="next">Next step</button><button type="button" data-action="scroll" aria-pressed="true">Follow scroll</button>
       </div><div class="deeper-motion-status deeper-motion-sr" role="status" aria-live="polite"></div>
-    </div><div class="deeper-motion-beats"></div></div>`;
+    </div><div class="deeper-motion-beats"></div>
+    <aside class="deeper-motion-manual" aria-label="Current diagram explanation" hidden><div class="deeper-motion-card"><small></small><h5></h5><p></p></div></aside></div>`;
     source.before(shell);
     const ui={
       equation:shell.querySelector('.deeper-motion-equation'),caption:shell.querySelector('.deeper-motion-caption'),
       mode:shell.querySelector('.deeper-motion-mode'),status:shell.querySelector('.deeper-motion-status'),
+      manual:shell.querySelector('.deeper-motion-manual'),
       progress:shell.querySelector('.deeper-motion-progress span'),beatHost:shell.querySelector('.deeper-motion-beats'),
       previous:shell.querySelector('[data-action="previous"]'),next:shell.querySelector('[data-action="next"]'),
       play:shell.querySelector('[data-action="play"]'),scroll:shell.querySelector('[data-action="scroll"]')
@@ -193,6 +195,12 @@
       ui.progress.style.transform=`scaleX(${step/max()})`;
       const active=beats.reduce((found,b,i)=>step>=b[0]?i:found,0);
       [...ui.beatHost.children].forEach((b,i)=>b.classList.toggle('is-current',i===active));
+      const controlling=state.mode==='manual'||state.mode==='play';
+      ui.beatHost.setAttribute('aria-hidden',String(controlling));
+      ui.manual.hidden=!controlling;
+      ui.manual.querySelector('small').textContent=`STEP ${step} / ${max()}`;
+      ui.manual.querySelector('h5').innerHTML=ui.equation.innerHTML;
+      ui.manual.querySelector('p').textContent=ui.caption.textContent;
       shell.dataset.step=String(step);shell.dataset.mode=state.mode;shell.dataset.start=String(state.start);
     }
     function inspect(){

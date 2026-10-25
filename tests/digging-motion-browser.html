@@ -64,6 +64,14 @@
     click('periodic','play');
     scene('periodic').querySelector('[data-start="4"]').click();frame(3000);
     check(step('periodic')===0&&frames.size===0,'Changing the starting point cancels the previous timer');
+    const periodic=scene('periodic');
+    const manual=periodic.querySelector('.deeper-motion-manual');
+    check(!manual.hidden&&manual.querySelector('h5').textContent===periodic.querySelector('.deeper-motion-equation').textContent,'Manual explanation matches the reset diagram');
+    check(periodic.querySelector('.deeper-motion-beats').getAttribute('aria-hidden')==='true','Scroll narrative is excluded while manual controls are active');
+    click('periodic','next');
+    check(manual.querySelector('h5').textContent==='C1(4) = 2'&&manual.querySelector('p').textContent===periodic.querySelector('.deeper-motion-caption').textContent,'Stepping updates the equation and explanation together');
+    click('periodic','scroll');
+    check(manual.hidden&&periodic.querySelector('.deeper-motion-beats').getAttribute('aria-hidden')==='false','Follow scroll restores the narrative cards');
     click('periodic','play');motion(true);frame(4000);
     check(step('periodic')===9&&frames.size===0,'Changing motion preference cancels playback and shows complete view');
     motion(false);
