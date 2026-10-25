@@ -1,14 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#07090f" />
-  <title>Fractals | The Collatz Laboratory</title>
-  <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
-  <link rel="stylesheet" href="chapters.css?v=20261021-1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07090f">
+  <meta name="description" content="Explore fractals, inverse Collatz trees, complex numbers, and the Julia and Mandelbrot sets through interactive mathematics.">
+  <title>Fractals · Early Draft | The Collatz Laboratory</title>
+  <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
+  <link rel="stylesheet" href="fractals-draft.css?v=20261025-early-review-1">
+  <script src="fractals-draft.js?v=20261025-detail-2" defer></script>
 </head>
-<body class="chapter-page">
+<body class="fractal-page">
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="The Collatz Laboratory home">
       <span class="brand-mark"></span><span>THE COLLATZ LABORATORY</span>
@@ -23,21 +25,219 @@
       <a href="about.html">ABOUT</a>
     </nav>
   </header>
-  <main class="chapter-shell">
-    <section class="chapter-content" aria-labelledby="chapter-heading">
-      <p class="chapter-crumb">THE COLLATZ LABORATORY · EXPLORE FURTHER</p>
-      <p class="chapter-number">03 / 03</p>
-      <h1 id="chapter-heading" class="chapter-title"><span>Fractals</span>.</h1>
-      <p class="chapter-deck">Explore the intricate visual structures that emerge when Collatz paths and repeated rules are drawn.</p>
-      <div class="chapter-placeholder">
-        <p class="chapter-placeholder-tag">IN DEVELOPMENT</p>
-        <h2>INSERT TEXT HERE</h2>
-        <p>This section is reserved for our mathematical explanations, sources, investigations, and interactive explorations. We'll build it using material from the shared Collatz Laboratory Story Script.</p>
+
+  <aside class="fractal-review-banner" role="note" aria-label="Early draft status">
+    <strong>EARLY DRAFT</strong>
+    <p>This Fractals page is a working draft for mathematical and editorial review. Explanations, visualizations, and references are still being developed.</p>
+  </aside>
+
+  <main id="top" class="fractal-main">
+    <section class="fractal-hero" aria-labelledby="fractal-title">
+      <p class="fractal-draft-stamp">EARLY DRAFT · MATHEMATICS UNDER REVIEW</p>
+      <p class="fractal-overline">THE COLLATZ LABORATORY / FRACTALS</p>
+      <h1 id="fractal-title">A simple rule.<br><em>An astonishing landscape.</em></h1>
+      <p class="fractal-deck">We've followed numbers through the Collatz sequence and watched them form branching trees. But what happens when we keep repeating rules, zoom into the patterns they create, and finally move beyond the number line?</p>
+      <a class="fractal-scroll-link" href="#what-is-a-fractal">BEGIN EXPLORING <span aria-hidden="true">↓</span></a>
+      <div class="fractal-hero-ornament" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    </section>
+
+    <section class="fractal-section" id="what-is-a-fractal" aria-labelledby="fractal-intro-title">
+      <div class="fractal-section-head">
+        <p class="fractal-index">01 / THE BIG QUESTION</p>
+        <h2 id="fractal-intro-title">What are fractals, anyway?</h2>
+        <p>Imagine zooming into a fern. Its smaller branches resemble the larger one. Zoom in again, and the same kind of shape seems to return. In mathematics, we can create objects whose detailed structure keeps revealing new structure, often with repeated or approximately repeated patterns at different scales.</p>
       </div>
-      <nav class="chapter-next" aria-label="Continue exploring">
-        <a href="index.html#story"><span aria-hidden="true">←</span> Back to the story</a>
-        <a href="index.html#story">Story <span aria-hidden="true">→</span></a>
-      </nav>
+      <div class="fractal-split">
+        <div class="fractal-prose">
+          <h3>Simple rules. Repeated endlessly.</h3>
+          <p>A fractal is often built by <strong>iteration</strong>: apply a rule, take the result, and apply the rule again. The resulting image may show <strong>self-similarity</strong>, where smaller portions resemble the whole. Some fractals have exact self-similarity; others display much subtler detail.</p>
+          <p>Not every complicated picture is a fractal. Not every branching diagram is one, either. The important questions are how the object is defined and what happens to its structure as we examine it more closely. <a href="#sources">[1]</a></p>
+          <div class="fractal-question">What could an extremely simple repeated rule create?</div>
+        </div>
+        <div class="fractal-mini-poster" aria-hidden="true">
+          <svg viewBox="0 0 420 275">
+            <g fill="none" stroke-linecap="round">
+              <path stroke="#7ae7ff" stroke-width="6" d="M210 250V158"></path>
+              <path stroke="#b8a0ec" stroke-width="4" d="M210 158L135 75M210 158L285 75"></path>
+              <path stroke="#7ae7ff" stroke-width="2.8" d="M135 75L98 36M135 75L172 36M285 75L248 36M285 75L322 36"></path>
+              <path stroke="#cfb5fa" stroke-width="1.8" d="M98 36L82 14M98 36L116 14M172 36L154 14M172 36L188 14M248 36L232 14M248 36L266 14M322 36L304 14M322 36L340 14"></path>
+            </g>
+            <text x="210" y="270" text-anchor="middle" font-size="11" fill="#bacadc" letter-spacing="2">REPEAT · BRANCH · REPEAT</text>
+          </svg>
+          <p>An illustration of recursive branching, not a claim that the Collatz tree is a mathematical fractal.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="fractal-section" id="compare-trees" aria-labelledby="fractal-tree-title">
+      <div class="fractal-section-head">
+        <p class="fractal-index">02 / A FAMILIAR SHAPE</p>
+        <h2 id="fractal-tree-title">Is the Collatz tree an infinite binary tree?</h2>
+        <p>In our Story, many starting values flowed toward the same positive cycle. When we reverse the arrows, a tree of predecessors grows outward. It certainly resembles the infinite binary trees we've studied. But look carefully at the branching.</p>
+      </div>
+      <div class="fractal-tree-lab">
+        <div class="fractal-tool-head">
+          <div><span class="fractal-tool-label">INVESTIGATE THE BRANCHING</span><p>Increase the depth. Watch how two rules for creating children lead to two different shapes.</p></div>
+          <label class="fractal-slider-label" for="tree-depth">Generations <strong id="tree-depth-label">7</strong><input id="tree-depth" type="range" min="2" max="8" value="7"></label>
+        </div>
+        <div class="fractal-tree-panels">
+          <div class="fractal-viz-panel"><div class="fractal-viz-meta"><h3>Full binary tree</h3><span id="binary-count">0 nodes</span></div><svg id="binary-tree-svg" viewBox="0 0 520 330" role="img" aria-label="Full binary tree showing two children at every non-leaf node"></svg><p>Every node has exactly two children in the infinite tree.</p></div>
+          <div class="fractal-viz-panel"><div class="fractal-viz-meta"><h3>Inverse Collatz tree</h3><span id="collatz-count">0 nodes</span></div><svg id="collatz-inverse-svg" viewBox="0 0 520 330" role="img" aria-label="Finite inverse Collatz tree rooted at one, with some nodes having only one predecessor"></svg><p>Every positive integer has the predecessor <code>2n</code>; a second predecessor exists only for particular values.</p></div>
+        </div>
+        <div class="fractal-math-note"><span>THE IMPORTANT DIFFERENCE</span>
+          <p>Working backward from <strong>n</strong>, the even predecessor is always <strong>2n</strong>. An odd predecessor <strong>(n − 1)/3</strong> exists only when it is a positive odd integer, equivalently when <strong>n ≡ 4 (mod 6)</strong>. We omit the return edge 1 → 4 so the familiar 1–4–2 cycle can be represented as a rooted tree.</p>
+          <p>And there's a deeper question: does this backwards-growing component contain every positive integer? That's another way of asking the Collatz conjecture, <strong>not</strong> something our picture proves.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="fractal-section" id="complex-plane" aria-labelledby="fractal-complex-title">
+      <div class="fractal-section-head">
+        <p class="fractal-index">03 / BEYOND THE NUMBER LINE</p>
+        <h2 id="fractal-complex-title">One axis isn't enough anymore.</h2>
+        <p>So far, Collatz has lived on a number line. But mathematicians can also work with <strong>complex numbers</strong>: numbers with a real component and an imaginary component. Every complex number has a position on a two-dimensional plane.</p>
+      </div>
+      <div class="fractal-split complex-layout">
+        <div class="fractal-prose">
+          <div class="fractal-formula">z = a + bi <small>where i² = −1</small></div>
+          <p>The horizontal axis measures the real part, <strong>a</strong>. The vertical axis measures the imaginary part, <strong>b</strong>. For example, <strong>2 + 3i</strong> lives two units to the right and three units up.</p>
+          <p>Whole numbers have not vanished. The number <strong>3</strong> is the point <strong>3 + 0i</strong> on the real axis. We've simply given our mathematics another direction to explore. <a href="#sources">[2]</a></p>
+          <p class="fractal-soft-question">Tap or click on the plane to choose a different complex number.</p>
+        </div>
+        <div class="fractal-canvas-frame complex-frame"><canvas id="complex-canvas" aria-label="Interactive complex plane with real and imaginary axes; click to move the plotted point" tabindex="0"></canvas><p class="fractal-canvas-readout" id="complex-readout" aria-live="polite">z = 2.00 + 3.00i</p></div>
+      </div>
+    </section>
+
+    <section class="fractal-section" id="two-famous-sets" aria-labelledby="fractal-sets-title">
+      <div class="fractal-section-head">
+        <p class="fractal-index">04 / TWO REMARKABLE LANDSCAPES</p>
+        <h2 id="fractal-sets-title">Julia and Mandelbrot: the same rule, two different questions.</h2>
+        <p>Consider the deceptively simple iteration <strong>z<sub>n+1</sub> = z<sub>n</sub>² + c</strong>. Repeat it, and ask whether the values remain bounded or eventually escape. The answer depends on what we choose to hold fixed.</p>
+      </div>
+      <fieldset class="fractal-palette-picker" id="fractal-palette-picker">
+        <legend>Choose a colour palette <span>Both explorers update together. Only the appearance changes, not the mathematics.</span></legend>
+        <div class="fractal-palette-options">
+          <label class="fractal-palette-option">
+            <input type="radio" name="fractal-palette" value="ocean">
+            <span class="fractal-palette-swatch palette-ocean" aria-hidden="true"></span>
+            <span class="fractal-palette-name">Midnight Ocean</span>
+          </label>
+          <label class="fractal-palette-option">
+            <input type="radio" name="fractal-palette" value="fire">
+            <span class="fractal-palette-swatch palette-fire" aria-hidden="true"></span>
+            <span class="fractal-palette-name">Cosmic Fire</span>
+          </label>
+          <label class="fractal-palette-option">
+            <input type="radio" name="fractal-palette" value="scientific">
+            <span class="fractal-palette-swatch palette-scientific" aria-hidden="true"></span>
+            <span class="fractal-palette-name">Scientific Gradient</span>
+          </label>
+          <label class="fractal-palette-option">
+            <input type="radio" name="fractal-palette" value="mono">
+            <span class="fractal-palette-swatch palette-mono" aria-hidden="true"></span>
+            <span class="fractal-palette-name">Monochrome</span>
+          </label>
+          <label class="fractal-palette-option">
+            <input type="radio" name="fractal-palette" value="amethyst" checked>
+            <span class="fractal-palette-swatch palette-amethyst" aria-hidden="true"></span>
+            <span class="fractal-palette-name">Amethyst <span class="fractal-palette-new">NEW</span></span>
+          </label>
+        </div>
+      </fieldset>
+      <div class="fractal-dual">
+        <section class="fractal-render-panel" aria-labelledby="julia-title">
+          <div class="fractal-render-copy"><p class="fractal-render-kicker">FIX c · CHANGE z₀</p><h3 id="julia-title">Julia sets</h3><p>Choose one value of <strong>c</strong>. Test different starting points <strong>z₀</strong> across the complex plane. The dark region approximates the <em>filled Julia set</em>, whose boundary is the Julia set. <a href="#sources">[3]</a></p></div>
+          <div class="fractal-render-wrap"><canvas id="julia-canvas" aria-label="Interactive escape-time image for a quadratic filled Julia set; click to zoom" tabindex="0"></canvas><div class="fractal-render-status" id="julia-status" aria-live="polite">Rendering…</div></div>
+          <div class="fractal-render-controls">
+            <label for="julia-preset">Choose c</label>
+            <select id="julia-preset">
+              <option value="-0.7,0.27015">−0.7 + 0.27015i</option>
+              <option value="-0.4,0.6">−0.4 + 0.6i</option>
+              <option value="-0.123,0.745">−0.123 + 0.745i</option>
+              <option value="0,0">0 (a circle)</option>
+              <option value="0.3,0.5">0.3 + 0.5i</option>
+            </select>
+            <div class="fractal-render-buttons">
+              <button type="button" data-fractal="julia" data-action="in" aria-label="Zoom into Julia set">+</button>
+              <button type="button" data-fractal="julia" data-action="out" aria-label="Zoom out of Julia set">−</button>
+              <button type="button" data-fractal="julia" data-action="reset">Reset</button>
+            </div>
+          </div>
+          <p class="fractal-render-tip">Click a detail to zoom toward it. Shift-click to zoom out.</p>
+        </section>
+        <section class="fractal-render-panel" aria-labelledby="mandelbrot-title">
+          <div class="fractal-render-copy"><p class="fractal-render-kicker">FIX z₀ = 0 · CHANGE c</p><h3 id="mandelbrot-title">The Mandelbrot set</h3><p>Start from <strong>z₀ = 0</strong>. Now vary <strong>c</strong>, and ask which choices keep the orbit bounded. Those c-values form the Mandelbrot set. <a href="#sources">[4]</a></p></div>
+          <div class="fractal-render-wrap"><canvas id="mandelbrot-canvas" aria-label="Interactive escape-time image for the Mandelbrot set; click to zoom" tabindex="0"></canvas><div class="fractal-render-status" id="mandelbrot-status" aria-live="polite">Rendering…</div></div>
+          <div class="fractal-render-controls">
+            <span class="fractal-control-static">Explore the parameter c</span>
+            <div class="fractal-render-buttons">
+              <button type="button" data-fractal="mandelbrot" data-action="in" aria-label="Zoom into Mandelbrot set">+</button>
+              <button type="button" data-fractal="mandelbrot" data-action="out" aria-label="Zoom out of Mandelbrot set">−</button>
+              <button type="button" data-fractal="mandelbrot" data-action="reset">Reset</button>
+            </div>
+          </div>
+          <p class="fractal-render-tip">Click a detail to zoom toward it. Shift-click to zoom out.</p>
+        </section>
+      </div>
+      <div class="fractal-math-note">
+        <span>WHAT ARE THE COLOURS?</span>
+        <p>These images are calculated here in your browser, not downloaded pictures. Each palette colours the smoothly estimated escape time, cycling through its colours to reveal changes across the full iteration range. Different escape times can share a colour. Changing palettes does not change the set, the current zoom, or the chosen Julia parameter. Nearly black points did not escape within the number of iterations calculated. That is an approximation, not a proof of boundedness at every dark pixel.</p>
+        <p><strong>Julia changes the starting point.</strong> <strong>Mandelbrot changes the parameter.</strong> The iteration is the same; the experiment is different.</p>
+      </div>
+    </section>
+
+    <section class="fractal-section" id="complex-collatz" aria-labelledby="fractal-collatz-complex-title">
+      <div class="fractal-section-head">
+        <p class="fractal-index">05 / RETURNING TO COLLATZ</p>
+        <h2 id="fractal-collatz-complex-title">Can we bring Collatz into the complex plane?</h2>
+        <p>Our original rule asks whether an <em>integer</em> is odd or even. But what would “odd” mean for <strong>3 + 0.2i</strong>? It doesn't mean anything under the usual definition of parity. We need a new idea.</p>
+      </div>
+      <div class="fractal-split">
+        <div class="fractal-prose">
+          <h3>Extend the rule without losing the integers.</h3>
+          <p>One approach is to construct an <strong>interpolating function</strong>: a function agreeing with our original Collatz rule at every integer, while also accepting real and complex inputs. This particular trigonometric interpolation is discussed in Marc Chamberland's survey alongside a related formula for the <em>shortcut</em> Collatz rule, where odd integers undergo an immediate division by 2. <a href="#sources">[5]</a></p>
+          <div class="fractal-formula large-formula"><strong>F(z) =</strong> <span>(z/2) cos²(πz/2)</span><span>+ (3z+1) sin²(πz/2)</span></div>
+          <p>At an even integer the cosine-squared term is 1 and the sine-squared term is 0, so the function halves the number. At an odd integer, the roles swap, giving <strong>3n + 1</strong>. The original rule is preserved.</p>
+          <p>Beyond the integers, something completely new happens. We can iterate <strong>F(z)</strong> for complex z-values and investigate orbits, stable behaviour and the boundaries separating different outcomes.</p>
+        </div>
+        <div class="fractal-try-panel">
+          <p class="fractal-tool-label">TRY A POINT JUST ABOVE 3</p>
+          <h3>What changes when we leave the real axis?</h3>
+          <label for="imag-offset">Imaginary part of the starting value <strong id="imag-offset-value">0.00</strong></label>
+          <input id="imag-offset" type="range" min="0" max="0.6" value="0" step="0.02">
+          <div class="fractal-complex-result"><span>START</span><strong id="complex-start">3 + 0.00i</strong></div>
+          <div class="fractal-complex-arrow" aria-hidden="true">↓ F(z)</div>
+          <div class="fractal-complex-result"><span>AFTER ONE STEP</span><strong id="complex-output">10 + 0.00i</strong></div>
+          <p>This is a single iterate of the complex extension. It is <strong>not</strong> the classical Mandelbrot map, and one calculation cannot establish what happens after infinitely many steps.</p>
+        </div>
+      </div>
+      <div class="fractal-research-note">
+        <h3>One more twist: there's more than one way to extend Collatz.</h3>
+        <p>The agreement on integers does <strong>not</strong> determine a unique complex function. Letherman, Schleicher and Wood investigated holomorphic extensions and their dynamics; Dumont and Reiter visualized other complex generalizations; Joseph L. Pe examined a different parity-inspired rule in the complex plane. <a href="#sources">[6–8]</a></p>
+        <p class="fractal-question">Which extensions preserve the interesting questions about Collatz, and which lead us into an entirely new mathematical world?</p>
+      </div>
+    </section>
+
+    <section class="fractal-section fractal-outro" id="questions" aria-labelledby="fractal-outro-title">
+      <p class="fractal-index">06 / THE INVESTIGATION CONTINUES</p>
+      <h2 id="fractal-outro-title">The picture isn't the proof.</h2>
+      <p>Fractals invite us to zoom in. Mathematics invites us to ask what the picture really means. The Collatz tree, Julia sets, Mandelbrot set and complex extensions of Collatz all begin with repeated rules. But the questions we can answer, and the ones we still cannot, are not the same.</p>
+      <div class="fractal-next"><a href="digging-deeper.html">Return to the Collatz tree <span aria-hidden="true">↗</span></a><a href="visualize.html">Explore more visualizations <span aria-hidden="true">↗</span></a></div>
+    </section>
+
+    <section class="fractal-sources" id="sources" aria-labelledby="fractal-sources-title">
+      <h2 id="fractal-sources-title">Research and further reading</h2>
+      <p>This draft prioritizes established mathematical references over unreviewed claims of proofs of the Collatz conjecture.</p>
+      <ol>
+        <li><a href="https://mathigon.org/course/fractals/introduction" target="_blank" rel="noopener noreferrer">Mathigon, <em>Fractals: Introduction</em></a>. An accessible introduction to iteration and self-similarity.</li>
+        <li><a href="https://mathworld.wolfram.com/ComplexPlane.html" target="_blank" rel="noopener noreferrer">Wolfram MathWorld, <em>Complex Plane</em></a>. Coordinates and complex numbers.</li>
+        <li><a href="https://mathworld.wolfram.com/JuliaSet.html" target="_blank" rel="noopener noreferrer">Wolfram MathWorld, <em>Julia Set</em></a>. Quadratic Julia dynamics and boundaries.</li>
+        <li><a href="https://mathworld.wolfram.com/MandelbrotSet.html" target="_blank" rel="noopener noreferrer">Wolfram MathWorld, <em>Mandelbrot Set</em></a>. Bounded critical orbits and parameter space.</li>
+        <li><a href="https://chamberland.math.grinnell.edu/papers/3x_survey_eng.pdf" target="_blank" rel="noopener noreferrer">Marc Chamberland, <em>An Update on the 3x+1 Problem</em>, §6.5</a>. Surveys the smooth interpolation noted by Tempkin for the original Collatz rule and Chamberland's related interpolation for the shortcut rule. See also <a href="https://chamberland.sites.grinnell.edu/publications/" target="_blank" rel="noopener noreferrer">Chamberland's 1996 paper</a>.</li>
+        <li><a href="https://doi.org/10.1080/10586458.1999.10504402" target="_blank" rel="noopener noreferrer">Letherman, Schleicher and Wood (1999), <em>The 3n+1-Problem and Holomorphic Dynamics</em></a>, <em>Experimental Mathematics</em> 8(3), 241–251.</li>
+        <li><a href="https://doi.org/10.1016/S0097-8493(01)00129-7" target="_blank" rel="noopener noreferrer">Dumont and Reiter (2001), <em>Visualizing generalized 3x+1 function dynamics</em></a>, <em>Computers & Graphics</em> 25(5), 883–898.</li>
+        <li><a href="https://doi.org/10.1016/j.cag.2004.03.010" target="_blank" rel="noopener noreferrer">Joseph L. Pe (2004), <em>The 3x+1 fractal</em></a>, <em>Computers & Graphics</em> 28(3), 431–435.</li>
+      </ol>
     </section>
   </main>
 </body>
