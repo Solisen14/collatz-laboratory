@@ -130,3 +130,25 @@ body.about-page{min-width:0;overflow-x:hidden;color:#f4f7ff;background:#060a13;}
 /* Portrait labels removed: allow both photos to sit naturally centered. */
 .about-person-visual{padding-bottom:20px;}
 @media(max-width:530px){.about-person-visual{padding-bottom:20px;}}
+
+
+/* Project origin and closing invitation */
+.about-purpose-copy>p strong{color:#e5f6ff;font-weight:725}
+.about-purpose-copy>p a{color:#9de9f7;text-underline-offset:3px;text-decoration-thickness:1px}
+.about-purpose-copy>p a:hover{color:#d5f8ff}
+.about-purpose-copy .about-purpose-outro{
+  margin:29px 0 7px;
+  color:#b9cce1;
+  font-size:16px;
+  line-height:1.6;
+}
+.about-purpose-copy .about-purpose-mantra{
+  margin:0;
+  color:#a7f0ff;
+  font-size:clamp(32px,3.1vw,49px);
+  font-weight:825;
+  letter-spacing:-.045em;
+  line-height:1.15;
+  text-wrap:balance;
+  text-shadow:0 0 28px rgba(122,231,255,.14);
+}
