@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="digging-landscape.css?v=20261023-reflection-1" />
   <link rel="stylesheet" href="digging-motion.css?v=20261025-review-1" />
   <link rel="stylesheet" href="digging-inline-orbits.css?v=20261024-1" />
+  <link rel="stylesheet" href="digging-trajectory.css?v=20261025-trajectories-1" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -116,7 +117,71 @@
           <h3>Increasing here, decreasing there</h3>
           <p>For every positive odd integer, <span class="inline-math">3n + 1 &gt; n</span>, so the odd step increases the value. For every positive even integer, <span class="inline-math">n/2 &lt; n</span>, so the even step decreases it. An individual step is easy to understand. What happens over <em>many</em> steps is far less obvious.</p>
           <p>In the orbit above, <span class="inline-math">3 → 10</span> increases, <span class="inline-math">10 → 5</span> decreases, and <span class="inline-math">5 → 16</span> increases again. Knowing the direction of a single step does not tell us the long-term behaviour of the sequence.</p>
+        </div>
 
+        <section class="digging-trajectory" id="collatz-trajectory" aria-labelledby="trajectory-title">
+          <div class="trajectory-header">
+            <div>
+              <p class="trajectory-kicker">THE TRAJECTORY LAB · FOLLOW THE NUMBERS</p>
+              <h3 id="trajectory-title">How high before it comes back down?</h3>
+              <p>The path doesn't have to fall steadily. Choose a starting number and watch its <strong>Collatz orbit</strong> unfold, one iteration at a time. Try <strong>27</strong> for a particularly surprising climb.</p>
+            </div>
+            <div class="trajectory-legend" aria-label="Graph colours">
+              <span><i class="trajectory-key trajectory-key-up"></i> 3n + 1 · increases</span>
+              <span><i class="trajectory-key trajectory-key-down"></i> n ÷ 2 · decreases</span>
+            </div>
+          </div>
+          <div class="trajectory-controls">
+            <div class="trajectory-slider-wrap">
+              <label for="trajectory-start">Starting integer <output id="trajectory-start-value" for="trajectory-start">27</output></label>
+              <input id="trajectory-start" type="range" min="1" max="100" step="1" value="27">
+              <div class="trajectory-slider-ticks" aria-hidden="true"><span>1</span><span>50</span><span>100</span></div>
+              <div class="trajectory-presets" role="group" aria-label="Try a starting number">
+                <span>TRY</span>
+                <button type="button" data-trajectory-start="3">3</button>
+                <button type="button" data-trajectory-start="7">7</button>
+                <button type="button" data-trajectory-start="27">27</button>
+                <button type="button" data-trajectory-start="97">97</button>
+              </div>
+            </div>
+            <div class="trajectory-options">
+              <fieldset class="trajectory-scale-picker">
+                <legend>VALUE AXIS</legend>
+                <label><input type="radio" name="trajectory-scale" value="linear" checked><span>Linear</span></label>
+                <label><input type="radio" name="trajectory-scale" value="log"><span>Log₂</span></label>
+              </fieldset>
+              <button class="trajectory-replay" id="trajectory-replay" type="button"><span aria-hidden="true">↻</span> Replay trajectory</button>
+            </div>
+          </div>
+          <div class="trajectory-stats" aria-label="Statistics for the selected Collatz orbit">
+            <div><span>START</span><strong id="trajectory-stat-start">27</strong></div>
+            <div><span>STEPS TO 1</span><strong id="trajectory-stat-steps">111</strong></div>
+            <div><span>HIGHEST VALUE</span><strong id="trajectory-stat-peak">9,232</strong></div>
+            <div><span>PEAK AT STEP</span><strong id="trajectory-stat-peak-step">77</strong></div>
+          </div>
+          <div class="trajectory-chart-wrap">
+            <div class="trajectory-chart-topline">
+              <span>ONE STARTING VALUE · ONE COMPLETE ORBIT</span>
+              <span id="trajectory-plot-indicator" aria-live="polite">Tracing 27...</span>
+            </div>
+            <div class="trajectory-chart-scroll" tabindex="0" role="region" aria-label="Interactive chart of Collatz sequence value by iteration">
+              <svg id="trajectory-chart" viewBox="0 0 960 493" role="img" aria-labelledby="trajectory-chart-title trajectory-chart-desc">
+                <title id="trajectory-chart-title">Collatz trajectory</title>
+                <desc id="trajectory-chart-desc">The x-axis is the iteration number and the y-axis is the sequence value. Odd steps rise and even steps fall. Change the starting number to explore another orbit.</desc>
+              </svg>
+            </div>
+            <div class="trajectory-chart-caption">
+              <span>HORIZONTAL: <strong>Iteration number</strong></span>
+              <span>VERTICAL: <strong>Sequence value</strong> <span id="trajectory-scale-description">(linear scale)</span></span>
+            </div>
+          </div>
+          <div class="trajectory-foot">
+            <p id="trajectory-point-inspector" class="trajectory-point-inspector" aria-live="polite">Move along the graph to inspect an iterate.</p>
+            <p class="trajectory-context">The graph shows what these <strong>tested</strong> starting values do. Watching a sequence reach 1 is evidence for that particular start, not proof of the conjecture for all positive integers.</p>
+          </div>
+        </section>
+
+        <div class="article-prose">
           <h3>Collatz as a Discrete Dynamical System</h3>
           <p>A <strong>discrete dynamical system</strong> is a mathematical process in which a function is applied repeatedly, with each output becoming the next input. The word <em>discrete</em> means that the process advances in individual steps rather than continuously.</p>
           <p>The Collatz function is one example. Both of its rules produce another positive integer, so the function maps positive integers back to positive integers: <span class="inline-math">C : ℤ⁺ → ℤ⁺</span>. Starting with any positive integer, we apply the appropriate rule to find the next number, then repeat.</p>
@@ -913,6 +978,7 @@
   <script src="digging-motion-model.js?v=20261024-1" defer></script>
   <script src="digging-motion.js?v=20261025-review-1" defer></script>
   <script src="digging-inline-orbits.js?v=20261024-1" defer></script>
+  <script src="digging-trajectory.js?v=20261025-trajectories-1" defer></script>
   <script src="digging-fixed-scroll.js?v=20261023-scroll-3" defer></script>
   <script src="digging-negatives.js?v=20261023-universe-2" defer></script>
   <script src="digging-landscape.js?v=20261024-separated-1" defer></script>
