@@ -4,9 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#07090f" />
-  <title>History | The Collatz Laboratory</title>
+  <title>History · Early Draft | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
   <link rel="stylesheet" href="chapters.css?v=20261021-piecewise-2" />
+  <link rel="stylesheet" href="history-draft.css?v=20261025-paul-1" />
 </head>
 <body class="chapter-page digging-page history-page">
   <header class="site-header">
@@ -31,12 +32,73 @@
         <p class="chapter-deck">Where did this deceptively simple problem come from, and how did it capture mathematicians’ attention?</p>
       </header>
 
-      <aside class="history-placeholder-note" aria-label="Placeholder for the History section">
-        <span class="history-placeholder-tag">PLACEHOLDER</span>
-        <h2>History is still being developed.</h2>
-        <p>The introductory Collatz function material has been moved here temporarily. The historical narrative, sources, and context are still to be written and reviewed.</p>
+      <aside class="history-early-draft" role="note" aria-label="Early draft status">
+        <strong>EARLY DRAFT</strong>
+        <p>Historical research and narration in development. Paul's manuscript is preserved here for collaborative review; citations and mathematical details are still being checked.</p>
       </aside>
-
+      <article class="history-manuscript" aria-labelledby="history-manuscript-title">
+        <header class="history-manuscript-head">
+          <p class="history-section-overline">BACKGROUND · THE HISTORY OF AN UNFINISHED QUESTION</p>
+          <h2 id="history-manuscript-title">Brief History of the 3n+1 Problem</h2>
+        </header>
+        <div class="history-history-opening">
+          <div class="history-manuscript-prose"><p>One of the most famous unsolved problems in mathematics, the Collatz conjecture or 3n+1 problem, determines if every positive integer will iterate to 1 after performing repeated arithmetic operations. This problem has a simple procedure: an even iterate is halved; an odd iterate is multiplied by 3 and increased by 1, and the process repeats and generates a sequence. As an open, unproven problem, computer simulations indicate that this conjecture holds for positive integers up to 2<sup>71</sup> ≈ 2.36×10<sup>21</sup>. All of these values tested converge to 1, though a counterexample could still exist. Sequences can be depicted via corresponding graphs and conjecture tree visualizations.</p></div>
+          <figure class="history-licensed-figure history-orbit-art">
+        <a class="history-image-link" href="https://commons.wikimedia.org/wiki/File:Collatz_Conjecture_Vizualization.png" target="_blank" rel="noopener noreferrer" aria-label="View the original Collatz paths · visualization for starting values up to 10,000 on Wikimedia Commons">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Collatz_Conjecture_Vizualization.png" alt="Green branching curves visualizing hailstone sequences of starting integers, forming an intricate flowing web." width="626" height="626" loading="lazy" decoding="async">
+        </a>
+        <figcaption>
+          <strong>Collatz paths · visualization for starting values up to 10,000</strong>
+          <span>Image: Damourchris · <a href="https://commons.wikimedia.org/wiki/File:Collatz_Conjecture_Vizualization.png" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> · <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0 1.0</a>. No modifications.</span>
+        </figcaption>
+      </figure>
+        </div>
+        <section class="history-history-milestone history-history-origins" aria-label="Origins and names of the problem">
+          <figure class="history-licensed-figure history-collatz-portrait">
+        <a class="history-image-link" href="https://commons.wikimedia.org/wiki/File:Lothar_Collatz.jpg" target="_blank" rel="noopener noreferrer" aria-label="View the original Lothar Collatz · undated archival photograph on Wikimedia Commons">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Lothar_Collatz.jpg" alt="Black-and-white archival photograph of mathematician Lothar Collatz seated before a blackboard." width="305" height="400" loading="lazy" decoding="async">
+        </a>
+        <figcaption>
+          <strong>Lothar Collatz · undated archival photograph</strong>
+          <span>Image: Konrad Jacobs · <a href="https://commons.wikimedia.org/wiki/File:Lothar_Collatz.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en" target="_blank" rel="noopener noreferrer">CC BY-SA 2.0 DE</a>. No modifications.</span>
+        </figcaption>
+      </figure>
+          <div class="history-manuscript-prose"><p>From his study of graph theory and iterative functions in the 1930s, Lothar Collatz, from the University of Hamburg, developed these concepts and used directed graphs to represent these sequences. Despite not publishing his work, this information circulated throughout mathematics communities via oral presentations like the 1950 International Congress of Mathematicians in Cambridge, Massachusetts. Other names for this flourished such as the Syracuse Problem and the Hasse algorithm, while the 3n+1 problem was independently devised in 1952 and called the Ulam’s problem by Sir Bryan Thwaites. Another popular name given to this is the &quot;Kakutani property&quot; due to work in the 1960s by Japanese-American mathematician Shizuo Kakutani.</p></div>
+        </section>
+        <section class="history-history-milestone history-history-modern" aria-label="Recent mathematical advances">
+          <div class="history-manuscript-prose"><p>Despite its popularity, many such as Paul Erdős raised doubt that this could be proved using standard axioms of mathematics. In 2019 Fields Medalist Terrence Tao made the most modern advance attempting to show the orbits are bounded, while computers continue to verify the conjecture for increasingly massive positive integers. Recently, an AI-generated formal proof claimed to &quot;disprove&quot; the conjecture, but it was discovered to be a kernel bug.</p></div>
+          <figure class="history-licensed-figure history-tao-portrait">
+        <a class="history-image-link" href="https://commons.wikimedia.org/wiki/File:Terence_Tao.jpg" target="_blank" rel="noopener noreferrer" aria-label="View the original Terence Tao · ICM Madrid, 2006 on Wikimedia Commons">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Terence_Tao.jpg" alt="Photograph of mathematician Terence Tao at the International Congress of Mathematicians in Madrid, 2006." width="321" height="300" loading="lazy" decoding="async">
+        </a>
+        <figcaption>
+          <strong>Terence Tao · ICM Madrid, 2006</strong>
+          <span>Image: Gert-Martin Greuel · <a href="https://commons.wikimedia.org/wiki/File:Terence_Tao.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en" target="_blank" rel="noopener noreferrer">CC BY-SA 2.0 DE</a>. Wikimedia Commons version was cropped before reuse; no further changes here.</span>
+        </figcaption>
+      </figure>
+        </section>
+        <blockquote class="history-lagarias-quote">
+        <p>The following quotation via John Lagarias captures the complexity of this problem: “The difficulty of settling the 3x+1 problem seems connected to the fact that it is a deterministic process that simulates ``random'' behavior. We face this dilemma: On the one hand, to the extent that the problem has structure, we can analyze it --- yet it is precisely this structure that seems to prevent us from proving that it behaves ``randomly.'' On the other hand, to the extent that the problem is structureless and ``random,'' we have nothing to analyze and consequently cannot rigorously prove anything.”</p>
+        <footer><a href="https://doi.org/10.1080/00029890.1985.11971528" target="_blank" rel="noopener noreferrer">Jeffrey C. Lagarias, <cite>The 3x + 1 Problem and Its Generalizations</cite> (1985)</a></footer>
+      </blockquote>
+        <div class="history-image-context"><p>Images illustrate the people and visual history of the problem. The visualized Collatz paths are computational artwork, not a proof that every positive starting integer reaches 1.</p></div>
+        <details class="history-review-notes">
+        <summary>Research checks for the authors <span>Items to confirm before treating this draft as finalized</span></summary>
+        <div class="history-review-content">
+          <p><strong>Computational verification:</strong> The threshold is typeset as 2<sup>71</sup>; David Barina’s 2025 paper documents this milestone. <a href="https://doi.org/10.1007/s11227-025-07337-0" target="_blank" rel="noopener noreferrer">Source</a>.</p>
+          <p><strong>Historical names:</strong> Lagarias’s historical account distinguishes Thwaites’s independent discovery from the names associated with Ulam, Hasse, Syracuse, and Kakutani. This passage merits another look with Paul. <a href="https://doi.org/10.1080/00029890.1985.11971528" target="_blank" rel="noopener noreferrer">Source</a>.</p>
+          <p><strong>Erdős and Tao:</strong> Erdős’s remark described the problem’s difficulty, not a known limitation of standard axioms. Tao’s 2019 theorem concerns orbits reaching almost-bounded values for almost all inputs in logarithmic density; it does not prove that every orbit is bounded. The correct spelling is Terence Tao. <a href="https://arxiv.org/abs/1909.03562" target="_blank" rel="noopener noreferrer">Tao’s paper</a>.</p>
+          <p><strong>AI formal-disproof incident:</strong> The 2026 claim resulted from a proof-checking kernel bug rather than a valid disproof. <a href="https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/" target="_blank" rel="noopener noreferrer">Original postmortem</a>.</p>
+          <p><strong>Editorial status:</strong> These checks are separate from Paul's manuscript. The original wording is preserved for collaborative review; only mathematical superscripts were restored for display.</p>
+        </div>
+      </details>
+      </article>
+      
+      <aside class="history-legacy-bridge" aria-label="Background mathematical definition">
+        <span>ADDITIONAL MATHEMATICAL BACKGROUND</span>
+        <p>The original Collatz definition and examples are retained below as reference material.</p>
+      </aside>
+      
       <article class="digging-article history-draft" aria-labelledby="definition-heading">
         <header class="article-heading">
           <p class="article-overline"><span>DRAFT</span> INTRODUCTORY MATERIAL</p>
