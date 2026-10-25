@@ -1,0 +1,243 @@
+/* History Early Draft presentation. Uses only history-scoped selectors to
+ * leave the Story, Digging Deeper, and other chapters untouched. */
+.history-page .chapter-shell{
+  padding-top:clamp(96px,12vh,130px);
+}
+.history-page .digging-hero{
+  max-width:900px;
+  padding-bottom:40px;
+}
+.history-page .chapter-title{margin-bottom:15px}
+.history-page .history-early-draft{
+  display:flex;
+  align-items:center;
+  gap:24px;
+  margin:0 0 42px;
+  padding:20px 24px;
+  border-radius:12px;
+  border:1px solid rgba(206,161,255,.58);
+  background:linear-gradient(100deg,rgba(57,34,96,.95),rgba(30,24,54,.96));
+  box-shadow:0 12px 40px rgba(97,49,151,.18);
+}
+.history-page .history-early-draft strong{
+  flex:none;
+  font-size:clamp(22px,2.6vw,30px);
+  font-weight:850;
+  letter-spacing:.07em;
+  line-height:1.1;
+  color:#f6e9ff;
+}
+.history-page .history-early-draft p{
+  color:#decdf2;
+  font-size:15px;
+  line-height:1.65;
+  margin:0;
+}
+.history-manuscript{
+  max-width:1000px;
+  padding-bottom:54px;
+}
+.history-manuscript-head{padding:20px 0 27px}
+.history-section-overline{
+  font-size:11px;
+  color:#8edfed;
+  font-weight:740;
+  letter-spacing:.14em;
+  line-height:1.5;
+}
+.history-manuscript-head h2{
+  margin:12px 0 8px;
+  max-width:780px;
+  color:#f4faff;
+  font-size:clamp(33px,4.7vw,54px);
+  font-weight:680;
+  letter-spacing:-.045em;
+  line-height:1.14;
+}
+.history-manuscript-prose p{
+  color:#c7d7e8;
+  font-size:clamp(17px,1.55vw,20px);
+  line-height:1.85;
+  margin:0;
+}
+.history-history-opening{
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(255px,.82fr);
+  gap:30px;
+  align-items:start;
+  padding-bottom:55px;
+}
+.history-history-milestone{
+  display:grid;
+  grid-template-columns:minmax(250px,.76fr) minmax(0,1.45fr);
+  gap:32px;
+  align-items:start;
+  padding:44px 0;
+  border-top:1px solid rgba(170,199,235,.17);
+}
+.history-history-modern{
+  grid-template-columns:minmax(0,1.4fr) minmax(230px,.7fr);
+}
+.history-licensed-figure{
+  margin:0;
+  padding:12px;
+  border:1px solid rgba(162,189,230,.25);
+  background:linear-gradient(155deg,#101c30,#0b1222);
+  border-radius:17px;
+  min-width:0;
+  overflow:hidden;
+}
+.history-image-link{
+  display:grid;
+  place-items:center;
+  background:radial-gradient(ellipse at 50% 45%,rgba(97,99,153,.22),#060d1b);
+  border-radius:10px;
+  overflow:hidden;
+  min-height:180px;
+}
+.history-image-link img{
+  display:block;
+  max-width:100%;
+  width:auto;
+  height:auto;
+  max-height:315px;
+  object-fit:contain;
+}
+.history-orbit-art .history-image-link img{
+  max-height:305px;
+}
+.history-collatz-portrait .history-image-link img{
+  max-height:390px;
+}
+.history-licensed-figure figcaption{
+  padding:11px 3px 4px;
+  line-height:1.5;
+}
+.history-licensed-figure figcaption strong{
+  display:block;
+  color:#e5edf8;
+  font-size:13px;
+  font-weight:680;
+  line-height:1.45;
+}
+.history-licensed-figure figcaption span{
+  display:block;
+  color:#a5b9cd;
+  font-size:11px;
+  line-height:1.68;
+  margin-top:5px;
+}
+.history-licensed-figure figcaption a{
+  color:#b4dff1;
+  text-underline-offset:3px;
+}
+.history-lagarias-quote{
+  position:relative;
+  margin:26px 0 0;
+  padding:27px 30px 25px;
+  background:linear-gradient(130deg,rgba(44,36,77,.65),rgba(16,23,43,.85));
+  border:1px solid rgba(185,167,247,.27);
+  border-left:4px solid #c3a6f9;
+  border-radius:0 17px 17px 0;
+}
+.history-lagarias-quote p{
+  font-size:clamp(17px,1.75vw,21px);
+  line-height:1.75;
+  margin:0;
+  color:#e1dced;
+}
+.history-lagarias-quote footer{
+  margin:18px 0 0;
+  color:#b2c4d9;
+  font-size:13px;
+}
+.history-lagarias-quote footer a{
+  color:#a6dcec;
+  text-underline-offset:3px;
+}
+.history-image-context{
+  margin:23px 0 25px;
+  padding:0 6px;
+  color:#95aec7;
+  font-size:13px;
+  line-height:1.6;
+}
+.history-review-notes{
+  border:1px solid rgba(176,190,233,.24);
+  border-radius:13px;
+  margin:35px 0 5px;
+  background:rgba(9,19,34,.78);
+}
+.history-review-notes summary{
+  cursor:pointer;
+  padding:19px 21px;
+  color:#e0caff;
+  font-weight:700;
+  font-size:16px;
+}
+.history-review-notes summary span{
+  display:block;
+  margin:5px 0 0;
+  font-size:13px;
+  color:#9eb4cc;
+  font-weight:450;
+}
+.history-review-content{
+  padding:4px 25px 20px;
+  border-top:1px solid rgba(176,190,233,.16);
+}
+.history-review-content p{
+  color:#afc2d7;
+  font-size:14px;
+  line-height:1.8;
+  margin:16px 0 0;
+}
+.history-review-content strong{color:#dce9f7}
+.history-review-content a{color:#9edff1;text-underline-offset:2px}
+.history-legacy-bridge{
+  max-width:860px;
+  margin:25px 0 22px;
+  padding:16px 20px;
+  border:1px solid rgba(122,231,255,.18);
+  border-radius:12px;
+  background:rgba(12,24,40,.62);
+}
+.history-legacy-bridge span{
+  color:#9de0ec;
+  letter-spacing:.14em;
+  font-size:11px;
+  font-weight:770;
+}
+.history-legacy-bridge p{
+  color:#a6bdd5;
+  font-size:14px;
+  line-height:1.65;
+  margin:8px 0 0;
+}
+.history-page a:focus-visible,.history-page summary:focus-visible{
+  outline:2px solid #ffd479;
+  outline-offset:3px;
+}
+@media(max-width:900px){
+  .history-history-opening,.history-history-milestone,.history-history-modern{
+    grid-template-columns:1fr;
+  }
+  .history-history-opening{gap:23px}
+  .history-history-milestone{gap:25px}
+  .history-history-origins .history-collatz-portrait,
+  .history-history-modern .history-tao-portrait{
+    max-width:390px;
+  }
+}
+@media(max-width:630px){
+  .history-page .history-early-draft{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+    padding:18px;
+  }
+  .history-manuscript-head{padding-top:0}
+  .history-history-milestone{padding:30px 0}
+  .history-lagarias-quote{padding:19px}
+  .history-review-content{padding:0 17px 20px}
+}
