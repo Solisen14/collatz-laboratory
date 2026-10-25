@@ -113,3 +113,71 @@ body.anb-page{min-width:0;overflow-x:clip;background:linear-gradient(155deg,#090
 @media(max-width:950px){.anb-hero{grid-template-columns:1fr}.anb-rule-card{max-width:560px}.anb-workspace{grid-template-columns:1fr}.anb-controls{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 28px}.anb-controls>h2,.anb-controls>.anb-panel-eyebrow,.anb-controls>.anb-panel-intro,.anb-controls>.anb-control-note,.anb-presets,.anb-summary,.anb-share,.anb-share-status{grid-column:1/-1}.anb-presets{max-width:460px}.anb-stage-scroll svg{min-width:760px}}
 @media(max-width:600px){.anb-shell{padding:90px 14px 65px}.anb-hero h1{font-size:clamp(48px,11vw,70px)}.anb-hero{padding:18px 0 50px}.anb-controls{display:block;padding:20px}.anb-seeds,.anb-inspector{padding:17px}.anb-seed-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.anb-inspector-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.anb-stage-toolbar{padding:15px}.anb-stage-footer{padding:11px}.anb-notes-grid{grid-template-columns:1fr}.anb-rule-card{padding:20px}}
 @media(prefers-reduced-motion:reduce){.anb-trajectory,.anb-seed{transition:none!important}}
+
+
+/* The Explore workspace is now a cycle-aware directed number graph rather
+   than a value-vs-time plot. Draw the arrows with the Story colour language. */
+.anb-stage{position:relative;}
+.anb-graph-controls{
+  position:relative;z-index:2;
+  display:flex;justify-content:flex-end;align-items:center;gap:7px;
+  padding:10px 20px;
+  background:#0a1729;
+  border-bottom:1px solid rgba(158,190,231,.2)
+}
+.anb-graph-controls button{
+  min-width:41px;min-height:38px;border-radius:8px;
+  border:1px solid rgba(159,193,237,.33);
+  background:#182a45;color:#e3f6ff;font-size:17px;font-weight:700;
+  cursor:pointer;
+}
+.anb-graph-controls button:last-child{padding:0 16px;font-size:12px}
+.anb-graph-controls button:hover{background:#284667;border-color:#7ae7ff}
+.anb-stage-scroll{overflow:hidden;cursor:grab;touch-action:none}
+.anb-stage-scroll:active{cursor:grabbing}
+.anb-stage-scroll svg{
+  width:100%;min-width:0;
+  height:clamp(530px,67vh,800px);
+  aspect-ratio:auto;
+  display:block;overflow:hidden;
+  touch-action:none;user-select:none;
+}
+.anb-swatch-line{background:#7ae7ff}
+.anb-swatch-odd{display:inline-block;width:17px;height:2px;vertical-align:middle;margin:0 6px 0 14px;background:#ffd479}
+.anb-swatch-highlight{background:#fff0b9}
+.anb-graph-edge{
+  fill:none;stroke-width:2.9;stroke-linecap:round;stroke-linejoin:round;
+  pointer-events:stroke;transition:opacity .22s ease,stroke-width .22s ease;
+}
+.anb-graph-edge.anb-even-edge{stroke:#7ae7ff}
+.anb-graph-edge.anb-odd-edge{stroke:#ffd479}
+.anb-graph-edge.anb-cycle-edge{stroke:#ff78b8;stroke-dasharray:8 6;stroke-width:3.4}
+.anb-graph-edge.is-muted{opacity:.105}
+.anb-graph-edge.is-highlight{stroke-width:5.7;opacity:1;filter:drop-shadow(0 0 3px rgba(255,215,144,.65))}
+.anb-graph-edge.is-animated{stroke:#fff0a9;stroke-width:8;opacity:1;filter:drop-shadow(0 0 8px rgba(255,212,121,.85))}
+.anb-graph-node{cursor:pointer;transition:opacity .18s ease}
+.anb-graph-node-shape{fill:#101b2f;stroke:#8aa9c9;stroke-width:1.9}
+.anb-graph-node.is-seed .anb-graph-node-shape{stroke:#ffd479;stroke-width:2.7}
+.anb-graph-node.is-one .anb-graph-node-shape{stroke:#7ae7ff;stroke-width:3.5;filter:drop-shadow(0 0 6px rgba(122,231,255,.54))}
+.anb-graph-node.is-cycle .anb-graph-node-shape{stroke:#ff78b8;stroke-width:2.8}
+.anb-graph-node.is-muted{opacity:.2}
+.anb-graph-node.is-highlight{opacity:1}
+.anb-graph-node.is-highlight .anb-graph-node-shape{stroke:#fff0b9;stroke-width:3.3;fill:#27344a}
+.anb-graph-node.is-animated .anb-graph-node-shape{
+  stroke:#fff0a9;stroke-width:4.5;fill:#483e30;filter:drop-shadow(0 0 8px #ffd479)
+}
+.anb-graph-node:hover .anb-graph-node-shape,.anb-graph-node:focus-visible .anb-graph-node-shape{stroke:#fff;stroke-width:3.6}
+.anb-graph-node:focus-visible{outline:none}
+.anb-graph-node-label{font:720 15px Inter,system-ui,sans-serif;fill:#f3faff;pointer-events:none}
+.anb-graph-tail{font:650 10px Inter,system-ui,sans-serif;fill:#ffbe91;pointer-events:none}
+.anb-stage-footer{gap:18px;line-height:1.6}
+.anb-stage-footer strong{color:#e8f7ff}
+@media(max-width:680px){
+  .anb-stage-scroll svg{height:550px}
+  .anb-stage-toolbar p{letter-spacing:0;font-size:9px}
+  .anb-stage-footer{flex-direction:column;gap:6px}
+  .anb-graph-controls{padding:9px 12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .anb-graph-edge,.anb-graph-node{transition:none!important}
+}
