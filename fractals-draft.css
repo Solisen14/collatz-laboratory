@@ -343,16 +343,31 @@ input[type=range]{accent-color:#7ae7ff;cursor:pointer;width:100%}
 
 /* Five-iteration orbit lab: linear labelled complex plane, honest clipping
    at the plot edges for the rapidly-growing complex extension. */
-.fractal-complex-explanation{
-  max-width:920px;
-  margin:0 auto 30px;
+/* Restored one-step bridge, placed beside the complex interpolation formula. */
+.fractal-complex-pair{align-items:start;gap:clamp(24px,3.2vw,45px);}
+.fractal-complex-pair .fractal-prose h3{margin-bottom:20px;}
+.fractal-complex-pair .fractal-formula{max-width:680px;}
+.fractal-complex-pair .fractal-prose{min-width:0;}
+.fractal-one-step-panel{min-width:0;align-self:start;padding:clamp(21px,2.8vw,29px);}
+.fractal-one-step-panel h3{margin:10px 0 14px;}
+.fractal-one-step-panel .fractal-one-step-intro{
+  color:#bcd0e3;font-size:14px;line-height:1.7;margin:0 0 19px;
 }
-.fractal-complex-explanation .fractal-prose h3{margin-bottom:20px;}
-.fractal-complex-explanation .fractal-formula{max-width:680px;}
+.fractal-one-step-intro strong{color:#f1faff;}
+.fractal-one-step-panel label{margin-top:17px;margin-bottom:9px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.fractal-one-step-panel input[type="range"]{width:100%;display:block;accent-color:#85e8fa;cursor:pointer;margin:0;}
+.fractal-one-step-scale{display:flex;justify-content:space-between;margin:7px 0 13px;color:#8da9c5;font-size:11px;font-variant-numeric:tabular-nums;}
+.fractal-one-step-plane{padding:5px;border-radius:12px;border:1px solid rgba(141,188,228,.22);background:#071120;}
+.fractal-one-step-plane svg{width:100%;height:auto;display:block;aspect-ratio:420/215;}
+.fractal-one-step-axis-label{fill:#c8e1f2;font:700 13px Inter,system-ui,sans-serif;}
+.fractal-one-step-point-label{fill:#f4faff;font:750 16px Inter,system-ui,sans-serif;paint-order:stroke;stroke:#071120;stroke-width:3;}
+.fractal-one-step-panel .fractal-complex-result{margin-top:13px;padding:13px 17px;gap:5px;}
+.fractal-one-step-panel .fractal-complex-result strong{font-size:clamp(19px,2vw,24px);}
+.fractal-one-step-panel .fractal-complex-arrow{margin:4px 0 -5px;}
+.fractal-one-step-panel .fractal-one-step-note{margin:16px 0 0;font-size:13px;line-height:1.65;color:#b5c5d9;}
+.fractal-one-step-note strong{color:#edf6ff;}
 .fractal-orbit-head p:not(.fractal-tool-label) + p{margin-top:13px;}
 .fractal-orbit-head p strong{color:#f0f7ff;}
-.fractal-orbit-intro>p:not(.fractal-tool-label){font-size:16px;line-height:1.78;color:#bbcee2;margin:15px 0 0}
-.fractal-orbit-intro strong{color:#f2faff}
 .fractal-orbit-lab{
   margin-top:36px;padding:clamp(20px,3vw,35px);
   border:1px solid rgba(147,194,234,.32);
