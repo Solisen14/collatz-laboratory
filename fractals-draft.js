@@ -203,6 +203,18 @@
         Math.round(value+(rgb[segment+1][k]-value)*alpha));
     });
   }
+  // Colour escape times across the ENTIRE computed range.
+  // Previously, level*42 was clamped to index 2047. Every escaping
+  // point after ~49 iterations therefore appeared the same colour,
+  // hiding fine escape-time differences near the fractal boundary.
+  // A smooth, repeating gradient (as in the original sinusoidal map)
+  // restores those distinctions. The logarithmic term increases
+  // contrast among the small escape times in the broad exterior.
+  // This changes only the colour transfer function, never the orbit.
+  function paletteIndex(level){
+    const phase=(0.17 + level/42 + 0.12*Math.log1p(level))%1;
+    return Math.min(2047,Math.max(0,Math.floor(phase*2048)));
+  }
   const selectedPalette=document.querySelector(
     'input[name="fractal-palette"]:checked'
   );
@@ -257,7 +269,7 @@
           const id=(y*w+x)*4;
           if(level<0){pix[id]=4;pix[id+1]=9;pix[id+2]=20;}
           else{
-            const col=palettes[currentPalette][Math.min(2047,Math.max(0,Math.round(level*42)))];
+            const col=palettes[currentPalette][paletteIndex(level)];
             pix[id]=col[0];pix[id+1]=col[1];pix[id+2]=col[2];
           }
           pix[id+3]=255;
