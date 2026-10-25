@@ -15,8 +15,6 @@
 .history-page .digging-hero{max-width:950px;padding-bottom:24px;}
 .history-page .chapter-title{margin:14px 0 16px;font-size:clamp(58px,7.2vw,102px);}
 .history-page .chapter-deck{font-size:clamp(18px,2.15vw,27px);line-height:1.57;}
-.history-page .history-early-draft{margin:12px 0 34px;}
-.history-page .history-early-draft p{font-size:14px;}
 .history-rule-reset{
   border:1px solid rgba(128,183,217,.27);
   border-radius:24px;
@@ -244,16 +242,7 @@
 }
 .history-ending p{font-size:17px;line-height:1.8;color:#b6c9e1;max-width:690px;margin:0 auto 18px;}
 .history-ending a{color:#a9e0f0;}
-.history-original-manuscript{margin:50px 0 20px;border:1px solid rgba(177,192,232,.2);border-radius:14px;background:#0b1526;}
-.history-original-manuscript summary{
-  cursor:pointer;padding:21px 25px;color:#d0dbec;
-  font-weight:690;font-size:15px;
-}
-.history-original-manuscript summary span{display:block;color:#8faac7;font-size:12px;font-weight:440;line-height:1.5;margin-top:6px;}
-.history-original-body{padding:10px 25px 24px;border-top:1px solid rgba(173,188,228,.13);}
-.history-original-body p{color:#afc3d8;line-height:1.85;font-size:15px;}
-.history-original-body .history-original-source{color:#9badd0;font-size:12px;}
-.history-page a:focus-visible,.history-page summary:focus-visible{outline:2px solid #ffd479;outline-offset:3px;}
+.history-page a:focus-visible{outline:2px solid #ffd479;outline-offset:3px;}
 @media(prefers-reduced-motion:no-preference){
   .history-page.history-motion-ready .history-milestone:not(.is-visible) .history-event{
     opacity:.33;transform:translateY(29px);
