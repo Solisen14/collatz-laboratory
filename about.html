@@ -1,14 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#07090f" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07090f">
+  <meta name="description" content="Meet the educators behind The Collatz Laboratory, an interactive exploration of the Collatz conjecture.">
   <title>About | The Collatz Laboratory</title>
-  <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
-  <link rel="stylesheet" href="chapters.css?v=20261021-1" />
+  <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
+  <link rel="stylesheet" href="about.css?v=20261025-people-1">
 </head>
-<body class="chapter-page">
+<body class="about-page">
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="The Collatz Laboratory home">
       <span class="brand-mark"></span><span>THE COLLATZ LABORATORY</span>
@@ -23,22 +24,86 @@
       <a class="active" aria-current="page" href="about.html">ABOUT</a>
     </nav>
   </header>
-  <main class="chapter-shell">
-    <section class="chapter-content" aria-labelledby="chapter-heading">
-      <p class="chapter-crumb">THE COLLATZ LABORATORY · EXPLORE FURTHER</p>
-      <p class="chapter-number">05 / 05</p>
-      <h1 id="chapter-heading" class="chapter-title"><span>About</span>.</h1>
-      <p class="chapter-deck">The people, purpose, and mathematical questions behind The Collatz Laboratory.</p>
-      <div class="chapter-placeholder">
-        <p class="chapter-placeholder-tag">IN DEVELOPMENT</p>
-        <h2>INSERT TEXT HERE</h2>
-        <p>We will develop this section using the content and investigations in our shared Collatz Laboratory Story Script. Its mathematical material is intentionally left for the project authors.</p>
+
+  <main class="about-main" id="main-content">
+    <section class="about-hero" aria-labelledby="about-heading">
+      <p class="about-eyebrow">THE COLLATZ LABORATORY · BEHIND THE PROJECT</p>
+      <h1 id="about-heading">A simple rule.<br><em>Two curious educators.</em></h1>
+      <p class="about-intro">The Collatz conjecture begins with two small instructions, yet leads to questions nobody has been able to settle. We built this laboratory to make those questions visible, interactive, and worth exploring.</p>
+      <div class="about-hero-mark" aria-hidden="true">
+        <svg viewBox="0 0 230 240" focusable="false">
+          <defs>
+            <linearGradient id="about-flow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7ae7ff"/><stop offset="1" stop-color="#bba0ff"/></linearGradient>
+          </defs>
+          <g fill="none" stroke="url(#about-flow)" stroke-width="2.4" stroke-linecap="round" opacity=".72">
+            <path d="M116 205L116 166L116 127L116 88L116 49"/>
+            <path d="M116 166L51 126L51 83M116 127L179 84L179 40M51 83L26 36"/>
+          </g>
+          <g fill="#0b1524" stroke="#7ae7ff" stroke-width="2">
+            <circle cx="116" cy="205" r="15"/><circle cx="116" cy="166" r="15"/><circle cx="116" cy="127" r="15"/><circle cx="116" cy="88" r="15"/><circle cx="116" cy="49" r="15"/>
+          </g>
+          <g fill="#0b1524" stroke="#ffd479" stroke-width="2"><circle cx="51" cy="126" r="14"/><circle cx="51" cy="83" r="14"/><circle cx="179" cy="84" r="14"/><circle cx="179" cy="40" r="14"/><circle cx="26" cy="36" r="12"/></g>
+          <g fill="#ecfaff" font-size="12" font-weight="700" font-family="system-ui" text-anchor="middle"><text x="116" y="209">1</text><text x="116" y="170">2</text><text x="116" y="131">4</text><text x="116" y="92">8</text><text x="116" y="53">16</text><text x="51" y="130">10</text><text x="51" y="87">3</text><text x="179" y="88">5</text><text x="179" y="44">?</text><text x="26" y="40">6</text></g>
+        </svg>
       </div>
-      <nav class="chapter-next" aria-label="Continue exploring">
-        <a href="index.html#story"><span aria-hidden="true">←</span> Back to the story</a>
-        <a href="index.html#story">The Story <span aria-hidden="true">→</span></a>
-      </nav>
     </section>
+
+    <section class="about-people" aria-labelledby="about-people-heading">
+      <div class="about-section-head">
+        <p class="about-eyebrow">THE PEOPLE</p>
+        <h2 id="about-people-heading">Meet the collaborators.</h2>
+        <p>Two educators, one enduring mathematical mystery, and a shared interest in what happens when we let people investigate for themselves.</p>
+      </div>
+      <div class="about-team-grid">
+        <article class="about-person" aria-labelledby="about-paul-name">
+          <div class="about-person-visual">
+            <img class="about-portrait" src="assets/paul-profile.webp" width="460" height="513" alt="Portrait of Paul wearing glasses, a white shirt, and a blue striped tie." loading="lazy" decoding="async">
+            <span class="about-person-badge">01 / COLLABORATOR</span>
+          </div>
+          <div class="about-person-info">
+            <p class="about-person-role">EDUCATOR · BRITISH COLUMBIA</p>
+            <h3 id="about-paul-name">Paul</h3>
+            <p class="about-person-affiliation">Shawnigan Lake School · British Columbia</p>
+            <p>Paul teaches at Shawnigan Lake School in British Columbia. He brings a teacher’s curiosity to the project and an interest in exploring how simple mathematical rules can generate complicated structures.</p>
+          </div>
+        </article>
+
+        <article class="about-person" aria-labelledby="about-jamie-name">
+          <div class="about-person-visual about-person-visual-pending">
+            <div class="about-photo-placeholder" role="img" aria-label="Portrait placeholder for Jamie Mitchell.">
+              <div class="about-placeholder-rings" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span class="about-placeholder-copy">PORTRAIT<br>COMING SOON</span>
+            </div>
+            <span class="about-person-badge">02 / COLLABORATOR</span>
+          </div>
+          <div class="about-person-info">
+            <p class="about-person-role">MATHEMATICS EDUCATOR · ONTARIO</p>
+            <h3 id="about-jamie-name">Jamie Mitchell</h3>
+            <p class="about-person-affiliation">Halton District School Board · Ontario</p>
+            <p>Jamie supports mathematics and computer science learning across secondary schools. His work focuses on making mathematical ideas accessible, inviting investigation, and designing experiences that help learners see and question patterns.</p>
+            <p class="about-photo-note">Photo to be added.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="about-purpose" aria-labelledby="about-purpose-heading">
+      <div class="about-purpose-copy">
+        <p class="about-eyebrow">WHY THIS LABORATORY EXISTS</p>
+        <h2 id="about-purpose-heading">Explore the pattern.<br><em>Keep asking why.</em></h2>
+        <p>Begin with any positive integer. Divide by two if it’s even, or multiply by three and add one if it’s odd. Repeat. The conjecture says that every positive starting number eventually reaches 1.</p>
+        <p>The rule is easy to follow. The proof remains elusive. Here, animations, interactive trees, experiments, and fractal explorations invite you to notice surprising behaviour and ask deeper questions.</p>
+        <p class="about-precision"><strong>An important distinction:</strong> Visual patterns and computational experiments can suggest ideas. They do not replace mathematical proof.</p>
+      </div>
+      <div class="about-purpose-links" aria-label="Explore the laboratory">
+        <a href="index.html#story"><span>01 / BEGIN HERE</span><strong>Story</strong><small>Follow the original question.</small><b aria-hidden="true">↗</b></a>
+        <a href="digging-deeper.html"><span>02 / INVESTIGATE</span><strong>Digging Deeper</strong><small>Look more closely at the mathematics.</small><b aria-hidden="true">↗</b></a>
+        <a href="fractals.html"><span>03 / LOOK DIFFERENTLY</span><strong>Fractals</strong><small>Explore iteration beyond the real axis.</small><b aria-hidden="true">↗</b></a>
+        <a href="experiment.html"><span>04 / CHANGE THE RULE</span><strong>Experiment</strong><small>Try other odd-number rules.</small><b aria-hidden="true">↗</b></a>
+      </div>
+    </section>
+
+    <footer class="about-footer"><span>THE COLLATZ LABORATORY</span><p>Built for curiosity, investigation, and the joy of mathematical questions.</p><a href="#top">Back to top ↑</a></footer>
   </main>
 </body>
 </html>
