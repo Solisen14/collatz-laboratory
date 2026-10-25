@@ -376,8 +376,8 @@
   }
 }
 
-/* Continuity: the final prologue 3 travels into the actual SVG node.
-   Hide the destination only during its 780ms FLIP handoff. */
+/* Continuity: one focused number travels into the first SVG circle.
+   Overlap their fade so neither flashes into view abruptly. */
 .pattern-handoff-ghost {
   position:fixed;
   z-index:110;
@@ -401,6 +401,11 @@
   opacity:0!important;
   transform:none!important;
   transition:none!important;
+}
+.sticky-stage.pattern-handoff-running.pattern-handoff-settling .primary-node[data-row-start="3"][data-node-index="0"] {
+  opacity:1!important;
+  transform:none!important;
+  transition:opacity .23s ease!important;
 }
 /* Let the reader follow one moving 3 without a competing label. */
 .sticky-stage .primary-sequence-row .row-label {
