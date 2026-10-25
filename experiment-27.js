@@ -89,6 +89,7 @@
       : 'Magnitude plotted on a linear scale. Each point is one iteration.';
     nodes.observation.textContent = shown === values.length-1 ? data.ending : data.explanation;
     nodes.full.disabled = shown === values.length-1;
+    nodes.full.textContent = active === 4 ? 'Show all plotted steps' : 'Show full path';
     nodes.jumpPeak.hidden = active !== 3;
     const latest = visible.slice(Math.max(0,visible.length-8));
     nodes.latest.replaceChildren();
