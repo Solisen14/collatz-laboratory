@@ -343,7 +343,14 @@ input[type=range]{accent-color:#7ae7ff;cursor:pointer;width:100%}
 
 /* Five-iteration orbit lab: linear labelled complex plane, honest clipping
    at the plot edges for the rapidly-growing complex extension. */
-.fractal-orbit-intro{align-self:stretch}
+.fractal-complex-explanation{
+  max-width:920px;
+  margin:0 auto 30px;
+}
+.fractal-complex-explanation .fractal-prose h3{margin-bottom:20px;}
+.fractal-complex-explanation .fractal-formula{max-width:680px;}
+.fractal-orbit-head p:not(.fractal-tool-label) + p{margin-top:13px;}
+.fractal-orbit-head p strong{color:#f0f7ff;}
 .fractal-orbit-intro>p:not(.fractal-tool-label){font-size:16px;line-height:1.78;color:#bbcee2;margin:15px 0 0}
 .fractal-orbit-intro strong{color:#f2faff}
 .fractal-orbit-lab{
