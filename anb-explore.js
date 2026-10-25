@@ -341,13 +341,20 @@
       tail.textContent='… '+numberText(p.values[p.values.length-1]);
       els.detailSequence.appendChild(tail);
     }
-    const notes={
-      one:'This tested trajectory reaches 1. We stop at its first visit to 1; the rule may continue afterward.',
-      cycle:'A value repeated. The displayed ending closes a cycle of '+(p.values.length-1-p.cycleStart)+' steps. It was not observed to reach 1 first.',
-      cap:'The next value would be '+numberText(p.overshoot)+', above the exploration limit of '+numberText(MAX_VALUE)+'. This does not prove divergence.',
-      limit:'No 1 or repeated value was detected within '+MAX_STEPS+' steps. This does not prove divergence.'
-    };
-    els.detailNote.textContent=notes[p.status];
+    // Format only the observed outcome. The cap value is null for all
+    // other outcomes, so building every note eagerly would throw.
+    if(p.status==='one'){
+      els.detailNote.textContent='This tested trajectory reaches 1. We stop at its first visit to 1; the rule may continue afterward.';
+    }else if(p.status==='cycle'){
+      els.detailNote.textContent='A value repeated. The displayed ending closes a cycle of '+
+        (p.values.length-1-p.cycleStart)+' steps. It was not observed to reach 1 first.';
+    }else if(p.status==='cap'){
+      els.detailNote.textContent='The next value would be '+numberText(p.overshoot)+
+        ', above the exploration limit of '+numberText(MAX_VALUE)+'. This does not prove divergence.';
+    }else{
+      els.detailNote.textContent='No 1 or repeated value was detected within '+
+        MAX_STEPS+' steps. This does not prove divergence.';
+    }
   }
   function renderStats(){
     const count={one:0,cycle:0,cap:0,limit:0};
