@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07090f">
 <meta name="description" content="A history of the Collatz conjecture, from its origins to the work of Terence Tao, with mathematics, research, biographies, and a scrolling timeline.">
-<title>History · Early Draft | The Collatz Laboratory</title>
+<title>History | The Collatz Laboratory</title>
 <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
 <link rel="stylesheet" href="chapters.css?v=20261021-piecewise-2">
 <link rel="stylesheet" href="history-draft.css?v=20261025-paul-1">
-<link rel="stylesheet" href="history-timeline.css?v=20261025-media-3">
+<link rel="stylesheet" href="history-timeline.css?v=20261025-history-clean-4">
 <script defer src="history-timeline.js?v=20261025-timeline-1"></script>
 </head>
 <body class="chapter-page digging-page history-page">
@@ -32,7 +32,6 @@
 <h1 id="chapter-heading" class="chapter-title"><span>History</span>.</h1>
 <p class="chapter-deck">How did a simple arithmetic question become one of mathematics' most enduring mysteries?</p>
 </header>
-<aside class="history-early-draft" role="note" aria-label="Early draft status"><strong>EARLY DRAFT</strong><p>A developing chronology based on Paul's original manuscript. Sources, transitions and presentation are open for collaborative review.</p></aside>
 <section class="history-rule-reset" aria-labelledby="history-rule-heading">
 <div><p class="history-kicker">First, remember the question</p>
 <h2 id="history-rule-heading">Defining the Collatz conjecture.</h2>
@@ -41,7 +40,7 @@
 </div>
 <div class="history-formula">
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="C of n equals n divided by two if n is even, and three n plus one if n is odd">
-<mrow><mi>C</mi><mo>(</mo><mi>n</mi><mo>)</mo><mo>=</mo><mo fence="true" stretchy="true">{</mo>
+<mrow><mi>C</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mo fence="true" stretchy="true">{</mo>
 <mtable columnalign="left left" columnspacing="0.85em" rowspacing=".9em">
 <mtr><mtd><mfrac><mi>n</mi><mn>2</mn></mfrac></mtd><mtd><mtext>if n is even</mtext></mtd></mtr>
 <mtr><mtd><mrow><mn>3</mn><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mtd><mtd><mtext>if n is odd</mtext></mtd></mtr>
@@ -109,15 +108,5 @@
 <article class="history-today-note"><span class="history-current-year">2026 · Proof checking</span><h3>The AI-assisted false disproof</h3><p>An AI-assisted purported disproof was accepted by a version of the Lean proof checker because of a software kernel bug, not because Collatz was disproved. The defect was fixed. The episode reminds us that even tools for checking proofs require careful scrutiny.</p><a href="https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/" target="_blank" rel="noopener noreferrer">Read the postmortem ↗</a></article>
 </div></section>
 <section class="history-ending"><p class="history-kicker">The question remains</p><h2>Almost all is not all.</h2><p>From early graphs through modern computation and Tao's deep mathematics, the rule has inspired generations of ideas. The central conjecture remains open.</p><p>The next chapter explores what those repeated steps can tell us about orbits, fixed points and cycles.</p><a class="history-explore-link" href="digging-deeper.html">Continue to Digging Deeper ↗</a></section>
-<details class="history-original-manuscript">
-<summary>Read Paul's original History manuscript <span>Full working text preserved verbatim for comparison. Some claims still need historical or mathematical verification.</span></summary>
-<div class="history-original-body">
-<p class="history-original-source">Original paragraphs from the Collatz Laboratory Story Script. These are retained as draft source material, not presented as independently verified claims.</p>
-<p data-manuscript-paragraph="1">One of the most famous unsolved problems in mathematics, the Collatz conjecture or 3n+1 problem, determines if every positive integer will iterate to 1 after performing repeated arithmetic operations. This problem has a simple procedure: an even iterate is halved; an odd iterate is multiplied by 3 and increased by 1, and the process repeats and generates a sequence. As an open, unproven problem, computer simulations indicate that this conjecture holds for positive integers up to 271 ≈ 2.36×1021. All of these values tested converge to 1, though a counterexample could still exist. Sequences can be depicted via corresponding graphs and conjecture tree visualizations.</p>
-<p data-manuscript-paragraph="2">From his study of graph theory and iterative functions in the 1930s, Lothar Collatz, from the University of Hamburg, developed these concepts and used directed graphs to represent these sequences. Despite not publishing his work, this information circulated throughout mathematics communities via oral presentations like the 1950 International Congress of Mathematicians in Cambridge, Massachusetts. Other names for this flourished such as the Syracuse Problem and the Hasse algorithm, while the 3n+1 problem was independently devised in 1952 and called the Ulam’s problem by Sir Bryan Thwaites. Another popular name given to this is the &quot;Kakutani property&quot; due to work in the 1960s by Japanese-American mathematician Shizuo Kakutani.</p>
-<p data-manuscript-paragraph="3">Despite its popularity, many such as Paul Erdős raised doubt that this could be proved using standard axioms of mathematics. In 2019 Fields Medalist Terrence Tao made the most modern advance attempting to show the orbits are bounded, while computers continue to verify the conjecture for increasingly massive positive integers. Recently, an AI-generated formal proof claimed to &quot;disprove&quot; the conjecture, but it was discovered to be a kernel bug.</p>
-<p data-manuscript-paragraph="4">The following quotation via John Lagarias captures the complexity of this problem: “The difficulty of settling the 3x+1 problem seems connected to the fact that it is a deterministic process that simulates ``random'' behavior. We face this dilemma: On the one hand, to the extent that the problem has structure, we can analyze it --- yet it is precisely this structure that seems to prevent us from proving that it behaves ``randomly.'' On the other hand, to the extent that the problem is structureless and ``random,'' we have nothing to analyze and consequently cannot rigorously prove anything.”</p>
-<p class="history-original-source"><a href="https://docs.google.com/document/d/1nlhOzBbAXUVtN8TNwqm4iWsOSlgp34betckEldygdvc/edit?tab=t.s64sddt5qk4q" target="_blank" rel="noopener noreferrer">Open the editable source document ↗</a></p>
-</div></details>
 <nav class="chapter-next digging-bottom-nav" aria-label="Continue exploring"><a href="index.html#story"><span aria-hidden="true">←</span> Back to the Story</a><a href="digging-deeper.html">Digging Deeper <span aria-hidden="true">→</span></a></nav>
 </div></main></body></html>
