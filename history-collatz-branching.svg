@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 440" role="img" aria-labelledby="title desc">
+<title id="title">Collatz paths as a branching directed graph</title>
+<desc id="desc">Selected Collatz paths from the Story page: 6, 40 and 42 join branches through 3, 20 and 21. Cyan arrows divide even numbers by two; gold arrows triple odd numbers and add one. All displayed paths reach 1. The subsequent 1, 4, 2 cycle is omitted from this compact excerpt.</desc>
+<defs>
+  <radialGradient id="graph-halo" cx="64%" cy="65%" r="85%"><stop offset="0" stop-color="#142945"/><stop offset=".55" stop-color="#0b1528"/><stop offset="1" stop-color="#071021"/></radialGradient>
+  <pattern id="graph-grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#9ab0d0" stroke-opacity=".055" stroke-width=".75"/></pattern>
+  <filter id="cyan-glow" x="-90%" y="-90%" width="280%" height="280%"><feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="pink-glow" x="-90%" y="-90%" width="280%" height="280%"><feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <marker id="history-graph-arrow-even" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L9 4.5L0 9Z" fill="#7ae7ff"/></marker>
+  <marker id="history-graph-arrow-odd" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L9 4.5L0 9Z" fill="#ffd479"/></marker>
+  <style>
+  .edge{fill:none;stroke-linecap:round;stroke-width:2.3}
+  .edge.even{stroke:#7ae7ff}
+  .edge.odd{stroke:#ffd479}
+  .edge.spine{stroke-width:3.1;filter:url(#cyan-glow)}
+  .node circle{fill:#0a101b;stroke-width:1.9}
+  .node.spine circle{stroke:#7ae7ff;filter:url(#cyan-glow)}
+  .node.branch circle{stroke:#9f8cff}
+  .node.tip circle{stroke:#ff78b8;filter:url(#pink-glow)}
+  .node text{fill:#f5faff;font:600 14px Inter,Arial,system-ui,sans-serif;text-anchor:middle;dominant-baseline:central}
+
+  </style>
+</defs>
+<rect width="350" height="440" fill="url(#graph-halo)"/>
+<rect width="350" height="440" fill="url(#graph-grid)"/>
+<g aria-hidden="true">
+  <text x="20" y="25" fill="#b5c8e3" font-family="Inter,Arial,sans-serif" font-size="9.5" font-weight="700" letter-spacing="1.45">SELECTED COLLATZ PATHS</text>
+  <g class="edges">
+    <path class="edge even" d="M 42 76 L 42 78" marker-end="url(#history-graph-arrow-even)" data-from="6" data-to="3"/>
+    <path class="edge even" d="M 133 76 L 133 78" marker-end="url(#history-graph-arrow-even)" data-from="40" data-to="20"/>
+    <path class="edge even" d="M 308 76 L 308 78" marker-end="url(#history-graph-arrow-even)" data-from="42" data-to="21"/>
+    <path class="edge odd" d="M 58.2 109.8 L 111.4 135.6" marker-end="url(#history-graph-arrow-odd)" data-from="3" data-to="10"/>
+    <path class="edge even" d="M 133 120 L 133 122" marker-end="url(#history-graph-arrow-even)" data-from="20" data-to="10"/>
+    <path class="edge odd" d="M 292.1 110.4 L 245.3 134.9" marker-end="url(#history-graph-arrow-odd)" data-from="21" data-to="64"/>
+    <path class="edge even" d="M 133 164 L 133 166" marker-end="url(#history-graph-arrow-even)" data-from="10" data-to="5"/>
+    <path class="edge even spine" d="M 224 164 L 224 166" marker-end="url(#history-graph-arrow-even)" data-from="64" data-to="32"/>
+    <path class="edge odd" d="M 149.2 197.8 L 202.4 223.6" marker-end="url(#history-graph-arrow-odd)" data-from="5" data-to="16"/>
+    <path class="edge even spine" d="M 224 208 L 224 210" marker-end="url(#history-graph-arrow-even)" data-from="32" data-to="16"/>
+    <path class="edge even spine" d="M 224 252 L 224 254" marker-end="url(#history-graph-arrow-even)" data-from="16" data-to="8"/>
+    <path class="edge even spine" d="M 224 296 L 224 298" marker-end="url(#history-graph-arrow-even)" data-from="8" data-to="4"/>
+    <path class="edge even spine" d="M 224 340 L 224 342" marker-end="url(#history-graph-arrow-even)" data-from="4" data-to="2"/>
+    <path class="edge even spine" d="M 224 384 L 224 386" marker-end="url(#history-graph-arrow-even)" data-from="2" data-to="1"/>
+  </g>
+  <g class="nodes">
+    <g class="node tip" data-value="6"><circle cx="42" cy="58" r="16"/><text x="42" y="58.5">6</text></g>
+    <g class="node tip" data-value="40"><circle cx="133" cy="58" r="16"/><text x="133" y="58.5">40</text></g>
+    <g class="node tip" data-value="42"><circle cx="308" cy="58" r="16"/><text x="308" y="58.5">42</text></g>
+    <g class="node branch" data-value="3"><circle cx="42" cy="102" r="16"/><text x="42" y="102.5">3</text></g>
+    <g class="node branch" data-value="20"><circle cx="133" cy="102" r="16"/><text x="133" y="102.5">20</text></g>
+    <g class="node branch" data-value="21"><circle cx="308" cy="102" r="16"/><text x="308" y="102.5">21</text></g>
+    <g class="node branch" data-value="10"><circle cx="133" cy="146" r="16"/><text x="133" y="146.5">10</text></g>
+    <g class="node spine" data-value="64"><circle cx="224" cy="146" r="16"/><text x="224" y="146.5">64</text></g>
+    <g class="node branch" data-value="5"><circle cx="133" cy="190" r="16"/><text x="133" y="190.5">5</text></g>
+    <g class="node spine" data-value="32"><circle cx="224" cy="190" r="16"/><text x="224" y="190.5">32</text></g>
+    <g class="node spine" data-value="16"><circle cx="224" cy="234" r="16"/><text x="224" y="234.5">16</text></g>
+    <g class="node spine" data-value="8"><circle cx="224" cy="278" r="16"/><text x="224" y="278.5">8</text></g>
+    <g class="node spine" data-value="4"><circle cx="224" cy="322" r="16"/><text x="224" y="322.5">4</text></g>
+    <g class="node spine" data-value="2"><circle cx="224" cy="366" r="16"/><text x="224" y="366.5">2</text></g>
+    <g class="node spine" data-value="1"><circle cx="224" cy="410" r="16"/><text x="224" y="410.5">1</text></g>
+  </g>
+</g>
+</svg>
