@@ -55,3 +55,73 @@ body.about-page{min-width:0;overflow-x:hidden;color:#f4f7ff;background:#060a13;}
 @media(max-width:740px){.about-main{padding-top:114px;}.about-hero{padding-bottom:67px;}.about-people{padding:70px 0;}.about-team-grid,.about-purpose{grid-template-columns:1fr;}.about-person-visual{height:clamp(280px,74vw,430px);}.about-portrait{object-position:center 20%;}.about-purpose{padding:68px 0;}.about-footer{flex-wrap:wrap;}.about-section-head>p:last-child{font-size:16px;}}
 @media(max-width:460px){.about-main{padding-left:18px;padding-right:18px;}.about-hero h1{font-size:48px;}.about-person-info{padding:23px;}.about-person-badge{left:15px;bottom:16px;}.about-portrait{object-position:center 20%;}.about-purpose-links a strong{font-size:20px;}}
 @media(prefers-reduced-motion:reduce){.about-purpose-links a{transition:none;}}
+
+/* ABOUT PORTRAIT REDESIGN: compact, crisp portrait frames beside biography.
+   Source images remain >=2x the displayed width, not giant stretched banners. */
+.about-team-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:stretch;}
+.about-person{
+  display:grid;grid-template-columns:218px minmax(0,1fr);
+  min-width:0;min-height:380px;overflow:hidden;
+  border:1px solid rgba(167,191,226,.23);border-radius:20px;
+  background:linear-gradient(145deg,#142038,#0a1425);
+}
+.about-person-visual{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  width:auto;min-width:0;min-height:380px;height:auto;
+  padding:20px 12px 48px;overflow:hidden;
+  border-right:1px solid rgba(159,194,229,.18);
+  background:radial-gradient(ellipse at 50% 45%,rgba(81,112,156,.24),transparent 74%),#101b2d;
+}
+.about-portrait,.about-portrait-paul,.about-portrait-jamie{
+  display:block;flex:0 0 auto;width:100%;max-width:186px;
+  height:238px;max-height:none;
+  object-fit:cover;object-position:center 22%;
+  border:1px solid rgba(174,210,245,.23);
+  border-radius:12px;
+  box-shadow:0 16px 35px rgba(1,7,15,.36);
+}
+.about-person-visual::after{
+  inset:auto 0 0;height:34%;background:linear-gradient(transparent,rgba(7,15,29,.6));
+}
+.about-person-badge{
+  left:50%;bottom:20px;transform:translateX(-50%);
+  white-space:nowrap;padding:8px 10px;font-size:9px;
+}
+.about-person-info{
+  display:flex;flex-direction:column;justify-content:center;
+  min-width:0;padding:clamp(21px,2.4vw,32px);
+}
+.about-person-role{font-size:10px;line-height:1.6;margin:0 0 10px;letter-spacing:.1em}
+.about-person h3{font-size:clamp(32px,2.8vw,43px);line-height:1.1;letter-spacing:-.05em;margin:0 0 11px}
+.about-person-affiliation{font-size:13px;line-height:1.6;margin:0 0 20px}
+.about-person-info>p:not(.about-person-role,.about-person-affiliation,.about-photo-note){
+  font-size:14px;line-height:1.8;
+}
+@media(max-width:1170px){
+  .about-team-grid{grid-template-columns:1fr;gap:18px;}
+  .about-person{grid-template-columns:245px minmax(0,1fr);min-height:340px;}
+  .about-person-visual{min-height:340px;height:auto;}
+  .about-person-info{padding:30px 35px;}
+  .about-person-info>p:not(.about-person-role,.about-person-affiliation,.about-photo-note){
+    font-size:16px;max-width:650px;
+  }
+}
+@media(max-width:740px){
+  .about-person{grid-template-columns:210px minmax(0,1fr);min-height:320px;}
+  .about-person-visual{height:auto;min-height:320px;}
+  .about-person-info{padding:21px 22px;}
+  .about-person-info>p:not(.about-person-role,.about-person-affiliation,.about-photo-note){font-size:14px;}
+}
+@media(max-width:530px){
+  .about-person{grid-template-columns:1fr;min-height:0;}
+  .about-person-visual{
+    min-height:0;height:299px;
+    padding:20px 12px 45px;border-right:none;
+    border-bottom:1px solid rgba(159,194,229,.18);
+  }
+  .about-portrait,.about-portrait-paul,.about-portrait-jamie{
+    width:181px;height:218px;max-width:181px;object-position:center 22%;
+  }
+  .about-person-info{padding:25px 23px 29px;}
+  .about-person-info>p:not(.about-person-role,.about-person-affiliation,.about-photo-note){font-size:15px;}
+}
