@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Trajectory regressions</title>
+<link rel="stylesheet" href="../digging-trajectory.css">
+<style>body{font:16px system-ui;background:#091322;color:#e5f4ff;margin:24px}#fixture{width:900px;max-width:100%}pre{white-space:pre-wrap}</style>
+<h1>Running trajectory checks…</h1><pre id="results"></pre><div id="fixture"></div>
+<script>
+(async () => {
+ const output=document.querySelector('#results');let passed=0;
+ const check=(ok,message)=>{if(!ok)throw Error(message);passed++;output.textContent+='PASS '+message+'\n';};
+ const frames=new Map();let id=0;
+ window.requestAnimationFrame=fn=>{frames.set(++id,fn);return id;};
+ window.cancelAnimationFrame=id=>frames.delete(id);
+ const frame=time=>{const batch=[...frames.values()];frames.clear();batch.forEach(fn=>fn(time));};
+ const motionListeners=[];
+ const motion={matches:false,addEventListener:(name,fn)=>motionListeners.push(fn)};
+ window.matchMedia=()=>motion;
+ let visibility;
+ window.IntersectionObserver=class{constructor(fn){visibility=fn}observe(){}disconnect(){}};
+ let resize;
+ window.ResizeObserver=class{constructor(fn){resize=fn}observe(){}disconnect(){}};
+ try {
+  const html=await (await fetch('../digging-deeper.html')).text();
+  const source=new DOMParser().parseFromString(html,'text/html');
+  document.querySelector('#fixture').appendChild(document.importNode(source.querySelector('#collatz-trajectory'),true));
+  await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='../digging-trajectory.js';s.onload=resolve;s.onerror=reject;document.body.appendChild(s)});
+  const $=id=>document.getElementById(id),panel=$('collatz-trajectory');
+  const show=visible=>visibility([{isIntersecting:visible,intersectionRatio:visible?1:0}]);
+  const preset=n=>document.querySelector('[data-trajectory-start="'+n+'"]').click();
+  const done=time=>{frame(time);frame(time+6000)};
+  check(panel.dataset.traceState==='waiting'&&panel.dataset.step==='0'&&frames.size===0,'Offscreen graph waits without scheduling animation');
+  check($('trajectory-stat-peak').textContent==='27'&&$('trajectory-stat-steps').textContent==='0','Statistics begin at the starting value without revealing the outcome');
+  const ticks=()=>[...document.querySelectorAll('[data-axis="y"]')].map(e=>Number(e.textContent.replaceAll(',','')));
+  check(Math.max(...ticks())===10000,'27 uses a 10,000 upper value boundary');
+  show(true);frame(0);frame(600);
+  check(Number(panel.dataset.step)>0&&Number(panel.dataset.step)<111,'Entering view begins the trace');
+  check(Number($('trajectory-stat-peak').textContent.replaceAll(',',''))<9232,'Running statistics do not reveal the final peak early');
+  show(false);const paused=panel.dataset.step;frame(9000);
+  check(panel.dataset.step===paused&&frames.size===0,'Leaving the viewport pauses the trace');
+  show(true);done(10000);
+  check(panel.dataset.step==='111'&&$('trajectory-stat-peak').textContent==='9,232'&&$('trajectory-stat-peak-step').textContent==='77','Resuming completes the correct trajectory of 27');
+  check($('trajectory-stat-steps-label').textContent==='STEPS TO 1','The final count is labelled steps to 1');
+  const log=document.querySelector('input[value="log"]');log.checked=true;log.dispatchEvent(new Event('change'));
+  check(panel.dataset.step==='111'&&panel.dataset.traceState==='complete','Changing scale preserves the completed trace');
+  check($('trajectory-scale-help').textContent.includes('doubling')&&ticks()[0]===1,'Logarithmic help and tick labels explain the value scale');
+  const linear=document.querySelector('input[value="linear"]');linear.checked=true;linear.dispatchEvent(new Event('change'));
+  preset(3);done(20000);
+  check(panel.dataset.step==='7'&&$('trajectory-stat-peak').textContent==='16'&&$('trajectory-stat-peak-step').textContent==='3','The short trajectory of 3 retains its correct values');
+  check([...document.querySelectorAll('[data-axis="x"]')].every(e=>Number.isInteger(Number(e.textContent))),'Short trajectories use integral iteration ticks');
+  const region=document.querySelector('.trajectory-chart-scroll');
+  region.dispatchEvent(new KeyboardEvent('keydown',{key:'Home',bubbles:true}));
+  check($('trajectory-point-inspector').textContent.includes('Step 0 · value 3'),'Keyboard inspection can reach the starting value');
+  region.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
+  check($('trajectory-point-inspector').textContent.includes('Step 1 · value 10'),'Keyboard inspection advances one iterate');
+  $('trajectory-replay').click();
+  check(panel.dataset.step==='0'&&$('trajectory-stat-peak').textContent==='3','Replay resets the trace and running statistics');
+  show(false);preset(97);
+  check(panel.dataset.traceState==='waiting'&&panel.dataset.step==='0','Selecting a start while offscreen does not play prematurely');
+  motion.matches=true;motionListeners.forEach(fn=>fn());
+  check(panel.dataset.traceState==='complete'&&frames.size===0,'Reduced motion immediately shows the complete trace');
+  check(panel.dataset.step==='118'&&$('trajectory-stat-peak').textContent==='9,232','97 has 118 steps and peak 9,232');
+  $('trajectory-start').value=1;$('trajectory-start').dispatchEvent(new Event('input'));
+  check(panel.dataset.step==='0'&&panel.dataset.traceState==='complete'&&$('trajectory-stat-peak').textContent==='1','Starting at 1 correctly shows zero steps');
+  for(let n=1;n<=100;n++) {
+   $('trajectory-start').value=n;$('trajectory-start').dispatchEvent(new Event('input'));
+   let value=n,steps=0,peak=n,peakAt=0;
+   while(value!==1){value=value%2===0?value/2:3*value+1;steps++;if(value>peak){peak=value;peakAt=steps}}
+   if(Number(panel.dataset.step)!==steps||Number($('trajectory-stat-peak').textContent.replaceAll(',',''))!==peak||Number($('trajectory-stat-peak-step').textContent)!==peakAt)throw Error('Incorrect statistics at start '+n);
+  }
+  check(true,'All 100 selectable starts match independent orbit and peak calculations');
+  preset(27);document.querySelector('#fixture').style.width='600px';resize();frame(40000);
+  check(Number($('trajectory-chart').getAttribute('viewBox').split(' ')[2])=== $('trajectory-chart').clientWidth,'Resizing redraws the chart at its actual width');
+  check(panel.dataset.step==='111','Resizing preserves the completed trajectory');
+  check(!panel.innerText.includes('COMPLETE ORBIT'),'The plot is described as a path to the first 1');
+  document.querySelector('h1').textContent=passed+' trajectory checks passed';document.body.dataset.result='pass';
+ }catch(error){output.textContent+='FAIL '+error.message;document.querySelector('h1').textContent='Trajectory regression failed';document.body.dataset.result='fail';throw error;}
+})();
+</script></html>
