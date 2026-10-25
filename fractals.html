@@ -7,8 +7,8 @@
   <meta name="description" content="Explore fractals, inverse Collatz trees, complex numbers, and the Julia and Mandelbrot sets through interactive mathematics.">
   <title>Fractals · Early Draft | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
-  <link rel="stylesheet" href="fractals-draft.css?v=20261025-complex-landscape-1">
-  <script src="fractals-draft.js?v=20261025-complex-landscape-1" defer></script>
+  <link rel="stylesheet" href="fractals-draft.css?v=20261025-orbit-five-1">
+  <script src="fractals-draft.js?v=20261025-orbit-five-1" defer></script>
 </head>
 <body class="fractal-page">
   <header class="site-header">
@@ -200,17 +200,53 @@
           <p>At an even integer the cosine-squared term is 1 and the sine-squared term is 0, so the function halves the number. At an odd integer, the roles swap, giving <strong>3n + 1</strong>. The original rule is preserved.</p>
           <p>Beyond the integers, something completely new happens. We can iterate <strong>F(z)</strong> for complex z-values and investigate orbits, stable behaviour and the boundaries separating different outcomes.</p>
         </div>
-        <div class="fractal-try-panel">
-          <p class="fractal-tool-label">TRY A POINT JUST ABOVE 3</p>
+        <div class="fractal-try-panel fractal-orbit-intro">
+          <p class="fractal-tool-label">FROM ONE STEP TO FIVE</p>
           <h3>What changes when we leave the real axis?</h3>
-          <label for="imag-offset">Imaginary part of the starting value <strong id="imag-offset-value">0.00</strong></label>
-          <input id="imag-offset" type="range" min="0" max="0.6" value="0" step="0.02">
-          <div class="fractal-complex-result"><span>START</span><strong id="complex-start">3 + 0.00i</strong></div>
-          <div class="fractal-complex-arrow" aria-hidden="true">↓ F(z)</div>
-          <div class="fractal-complex-result"><span>AFTER ONE STEP</span><strong id="complex-output">10 + 0.00i</strong></div>
-          <p>This is a single iterate of the complex extension. It is <strong>not</strong> the classical Mandelbrot map, and one calculation cannot establish what happens after infinitely many steps.</p>
+          <p>On the real axis, the familiar journey begins <strong>3 → 10 → 5 → 16 → 8 → 4</strong>. But a tiny imaginary offset may send the same five steps to very different places.</p>
+          <p>Choose a starting point <strong>z₀ = 3 + ti</strong>. Here <strong>t</strong> is simply the imaginary offset you control, not the parameter c in the Julia and Mandelbrot explorers.</p>
+          <p>Then watch five applications of <strong>F(z)</strong> on a labelled complex plane.</p>
         </div>
       </div>
+      <section class="fractal-orbit-lab" id="five-complex-iterations" aria-labelledby="fractal-orbit-heading">
+        <div class="fractal-orbit-head">
+          <p class="fractal-tool-label">FOLLOW ONE COMPLEX ORBIT</p>
+          <h3 id="fractal-orbit-heading">Five iterations. One starting point.</h3>
+          <p>Choose an imaginary offset, then press <strong>Iterate five times</strong>. Each dot is one new value of the same function F(z); connecting arrows show the order of the steps.</p>
+        </div>
+        <div class="fractal-orbit-toolbar">
+          <div class="fractal-orbit-slider">
+            <label for="orbit-imag-offset">Imaginary offset <strong id="orbit-imag-readout">t = 0.000</strong></label>
+            <input id="orbit-imag-offset" type="range" min="-0.3" max="0.3" value="0" step="0.005">
+            <div class="fractal-orbit-slider-ends"><span>−0.300</span><span>0</span><span>+0.300</span></div>
+          </div>
+          <div class="fractal-orbit-actions">
+            <button type="button" id="orbit-iterate">Iterate five times <span aria-hidden="true">→</span></button>
+            <button type="button" id="orbit-reset">Reset</button>
+          </div>
+        </div>
+        <div class="fractal-orbit-layout">
+          <div class="fractal-orbit-plot">
+            <svg id="fractal-orbit-svg" viewBox="0 0 740 468" role="img" aria-label="Complex plane with horizontal real axis and vertical imaginary axis showing the starting number and, after pressing Iterate, five subsequent positions; off-scale trajectories are marked at the boundary.">
+              <title>Five iterates of F(z) starting at 3 plus t times i</title>
+            </svg>
+            <p class="fractal-orbit-window">Linear-scale window: Real −20 to 20; Imaginary −12 to 12. Arrows reaching the edge mean the next point is outside this window.</p>
+          </div>
+          <div class="fractal-orbit-readings">
+            <p class="fractal-tool-label">THE ORBIT · STEP BY STEP</p>
+            <ol id="fractal-orbit-steps">
+              <li data-orbit-step="0"><span>z₀</span><strong>3.000 + 0.000i</strong></li>
+              <li data-orbit-step="1"><span>z₁</span><strong>Press Iterate</strong></li>
+              <li data-orbit-step="2"><span>z₂</span><strong>Not shown yet</strong></li>
+              <li data-orbit-step="3"><span>z₃</span><strong>Not shown yet</strong></li>
+              <li data-orbit-step="4"><span>z₄</span><strong>Not shown yet</strong></li>
+              <li data-orbit-step="5"><span>z₅</span><strong>Not shown yet</strong></li>
+            </ol>
+            <p id="fractal-orbit-status" class="fractal-orbit-status" aria-live="polite">Choose t, then press Iterate.</p>
+          </div>
+        </div>
+        <p class="fractal-orbit-caution"><strong>What am I seeing?</strong> These are the first five iterates of one complex extension, not a new form of the original Collatz conjecture. Large values can leave the displayed window, and extreme values can exceed the computer's numerical range. The coordinate readout makes that explicit.</p>
+      </section>
       <section class="fractal-collatz-landscape" id="complex-collatz-explorer" aria-labelledby="fractal-collatz-landscape-title">
         <div class="fractal-collatz-landscape-heading">
           <p class="fractal-tool-label">EXPLORE THE COMPLEX EXTENSION</p>
