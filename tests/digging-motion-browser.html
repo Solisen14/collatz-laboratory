@@ -13,6 +13,9 @@
 <div id="fixtures">
   <figure data-motion-source="periodic">Periodicity fallback</figure>
   <div data-motion-source="reflection">Reflection fallback</div>
+  <div data-inline-orbit="forward">3 → 10 → 5 → 16 → 8 → 4 → 2 → 1 → 4 → 2 → 1 → ⋯</div>
+  <div data-inline-orbit="cycle">1 → 4 → 2 → 1 → ⋯</div>
+  <div data-inline-orbit="fixed">−1 → 1 → 1 → 1 → ⋯</div>
 </div>
 <script>
   const preferenceListeners=[];
@@ -30,6 +33,7 @@
 </script>
 <script src="../digging-motion-model.js"></script>
 <script src="../digging-motion.js"></script>
+<script src="../digging-inline-orbits.js"></script>
 <script>
   const output=document.querySelector('#results');
   let passed=0;
@@ -72,6 +76,28 @@
     check(!scene('reflection').querySelector('[data-action="play"]').disabled&&scene('reflection').querySelector('[data-action="scroll"]').disabled,'Narrow screens retain manual playback without scroll following');
     click('reflection','previous');window.dispatchEvent(new Event('scroll'));frame(6000);
     check(step('reflection')===8,'Narrow-screen manual step survives scrolling');
+    const inline=key=>document.querySelector('[data-inline-orbit="'+key+'"]');
+    const values=key=>[...inline(key).querySelectorAll('.inline-orbit-node')].map(n=>Number(n.dataset.value));
+    check(values('forward').join(',')==='3,10,5,16,8,4,2,1,4,2,1','Compact forward orbit preserves every ordinary Collatz step');
+    check(values('cycle').join(',')==='1,4,2'&&inline('cycle').querySelector('[data-from="2"][data-to="1"]'),'Compact cycle closes at the same node 1');
+    check(values('fixed').join(',')==='-1,1'&&inline('fixed').querySelector('[data-from="1"][data-to="1"]'),'Squaring example has an arrival and a genuine self-loop at 1');
+    motion(true);
+    check(['forward','cycle','fixed'].every(k=>inline(k).dataset.animationState==='reduced'),'Reduced motion shows all three compact diagrams without playing');
+    motion(false);
+    const replay=key=>inline(key).querySelector('.inline-orbit-replay').click();
+    replay('forward');frame(100);frame(6000);
+    check(inline('forward').dataset.animationState==='complete'&&inline('forward').dataset.activeValue==='1','Forward trace finishes at 1');
+    replay('cycle');frame(10000);frame(11400);
+    check(inline('cycle').dataset.animationState==='playing'&&inline('cycle').dataset.activeValue==='4','Cycle animation follows 1 to 4 before reaching 2');
+    frame(16300);
+    check(inline('cycle').dataset.animationState==='complete'&&inline('cycle').dataset.activeValue==='1','Three cycle laps finish back at 1');
+    replay('fixed');frame(20000);frame(21250);
+    const fixedPosition=inline('fixed').querySelector('.inline-orbit-marker').getAttribute('transform');
+    check(inline('fixed').dataset.activeValue==='1','Squaring animation reaches 1 after its first arrow');
+    frame(23000);
+    check(inline('fixed').querySelector('.inline-orbit-marker').getAttribute('transform')===fixedPosition,'The fixed point remains in place during its pulse');
+    motion(true);frame(26000);
+    check(frames.size===0&&inline('fixed').dataset.animationState==='reduced','Motion preference cancels active compact animations');
     document.querySelector('h1').textContent=passed+' controller checks passed';
     document.body.dataset.result='pass';
   } catch(error) {

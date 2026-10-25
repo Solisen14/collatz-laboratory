@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="digging-negatives.css?v=20261023-universe-2" />
   <link rel="stylesheet" href="digging-landscape.css?v=20261023-reflection-1" />
   <link rel="stylesheet" href="digging-motion.css?v=20261024-2" />
+  <link rel="stylesheet" href="digging-inline-orbits.css?v=20261024-1" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -156,7 +157,7 @@
 
         <div class="orbit-chain-panel" role="group" aria-label="The forward orbit of 3 continues into the repeating cycle 1 to 4 to 2 to 1">
           <p class="orbit-chain-kicker">THE FORWARD ORBIT OF 3</p>
-          <div class="orbit-chain-viewport">
+          <div class="orbit-chain-viewport" data-inline-orbit="forward">
             <p class="orbit-chain">3 <span>→</span> 10 <span>→</span> 5 <span>→</span> 16 <span>→</span> 8 <span>→</span> 4 <span>→</span> 2 <span>→</span> <strong>1 <span>→</span> 4 <span>→</span> 2 <span>→</span> 1 <span>→</span> ⋯</strong></p>
           </div>
         </div>
@@ -165,7 +166,7 @@
           <p>Notice what happens when the orbit reaches 1. Because 1 is odd, the next value is 4. Then 4 goes to 2, and 2 goes back to 1. The orbit enters the repeating cycle:</p>
         </div>
 
-        <div class="cycle-equation" aria-label="One to four to two to one, repeating">1 <span>→</span> 4 <span>→</span> 2 <span>→</span> 1 <span>→</span> ⋯</div>
+        <div class="cycle-equation" data-inline-orbit="cycle" aria-label="One to four to two to one, repeating">1 <span>→</span> 4 <span>→</span> 2 <span>→</span> 1 <span>→</span> ⋯</div>
 
         <div class="article-prose">
           <p>Here is the question at the heart of the <strong>Collatz conjecture</strong>: <em>Does every positive integer eventually reach 1 and enter this same cycle?</em> That is what mathematicians suspect, but no one has proved it for every positive integer.</p>
@@ -295,7 +296,7 @@
 
         <div class="fixed-mini-orbit" role="group" aria-label="The orbit starting at negative one: negative one to one to one to one, continuing">
           <span class="fixed-mini-label">AN ORBIT THAT REACHES A FIXED POINT</span>
-          <span class="fixed-mini-values"><span class="fixed-start">−1</span> <span class="fixed-arrow">→</span> <span class="fixed-arrived">1 → 1 → 1 → ⋯</span></span>
+          <span class="fixed-mini-values" data-inline-orbit="fixed"><span class="fixed-start">−1</span> <span class="fixed-arrow">→</span> <span class="fixed-arrived">1 → 1 → 1 → ⋯</span></span>
           <span class="fixed-mini-explanation">The starting value −1 is not fixed. Its orbit lands on the fixed point 1 after one application.</span>
         </div>
 
@@ -911,6 +912,7 @@
   </main>
   <script src="digging-motion-model.js?v=20261024-1" defer></script>
   <script src="digging-motion.js?v=20261024-2" defer></script>
+  <script src="digging-inline-orbits.js?v=20261024-1" defer></script>
   <script src="digging-fixed-scroll.js?v=20261023-scroll-3" defer></script>
   <script src="digging-negatives.js?v=20261023-universe-2" defer></script>
   <script src="digging-landscape.js?v=20261024-separated-1" defer></script>

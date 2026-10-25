@@ -1,0 +1,39 @@
+/* Compact orbit diagrams: the same nodes, colours and traced arrows as later sections. */
+.inline-orbit-card {position:relative;}
+.inline-orbit-host {display:block;position:relative;max-width:100%;scrollbar-color:#62788f #101828;}
+.inline-orbit-host svg {display:block;width:100%;height:auto;overflow:visible;}
+.orbit-chain-viewport.inline-orbit-host {padding:4px 0 9px;}
+.orbit-chain-viewport.inline-orbit-host svg {min-width:700px;}
+.cycle-equation.inline-orbit-host {display:block;width:390px;padding:16px 18px 8px;}
+.fixed-mini-values.inline-orbit-host {width:100%;overflow-x:auto;}
+.fixed-mini-values.inline-orbit-host svg {width:360px;max-width:100%;}
+.inline-orbit-host .inline-orbit-fallback[hidden] {display:none!important;}
+.inline-orbit-node circle {fill:#101a2d;stroke-width:2;}
+.inline-orbit-node text {font:600 21px Inter,system-ui,sans-serif;fill:#f1f7ff;text-anchor:middle;dominant-baseline:central;}
+.inline-orbit-edge {fill:none;stroke-width:2.3;stroke-linecap:round;}
+.inline-orbit-marker {pointer-events:none;}
+.inline-orbit-marker circle {fill:none;stroke:#fff1c0;stroke-width:2.5;filter:drop-shadow(0 0 5px #d3eaff80);}
+.inline-orbit-note {fill:#ffd479;font:18px 'Cambria Math','STIX Two Math',serif;}
+.inline-orbit-dots {fill:#ffd479;font:27px 'Cambria Math',serif;}
+.inline-orbit-replay {
+  position:absolute;right:11px;top:8px;display:grid;place-items:center;
+  width:36px;height:36px;padding:0;border:1px solid #7ae7ff35;border-radius:50%;
+  background:#0c1827;color:#b8d6e5;font:22px/1 system-ui;cursor:pointer;z-index:1;
+}
+.inline-orbit-replay:hover {color:#fff1c0;border-color:#7ae7ff;}
+.inline-orbit-replay:focus-visible {outline:3px solid #fff1c0;outline-offset:3px;}
+.inline-orbit-replay[hidden] {display:none;}
+.inline-orbit-card .orbit-chain-kicker,.inline-orbit-card .fixed-mini-label {padding-right:30px;}
+.cycle-equation .inline-orbit-replay {top:5px;right:7px;width:30px;height:30px;font-size:20px;}
+@media(max-width:690px) {
+  .cycle-equation.inline-orbit-host {width:min(390px,100%);padding:17px 12px 8px;}
+  .orbit-chain-viewport.inline-orbit-host::after {
+    content:'Scroll sideways to see the full orbit.';display:block;
+    color:#94a9bc;font:11px/1.5 Inter,system-ui,sans-serif;margin-top:8px;
+  }
+  .inline-orbit-replay {width:40px;height:40px;top:3px;right:6px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .inline-orbit-host * {animation:none!important;transition:none!important;}
+  .inline-orbit-replay {display:none;}
+}
