@@ -176,63 +176,68 @@
     chosen.style.setProperty('--focus-y',(target.y-centreY).toFixed(2)+'px');
   }
 
-  // Animate the real handoff even though the original scene renderer
-  // replaces sequence-area's contents. Keep one temporary circular node
-  // in a fixed layer until the destination SVG node takes over.
+  // Keep the focused 3 in place across the DOM switch, then physically
+  // carry that same visual into the first actual SVG node. Start the overlay
+  // BEFORE rendering the new scene to prevent a one-frame disappearing act.
   let handoff=null;
   function stopHandoff(){
     if(!handoff)return;
     const ongoing=handoff;
     handoff=null;
-    const target=holder.querySelector(
-      '.primary-node[data-row-start="3"][data-node-index="0"]'
-    );
-    // Commit the genuine SVG node instantly under the finished ghost.
-    // Otherwise its built-in opacity transition creates a one-frame blink.
-    if(target)target.style.transition='none';
-    stage.classList.remove('pattern-handoff-running');
     if(ongoing.animation) ongoing.animation.cancel();
     ongoing.ghost.remove();
-    if(target)requestAnimationFrame(()=>target.style.removeProperty('transition'));
+    stage.classList.remove('pattern-handoff-running');
+    const target=holder.querySelector('.primary-node[data-row-start="3"][data-node-index="0"]');
+    if(target){
+      target.style.transition='none';
+      // Reveal the real 3 in exactly the same frame as the overlay leaves.
+      requestAnimationFrame(()=>target.style.removeProperty('transition'));
+    }
   }
-  function beginHandoff(from){
-    if(!from||reduced.matches)return;
-    const target=holder.querySelector(
-      '.primary-node[data-row-start="3"][data-node-index="0"] circle'
-    );
-    if(!target||!target.isConnected)return;
-    const to=target.getBoundingClientRect();
-    if(!(from.width>0&&from.height>0&&to.width>0&&to.height>0))return;
+  function startHandoff(from){
+    if(!from || (reduced && reduced.matches))return false;
+    if(!(from.width>0 && from.height>0))return false;
+    if(!window.Element || typeof Element.prototype.animate!=='function')return false;
     const ghost=document.createElement('div');
     ghost.className='pattern-handoff-ghost';
     ghost.textContent='3';
     ghost.setAttribute('aria-hidden','true');
-    ghost.style.left=from.left+'px';
-    ghost.style.top=from.top+'px';
-    ghost.style.width=from.width+'px';
-    ghost.style.height=from.height+'px';
-    ghost.style.fontSize=Math.max(18,from.height*.37)+'px';
+    Object.assign(ghost.style,{
+      left:from.left+'px',top:from.top+'px',
+      width:from.width+'px',height:from.height+'px',
+      fontSize:Math.max(18,from.height*.37)+'px'
+    });
+    // The destination node is hidden by CSS from its very first painted
+    // frame, and the overlay is already present while the DOM is replaced.
     stage.classList.add('pattern-handoff-running');
     document.body.appendChild(ghost);
+    handoff={ghost,animation:null};
+    return true;
+  }
+  function completeHandoff(){
+    if(!handoff)return;
+    const target=holder.querySelector(
+      '.primary-node[data-row-start="3"][data-node-index="0"] circle'
+    );
+    if(!target || !target.isConnected){stopHandoff();return;}
+    const to=target.getBoundingClientRect();
+    const ghost=handoff.ghost;
+    const from=ghost.getBoundingClientRect();
+    if(!(to.width>0 && to.height>0 && from.width>0)){stopHandoff();return;}
     const dx=to.left+to.width/2-(from.left+from.width/2);
     const dy=to.top+to.height/2-(from.top+from.height/2);
-    const size=to.width/from.width;
-    if(typeof ghost.animate!=='function'){
-      ghost.remove();
-      stage.classList.remove('pattern-handoff-running');
-      return;
-    }
+    const scale=to.width/from.width;
     const animation=ghost.animate([
-      {transform:'translate(0px,0px) scale(1)',opacity:1},
-      {transform:'translate('+dx+'px,'+dy+'px) scale('+size+')',opacity:1}
+      {transform:'translate(0,0) scale(1)',opacity:1},
+      {transform:'translate('+dx+'px,'+dy+'px) scale('+scale+')',opacity:1}
     ],{
-      duration:780,
-      easing:'cubic-bezier(.2,.8,.2,1)',
+      duration:1020,
+      easing:'cubic-bezier(.24,.62,.2,1)',
       fill:'forwards'
     });
-    handoff={ghost,animation};
+    handoff.animation=animation;
     animation.addEventListener('finish',()=>{
-      if(handoff&&handoff.animation===animation)stopHandoff();
+      if(handoff && handoff.animation===animation)stopHandoff();
     },{once:true});
   }
 
@@ -244,7 +249,6 @@
     const shell=document.createElement('div');
     shell.className='pattern-integer-universe';
     shell.innerHTML=
-      '<p class="pattern-universe-overline">SAME IDEA · A SURPRISING TWIST</p>'+
       '<div class="pattern-universe-intro">LET’S EXPLORE ANOTHER KIND OF PATTERN</div>';
     const field=document.createElement('div');
     field.className='pattern-integer-field';
@@ -343,18 +347,22 @@
     const isPattern=patternScenes.has(scene);
     const shouldHandoff=was==='pattern-three'&&scene==='intro'
       &&holder.dataset.mode==='pattern-prologue'&&!reduced.matches;
+    // Read the position of the actual, enlarged 3. Its original grid will
+    // be destroyed by the existing scene handler below.
     let source=null;
     if(shouldHandoff){
       const chosen=holder.querySelector('.pattern-integer-field [data-value="3"]');
       if(chosen)source=chosen.getBoundingClientRect();
     }
     stopHandoff();
+    const carrying=shouldHandoff && startHandoff(source);
     if(!isPattern) {
       stage.classList.remove('is-pattern-prologue');
       holder.classList.remove('pattern-number-field-mode');
     }
     const result=currentHandler(scene);
-    if(source && state.scene==='intro')beginHandoff(source);
+    if(carrying && state.scene==='intro')completeHandoff();
+    else if(carrying)stopHandoff();
     return result;
   };
 
