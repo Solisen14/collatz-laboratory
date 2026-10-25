@@ -229,7 +229,32 @@
     }
   }
   function saveSVG(){
-    const svgText=new XMLSerializer().serializeToString(root);
+    // Embed all chart styling so the download works outside this website.
+    const clone=root.cloneNode(true);
+    clone.setAttribute('xmlns',NS);
+    clone.setAttribute('width','1280');
+    clone.setAttribute('height','700');
+    const style=document.createElementNS(NS,'style');
+    style.textContent=[
+      '.anb-path-gridline{stroke:rgba(139,173,215,.16);stroke-width:1}',
+      '.anb-path-axis{stroke:#8ca6c3;stroke-width:1.6}',
+      '.anb-path-tick{fill:#96acc6;font:500 15px system-ui,sans-serif}',
+      '.anb-path-axis-label{fill:#c6daee;font:700 15px system-ui,sans-serif}',
+      '.anb-trajectory{fill:none;stroke-opacity:.63;stroke-linejoin:round;stroke-linecap:round}',
+      '.anb-trajectory.is-muted{stroke-opacity:.09}',
+      '.anb-trajectory.is-selected{stroke-opacity:1;stroke-width:4.8}',
+      '.anb-endpoint{stroke:#071120;stroke-width:2}',
+      '.anb-trace-overlay{fill:none;stroke:#fff2c0;stroke-width:4.5}',
+      '.anb-trace-dot{fill:#fff1c4;stroke:#ffcf7c;stroke-width:3}'
+    ].join('');
+    clone.insertBefore(style,clone.firstChild);
+    // Export a solid dark background to keep labels and paths readable.
+    const bg=document.createElementNS(NS,'rect');
+    bg.setAttribute('width','1280');
+    bg.setAttribute('height','700');
+    bg.setAttribute('fill','#071120');
+    clone.insertBefore(bg,style.nextSibling);
+    const svgText=new XMLSerializer().serializeToString(clone);
     const blob=new Blob([svgText],{type:'image/svg+xml;charset=utf-8'});
     const link=document.createElement('a');
     const obj=URL.createObjectURL(blob);
@@ -287,7 +312,7 @@
   els.copyPath.addEventListener('click',()=>{
     const path=state.paths.find(p=>p.start===state.selected);
     if(!path)return;
-    copyText(path.values.join(' → '),els.detailNote,'Path copied.');
+    copyText(path.values.join(' → '),els.shareStatus,'Selected path copied.');
   });
   els.animate.addEventListener('click',animateSelected);
   root.addEventListener('click',event=>{
