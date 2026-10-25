@@ -4,12 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#07090f">
-  <meta name="description" content="Experiment with generalized an+b Collatz-style rules. Explore 25 positive integer paths, cycles and peaks in an interactive visualizer.">
-  <title>Explore a n + b | The Collatz Laboratory</title>
+  <meta name="description" content="Follow 27 under 3n+1, 5n+1 and 4n+1, then explore generalized Collatz paths and cycles in an interactive open laboratory.">
+  <title>Experiment with 27 | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
   <link rel="stylesheet" href="anb-explore.css?v=20261025-directed-graph-2">
+  <link rel="stylesheet" href="experiment-27.css?v=20261025-1">
   <script src="anb-model.js?v=20261025-review-1" defer></script>
   <script src="anb-explore.js?v=20261025-review-1" defer></script>
+  <script src="experiment-27.js?v=20261025-1" defer></script>
 </head>
 <body class="anb-page">
 <header class="site-header">
@@ -27,11 +29,105 @@
     </nav>
   </header>
 <main class="anb-shell" id="top">
-  <section class="anb-hero" aria-labelledby="anb-heading">
+  <!-- Guided exploration: keep the original 25-path workspace below, intact. -->
+  <section class="exp27-intro" aria-labelledby="exp27-title">
     <div>
-      <p class="anb-eyebrow">THE COLLATZ LABORATORY · EXPERIMENT</p>
-      <h1 id="anb-heading">Change the rule.<br><em>Follow the paths.</em></h1>
-      <p class="anb-deck">What if the odd-number rule were <strong>an + b</strong> instead of <strong>3n + 1</strong>? Change two numbers and watch the first 25 positive integers travel through a different mathematical landscape.</p>
+      <p class="exp27-kicker">THE COLLATZ LABORATORY · EXPERIMENT</p>
+      <h1 id="exp27-title">What happens if we start with <em>27</em>?</h1>
+      <p>In the original Collatz conjecture, we divide even numbers by 2 and apply <strong>3n + 1</strong> to odd numbers. We have seen what happens with small starting values. Let's choose a number with a more surprising journey.</p>
+      <p>Then we'll change the odd-number rule, one coefficient at a time, and see whether our earlier conclusions still hold.</p>
+      <a class="exp27-cta" href="#exp27-observe">Follow the number 27 ↓</a>
+    </div>
+    <div class="exp27-numeral" aria-hidden="true"><strong>27</strong><small>ONE STARTING VALUE · MANY POSSIBLE PATHS</small></div>
+  </section>
+
+  <section class="exp27-investigation" id="exp27-observe" aria-labelledby="exp27-investigate-title">
+    <div class="exp27-section-heading">
+      <p class="exp27-kicker">01 / FOLLOW THE PATH</p>
+      <h2 id="exp27-investigate-title">How far will 27 go before reaching 1?</h2>
+      <p>First, keep the familiar <strong>3n + 1</strong> rule. Drag the slider or play the trajectory to watch the value change at every iteration. Keep an eye on its highest point. Does it head straight down toward 1?</p>
+    </div>
+    <div class="exp27-rule-panel">
+      <div class="exp27-rule-panel-header">
+        <div>
+          <p class="exp27-kicker" style="margin:0 0 6px">02 / CHANGE JUST ONE THING</p>
+          <h3>What if we change the odd-number rule?</h3>
+        </div>
+        <p>The even rule stays <strong>n ÷ 2</strong>. Our starting value stays <strong>27</strong>.</p>
+      </div>
+      <div class="exp27-rule-choices" role="group" aria-label="Choose the odd-number rule for starting value 27">
+        <button type="button" class="exp27-rule is-selected" data-exp27-rule="3" aria-pressed="true"><strong>3n + 1</strong><span>Start with the original rule.</span></button>
+        <button type="button" class="exp27-rule" data-exp27-rule="5" aria-pressed="false"><strong>5n + 1</strong><span>What if we multiply by 5?</span></button>
+        <button type="button" class="exp27-rule" data-exp27-rule="4" aria-pressed="false"><strong>4n + 1</strong><span>What if the odd terms stay odd?</span></button>
+      </div>
+    </div>
+    <div class="exp27-chart-card">
+      <div class="exp27-chart-top"><h3 id="exp27-caption">The familiar 3n + 1 rule</h3><span id="exp27-scale">VERTICAL AXIS: VALUE</span></div>
+      <div class="exp27-chart-key" aria-label="Graph colour key"><span><i class="exp27-even-key"></i> Divide by 2</span><span><i class="exp27-odd-key"></i> Apply an + 1</span></div>
+      <div class="exp27-svg-wrap">
+        <svg id="exp27-plot" viewBox="0 0 980 385" role="img" aria-label="Interactive trajectory graph of 27. Choose the rule and adjust the step slider to reveal the orbit."></svg>
+      </div>
+      <div class="exp27-chart-controls">
+        <div class="exp27-range-line"><label for="exp27-range">Reveal the orbit, one step at a time</label><output id="exp27-range-label" for="exp27-range">Step 8 of 111</output></div>
+        <input id="exp27-range" type="range" min="0" max="111" value="8" step="1" aria-label="Number of iterations to show">
+        <div class="exp27-chart-actions">
+          <button id="exp27-play" type="button" aria-pressed="false">Play the path</button>
+          <button id="exp27-full" type="button">Show full path</button>
+          <button id="exp27-jump-peak" type="button">Jump to the peak</button>
+          <button id="exp27-reset" type="button">Start again</button>
+        </div>
+      </div>
+    </div>
+    <p class="anb-control-note" id="exp27-plot-label" style="margin:8px 0 12px;border:0;padding:0">Magnitude plotted on a linear scale. Each point is one iteration.</p>
+    <div class="exp27-metrics" aria-label="Trajectory measurements">
+      <div class="exp27-metric"><span>ITERATION</span><strong id="exp27-step">8</strong></div>
+      <div class="exp27-metric"><span>CURRENT VALUE</span><strong id="exp27-value">47</strong></div>
+      <div class="exp27-metric"><span>HIGHEST VALUE SO FAR</span><strong id="exp27-peak">124</strong></div>
+      <div class="exp27-metric"><span>OBSERVATION</span><strong id="exp27-outcome">Still exploring</strong></div>
+    </div>
+    <div id="exp27-latest" class="exp27-trail" aria-label="Most recent sequence values" aria-live="off">27 → 82 → 41 → …</div>
+    <div class="exp27-observation" role="status" aria-live="polite"><p id="exp27-observation">Follow 27 and notice how its value changes before it finally reaches 1.</p></div>
+  </section>
+
+  <section class="exp27-aftermath" aria-labelledby="exp27-destinations">
+    <p class="exp27-kicker">03 / SAME RULE, DIFFERENT START</p>
+    <h2 id="exp27-destinations">Does every starting value end up in the same cycle?</h2>
+    <p>For <strong>5n + 1</strong>, we can find two different cycles. The rule is the same, but our starting number determines which path we follow.</p>
+    <div class="exp27-compare-grid">
+      <article class="exp27-compare">
+        <p class="exp27-small-label">5n + 1 · START AT 1</p>
+        <h3>A cycle containing 1</h3>
+        <p class="exp27-sequence">1 → 6 → 3 → 16 → 8 → 4 → 2 → 1</p>
+        <p>Seven distinct values form a repeating cycle. As soon as we return to 1, the same path begins again.</p>
+      </article>
+      <article class="exp27-compare">
+        <p class="exp27-small-label">5n + 1 · START AT 27</p>
+        <h3>A cycle without 1</h3>
+        <p class="exp27-sequence">27 → 136 → 68 → 34 → 17 → 86 → 43 → 216 → 108 → 54 → 27</p>
+        <p>Ten distinct values form another repeating cycle. This path returns to 27 and never visits 1.</p>
+      </article>
+    </div>
+    <div class="exp27-proof">
+      <p class="exp27-kicker">04 / CAN WE PROVE ANYTHING?</p>
+      <h3>Under 4n + 1, we can explain the endless growth.</h3>
+      <p>Start at an odd positive integer, such as 27. Multiplying an odd number by 4 and adding 1 produces another odd number. And because <strong>4n + 1 is greater than n</strong>, every step makes the value larger. It never becomes even, so it never gets divided by 2.</p>
+      <p>This isn't just what we observed on a finite graph. It proves that <strong>every positive starting value grows without bound under 4n + 1</strong>: even starting values are divided by 2 until they become odd, and from that point onward they increase forever.</p>
+    </div>
+  </section>
+
+  <section class="exp27-bridge" aria-labelledby="exp27-bridge-heading">
+    <p class="exp27-kicker">YOUR QUESTIONS COME NEXT</p>
+    <h2 id="exp27-bridge-heading">One change. Three different outcomes.</h2>
+    <p>Our examples are a starting point, not a complete classification. What happens when we change the starting number, the multiplier, or the number we add?</p>
+    <a href="#open-lab">Continue to the open laboratory ↓</a>
+  </section>
+
+
+  <section class="anb-hero anb-open-lab" id="open-lab" aria-labelledby="anb-heading">
+    <div>
+      <p class="anb-eyebrow">05 / OPEN LABORATORY</p>
+      <h2 id="anb-heading">Now it’s your turn.<br><em>Follow more paths.</em></h2>
+      <p class="anb-deck">Keep the even rule, then choose <strong>a</strong> and <strong>b</strong> for the odd rule <strong>an + b</strong>. This original workbench follows starting values 1 through 25 and shows how their paths connect, split, or enter cycles. We can keep exploring beyond our example of 27.</p>
       <div class="anb-mini-label"><span class="anb-pulse" aria-hidden="true"></span> 25 starting values · 2 sliders · 1 shared map</div>
     </div>
     <div class="anb-rule-card" aria-label="Generalized Collatz rule">
