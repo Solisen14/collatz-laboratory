@@ -102,3 +102,102 @@ input[type=range]{accent-color:#7ae7ff;cursor:pointer;width:100%}
 @media(max-width:900px){.fractal-main{width:min(100% - 32px,740px);padding-top:65px}.fractal-hero{min-height:630px;padding-bottom:75px}.fractal-section{padding:75px 0}.fractal-split,.fractal-dual{grid-template-columns:1fr}.fractal-render-copy{min-height:0;padding-bottom:25px}.fractal-mini-poster{max-width:600px}.fractal-tree-panels{grid-template-columns:1fr}.fractal-render-wrap canvas{aspect-ratio:1.25}.fractal-tool-head{flex-wrap:wrap}.fractal-slider-label{width:100%}.fractal-hero-ornament{display:none}}
 @media(max-width:600px){.fractal-main{width:calc(100vw - 26px)}.fractal-hero h1{font-size:clamp(44px,11vw,70px)}.fractal-draft-stamp{margin-bottom:28px;font-size:10px}.fractal-deck{font-size:18px}.fractal-section-head>p:last-child{font-size:17px}.fractal-prose p{font-size:17px}.fractal-tree-lab{padding:13px}.fractal-viz-meta h3{font-size:18px}.fractal-viz-meta{padding:0 3px}.fractal-math-note{padding:19px}.fractal-render-copy{padding:24px 18px}.fractal-render-controls{padding:17px 15px 5px}.fractal-sources ol{padding-left:23px}.fractal-hero{min-height:540px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* One shared palette for Julia and Mandelbrot. Radio inputs preserve
+ * native keyboard, form and screen-reader semantics.
+ */
+.fractal-palette-picker{
+  margin:0 0 23px;
+  min-width:0;
+  border:1px solid rgba(173,154,230,.31);
+  border-radius:18px;
+  padding:22px 23px 25px;
+  background:linear-gradient(125deg,rgba(23,26,52,.85),rgba(9,16,31,.88));
+}
+.fractal-palette-picker legend{
+  padding:0 8px;
+  color:#f2eafb;
+  font-size:17px;
+  font-weight:720;
+  line-height:1.5;
+}
+.fractal-palette-picker legend span{
+  display:block;
+  max-width:750px;
+  font-size:13px;
+  font-weight:450;
+  color:#b7c8dc;
+  line-height:1.55;
+}
+.fractal-palette-options{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:12px;
+}
+.fractal-palette-option{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  cursor:pointer;
+  min-width:0;
+}
+.fractal-palette-option input{
+  position:absolute;
+  top:9px;
+  right:9px;
+  z-index:1;
+  width:18px;
+  height:18px;
+  accent-color:#d2b0ff;
+  cursor:pointer;
+}
+.fractal-palette-swatch{
+  display:block;
+  height:43px;
+  border:2px solid rgba(211,218,245,.2);
+  border-radius:9px;
+  background:#101828;
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.fractal-palette-option:hover .fractal-palette-swatch{
+  border-color:rgba(219,231,255,.65);
+  transform:translateY(-1px);
+}
+.fractal-palette-option input:checked + .fractal-palette-swatch{
+  border-color:#e6d4ff;
+  box-shadow:0 0 0 3px rgba(184,152,236,.27);
+}
+.fractal-palette-option input:focus-visible + .fractal-palette-swatch{
+  outline:3px solid #ffd479;
+  outline-offset:3px;
+}
+.fractal-palette-name{
+  color:#c4d4e7;
+  font-size:13px;
+  font-weight:640;
+  line-height:1.35;
+}
+.fractal-palette-option input:checked ~ .fractal-palette-name{color:#faf5ff}
+.fractal-palette-new{
+  display:inline-block;
+  vertical-align:middle;
+  padding:2px 5px;
+  border:1px solid rgba(212,180,255,.42);
+  border-radius:5px;
+  font-size:9px;
+  letter-spacing:.07em;
+  color:#e1c4ff;
+}
+.palette-ocean{background:linear-gradient(90deg,#061525,#153858,#156f83,#4bd3df,#f2d18c)}
+.palette-fire{background:linear-gradient(90deg,#140b2c,#473078,#9f328b,#f36f4b,#ffe0a0)}
+.palette-scientific{background:linear-gradient(90deg,#311364,#4938a7,#2b7796,#65b78b,#f6e875)}
+.palette-mono{background:linear-gradient(90deg,#121212,#454545,#969696,#d1d1d1,#fff)}
+.palette-amethyst{background:linear-gradient(90deg,#160d35,#3a1663,#67339f,#af64d2,#e6c5fa)}
+@media(max-width:950px){
+  .fractal-palette-options{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:550px){
+  .fractal-palette-picker{padding:20px 14px}
+  .fractal-palette-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
