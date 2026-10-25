@@ -339,3 +339,102 @@ input[type=range]{accent-color:#7ae7ff;cursor:pointer;width:100%}
   .fractal-collatz-plot canvas{aspect-ratio:1.36}
   .fractal-collatz-landscape-heading p:not(.fractal-tool-label){font-size:15px}
 }
+
+
+/* Five-iteration orbit lab: linear labelled complex plane, honest clipping
+   at the plot edges for the rapidly-growing complex extension. */
+.fractal-orbit-intro{align-self:stretch}
+.fractal-orbit-intro>p:not(.fractal-tool-label){font-size:16px;line-height:1.78;color:#bbcee2;margin:15px 0 0}
+.fractal-orbit-intro strong{color:#f2faff}
+.fractal-orbit-lab{
+  margin-top:36px;padding:clamp(20px,3vw,35px);
+  border:1px solid rgba(147,194,234,.32);
+  border-radius:23px;
+  background:radial-gradient(ellipse at 33% 29%,rgba(58,52,121,.22),transparent 69%),#0b1426;
+}
+.fractal-orbit-head{max-width:950px;margin-bottom:24px}
+.fractal-orbit-head h3{font-size:clamp(27px,3.7vw,44px);line-height:1.15;margin:12px 0 13px}
+.fractal-orbit-head p:not(.fractal-tool-label){font-size:16px;line-height:1.75;color:#bcd0e3;margin:0}
+.fractal-orbit-head strong,.fractal-orbit-caution strong{color:#f1faff}
+.fractal-orbit-toolbar{
+  display:flex;align-items:end;justify-content:space-between;gap:28px;
+  padding:19px 21px;margin-bottom:17px;
+  border-radius:15px;border:1px solid rgba(162,189,232,.22);
+  background:rgba(16,28,49,.85);
+}
+.fractal-orbit-slider{flex:1;min-width:210px;max-width:570px}
+.fractal-orbit-slider label{
+  display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;
+  margin-bottom:13px;font-size:15px;line-height:1.4;color:#cbdced;
+}
+.fractal-orbit-slider label strong{color:#8ceaff;font-variant-numeric:tabular-nums}
+.fractal-orbit-slider input{display:block;margin:0;width:100%}
+.fractal-orbit-slider-ends{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#90a7c2}
+.fractal-orbit-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fractal-orbit-actions button{
+  cursor:pointer;border-radius:10px;font-size:14px;font-weight:720;min-height:45px;
+  padding:10px 18px;border:1px solid rgba(138,222,239,.5);
+  background:#86dcf0;color:#0b1830;
+}
+.fractal-orbit-actions button:hover{background:#b9f2ff}
+.fractal-orbit-actions button:disabled{cursor:wait;opacity:.69}
+.fractal-orbit-actions button+button{background:#172843;color:#dbe8fb;border-color:rgba(175,194,231,.3)}
+.fractal-orbit-actions button+button:hover{background:#233a58}
+.fractal-orbit-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(240px,.8fr);gap:19px;align-items:stretch}
+.fractal-orbit-plot{min-width:0;border-radius:16px;background:#071120;border:1px solid rgba(148,187,231,.27);padding:8px}
+.fractal-orbit-plot svg{display:block;width:100%;height:auto;aspect-ratio:740/468}
+.fractal-orbit-plot .orbit-axis-label{font:700 13px Inter,system-ui,sans-serif;letter-spacing:.025em;fill:#d0e8f7}
+.fractal-orbit-plot .orbit-tick-label{font:500 12px Inter,system-ui,sans-serif;fill:#8aa7c4}
+.fractal-orbit-plot .orbit-step-label{font:700 15px Inter,system-ui,sans-serif;fill:#f4faff;paint-order:stroke;stroke:#071120;stroke-width:3px}
+.fractal-orbit-plot .orbit-edge{fill:none;stroke:#a990f3;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.fractal-orbit-plot .orbit-edge.is-new{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .48s ease}
+.fractal-orbit-plot .orbit-edge.is-new.is-revealed{stroke-dashoffset:0}
+.fractal-orbit-plot .orbit-edge.off-scale{stroke:#ffd479;stroke-dasharray:7 5}
+.fractal-orbit-plot .orbit-edge.off-scale.is-new{stroke-dasharray:1;stroke-dashoffset:1}
+.fractal-orbit-plot .orbit-marker{fill:#0c1a2e;stroke:#87e4f7;stroke-width:2.5}
+.fractal-orbit-plot .orbit-marker.latest{stroke:#ffd479;fill:#2b2738;filter:drop-shadow(0 0 8px rgba(255,212,121,.5))}
+.fractal-orbit-plot .orbit-new-node{opacity:0;transition:opacity .3s ease .24s}
+.fractal-orbit-plot .orbit-new-node.is-revealed{opacity:1}
+.fractal-orbit-window{font-size:11px;line-height:1.65;color:#91a9c3;margin:8px 10px 7px}
+.fractal-orbit-readings{
+  min-width:0;padding:20px 16px;border:1px solid rgba(165,186,231,.22);
+  border-radius:16px;background:rgba(7,17,32,.82);
+}
+.fractal-orbit-readings ol{list-style:none;margin:15px 0 18px;padding:0}
+.fractal-orbit-readings li{
+  display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;align-items:start;
+  padding:12px 3px;border-bottom:1px solid rgba(162,186,216,.13);
+  opacity:.53;transition:opacity .3s ease,background .3s ease;
+}
+.fractal-orbit-readings li.is-shown{opacity:1}
+.fractal-orbit-readings li.is-current{background:rgba(40,52,91,.27);border-radius:6px}
+.fractal-orbit-readings li>span{color:#bba1ee;font-size:14px;font-weight:720}
+.fractal-orbit-readings li>strong{
+  font-size:12px;line-height:1.52;font-weight:630;
+  overflow-wrap:anywhere;color:#d8eafb;font-variant-numeric:tabular-nums;
+}
+.fractal-orbit-readings li.is-offscreen>strong{color:#ffd479}
+.fractal-orbit-status{margin:0;color:#a5cee6;font-size:13px;line-height:1.65;min-height:43px}
+.fractal-orbit-caution{
+  margin:20px 0 0;padding:15px 17px;
+  border-left:3px solid #bda2f5;background:rgba(80,58,122,.16);
+  font-size:14px;line-height:1.74;color:#adc5dc;
+}
+@media(max-width:950px){
+  .fractal-orbit-layout{grid-template-columns:1fr}
+  .fractal-orbit-toolbar{align-items:stretch;flex-direction:column}
+  .fractal-orbit-slider{max-width:none}
+  .fractal-orbit-readings ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:16px}
+}
+@media(max-width:570px){
+  .fractal-orbit-lab{padding:14px}
+  .fractal-orbit-toolbar{padding:15px}
+  .fractal-orbit-readings ol{grid-template-columns:1fr}
+  .fractal-orbit-actions button{flex:1}
+  .fractal-orbit-readings{padding:16px 13px}
+}
+@media(prefers-reduced-motion:reduce){
+  .fractal-orbit-plot .orbit-new-node,
+  .fractal-orbit-plot .orbit-edge.is-new,
+  .fractal-orbit-readings li{transition:none!important}
+}
