@@ -179,13 +179,35 @@
   // recurrence z -> z²+c. The displayed dark region is a finite-iteration
   // approximation of the filled Julia set / the Mandelbrot set.
   const MAXITER=175;
-  const palette=Array.from({length:2048},(_,i)=>{
-    const q=i/12;
-    const r=39+182*(.5+.5*Math.sin(.15*q+1.6));
-    const g=45+183*(.5+.5*Math.sin(.15*q+.1));
-    const b=83+160*(.5+.5*Math.sin(.15*q+3.1));
-    return [Math.min(255,r)|0,Math.min(255,g)|0,Math.min(255,b)|0];
-  });
+  // Five independently authored escape-time gradients; none alter the
+  // quadratic recurrence, tested coordinates or filled-set membership.
+  // Amethyst is the default, emphasizing purple/indigo/orchid/lilac.
+  const colourStops={
+    ocean:['#061525','#153858','#156f83','#4bd3df','#f2d18c','#061525'],
+    fire:['#140b2c','#473078','#9f328b','#f36f4b','#ffe0a0','#140b2c'],
+    scientific:['#311364','#4938a7','#2b7796','#65b78b','#f6e875','#311364'],
+    mono:['#121212','#454545','#969696','#d1d1d1','#ffffff','#121212'],
+    amethyst:['#160d35','#3a1663','#67339f','#af64d2','#e6c5fa','#160d35']
+  };
+  function hexRgb(hex){
+    return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16));
+  }
+  const palettes={};
+  for(const [name,stops] of Object.entries(colourStops)){
+    const rgb=stops.map(hexRgb);
+    palettes[name]=Array.from({length:2048},(_,i)=>{
+      const position=i/2048*(rgb.length-1);
+      const segment=Math.min(rgb.length-2,Math.floor(position));
+      const alpha=position-segment;
+      return rgb[segment].map((value,k)=>
+        Math.round(value+(rgb[segment+1][k]-value)*alpha));
+    });
+  }
+  const selectedPalette=document.querySelector(
+    'input[name="fractal-palette"]:checked'
+  );
+  let currentPalette=selectedPalette&&palettes[selectedPalette.value]
+    ?selectedPalette.value:'amethyst';
   const data={
     julia:{canvas:$('julia-canvas'),status:$('julia-status'),c:{x:-.7,y:.27015},x:0,y:0,span:3.7,base:{x:0,y:0,span:3.7},token:0,everRendered:false},
     mandelbrot:{canvas:$('mandelbrot-canvas'),status:$('mandelbrot-status'),x:-.68,y:0,span:3.45,base:{x:-.68,y:0,span:3.45},token:0,everRendered:false}
@@ -235,7 +257,7 @@
           const id=(y*w+x)*4;
           if(level<0){pix[id]=4;pix[id+1]=9;pix[id+2]=20;}
           else{
-            const col=palette[Math.min(2047,Math.max(0,Math.round(level*12)))];
+            const col=palettes[currentPalette][Math.min(2047,Math.max(0,Math.round(level*42)))];
             pix[id]=col[0];pix[id+1]=col[1];pix[id+2]=col[2];
           }
           pix[id+3]=255;
@@ -294,6 +316,18 @@
     const [real,imag]=event.target.value.split(',').map(Number);
     data.julia.c={x:real,y:imag};
     resetFractal('julia');
+  });
+
+  // Palette changes repaint BOTH explorers from the same selected gradient
+  // without changing their zoom, position, quadratic rule, or Julia c.
+  document.querySelectorAll('input[name="fractal-palette"]').forEach(input=>{
+    input.addEventListener('change',()=>{
+      if(!input.checked||!palettes[input.value])return;
+      currentPalette=input.value;
+      for(const [name,entry] of Object.entries(data)){
+        if(entry.everRendered)renderFractal(name);
+      }
+    });
   });
 
   // SECTION 05: Chamberland interpolation, evaluated for z=3+iy.
