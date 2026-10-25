@@ -357,6 +357,77 @@
     return {re:p.re+q.re,im:p.im+q.im};
   }
 
+  // SECTION 05A: Restore the introductory one-step manipulative.
+  // All controls are scoped and guarded: missing optional markup must not
+  // interrupt tree, Julia, Mandelbrot, or five-step initialization.
+  const oneStepSlider=$('imag-offset');
+  const oneStepReadout=$('imag-offset-value');
+  const oneStepStart=$('complex-start');
+  const oneStepOutput=$('complex-output');
+  const oneStepPlane=$('one-step-complex-svg');
+  function oneStepLabel(point){
+    const r=Math.abs(point.re)<.0005?0:point.re;
+    const i=Math.abs(point.im)<.0005?0:point.im;
+    return r.toFixed(3)+(i<0?' − ':' + ')+Math.abs(i).toFixed(3)+'i';
+  }
+  function drawOneStepPlane(start,end){
+    if(!oneStepPlane)return;
+    oneStepPlane.replaceChildren();
+    svg('title',{},oneStepPlane,'One complex Collatz step from '+oneStepLabel(start)+' to '+oneStepLabel(end));
+    svg('desc',{},oneStepPlane,'The horizontal axis is Real, from 0 to 21. The vertical axis is Imaginary, from -4.3 to +4.3. Cyan is the starting point and gold is the result of one iteration.');
+    const plot={left:43,right:393,top:25,bottom:177};
+    const x=v=>plot.left+(v/21)*(plot.right-plot.left);
+    const y=v=>plot.bottom-((v+4.3)/8.6)*(plot.bottom-plot.top);
+    const defs=svg('defs',{},oneStepPlane);
+    const arrow=svg('marker',{id:'one-step-complex-arrow',viewBox:'0 0 10 10',
+      refX:8.6,refY:5,markerWidth:7,markerHeight:7,orient:'auto'},defs);
+    svg('path',{d:'M0 0 L10 5 L0 10 Z',fill:'#bca5f7'},arrow);
+    svg('rect',{x:plot.left,y:plot.top,width:plot.right-plot.left,
+      height:plot.bottom-plot.top,rx:8,fill:'#071222',stroke:'#2d4664'},oneStepPlane);
+    for(const n of [0,5,10,15,20]){
+      const px=x(n);
+      svg('line',{x1:px,y1:plot.top,x2:px,y2:plot.bottom,
+        stroke:n===0?'#8eafc9':'#24425a','stroke-opacity':n===0?.8:.55},oneStepPlane);
+      svg('text',{x:px,y:plot.bottom+15,'text-anchor':'middle',
+        fill:'#9cb9d3','font-size':11},oneStepPlane,String(n));
+    }
+    for(const n of [-4,-2,0,2,4]){
+      const py=y(n);
+      svg('line',{x1:plot.left,y1:py,x2:plot.right,y2:py,
+        stroke:n===0?'#8eafc9':'#24425a','stroke-opacity':n===0?.9:.55,
+        'stroke-width':n===0?1.7:1},oneStepPlane);
+      if(n!==0)svg('text',{x:plot.left-9,y:py+4,'text-anchor':'end',
+        fill:'#9cb9d3','font-size':10},oneStepPlane,String(n));
+    }
+    svg('text',{x:plot.right,y:plot.bottom+32,'text-anchor':'end',
+      'class':'fractal-one-step-axis-label'},oneStepPlane,'Real');
+    svg('text',{x:plot.left,y:13,'text-anchor':'start',
+      'class':'fractal-one-step-axis-label'},oneStepPlane,'Imaginary');
+    const x0=x(start.re),y0=y(start.im),x1=x(end.re),y1=y(end.im);
+    svg('line',{x1:x0+7,y1:y0,x2:x1-10,y2:y1,
+      stroke:'#bca5f7','stroke-width':2.4,'marker-end':'url(#one-step-complex-arrow)'},oneStepPlane);
+    for(const [point,fill,label,px,py] of [
+      [start,'#80eafa','z₀',x0,y0],[end,'#ffd479','z₁',x1,y1]]){
+      svg('circle',{cx:px,cy:py,r:6.5,fill,stroke:'#091525','stroke-width':2},oneStepPlane);
+      svg('text',{x:px,y:py-14,'text-anchor':'middle','class':'fractal-one-step-point-label'},oneStepPlane,label);
+      svg('title',{},oneStepPlane,label+' = '+oneStepLabel(point));
+    }
+  }
+  function updateOneStepComplex(){
+    if(!oneStepSlider||!oneStepReadout||!oneStepStart||!oneStepOutput)return;
+    const t=Number(oneStepSlider.value);
+    const start={re:3,im:t};
+    const output=chamberland(start.re,start.im);
+    oneStepReadout.textContent='t = '+t.toFixed(2);
+    oneStepStart.textContent=oneStepLabel(start);
+    oneStepOutput.textContent=oneStepLabel(output);
+    drawOneStepPlane(start,output);
+  }
+  if(oneStepSlider){
+    oneStepSlider.addEventListener('input',updateOneStepComplex);
+    updateOneStepComplex();
+  }
+
   // SECTION 05A: Five steps starting at z₀ = 3 + ti.
   // A true linear complex plane is used. Large iterates are reported as
   // off-scale rather than being secretly compressed or plotted incorrectly.
