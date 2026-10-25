@@ -11,7 +11,6 @@
 <p>Open this file through a local static server. These tests control animation time and the motion preference; visual layout is checked separately.</p>
 <pre id="results"></pre>
 <div id="fixtures">
-  <figure data-motion-source="iterates">Iteration fallback</figure>
   <figure data-motion-source="periodic">Periodicity fallback</figure>
   <div data-motion-source="reflection">Reflection fallback</div>
 </div>
@@ -39,12 +38,12 @@
   const click=(key,action)=>scene(key).querySelector('[data-action="'+action+'"]').click();
   const step=key=>Number(scene(key).dataset.step);
   try {
-    check(document.querySelectorAll('.deeper-motion-story').length===3,'All three scenes mount');
+    check(document.querySelectorAll('.deeper-motion-story').length===2,'Both comparison scenes mount');
     check([...document.querySelectorAll('[data-motion-source]')].every(s=>s.hidden),'Fallbacks hide after successful mounting');
     const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);
     check(new Set(ids).size===ids.length,'Scene and SVG IDs are unique');
     motion(true);
-    for(const [key,max] of [['iterates',10],['periodic',14],['reflection',9]]) {
+    for(const [key,max] of [['periodic',14],['reflection',9]]) {
       check(step(key)===max&&scene(key).dataset.mode==='reduced',key+': reduced motion starts with complete diagram');
       check(scene(key).querySelector('[data-action="play"]').disabled&&scene(key).querySelector('[data-action="scroll"]').disabled,key+': automatic motion controls disabled');
       click(key,'previous');window.dispatchEvent(new Event('scroll'));frame(100);
@@ -69,10 +68,10 @@
     window.dispatchEvent(new Event('scroll'));frame(5000);
     check(scene('periodic').dataset.mode==='manual'&&frames.size===0,'Leaving the viewport pauses playback');
     narrowScreen(true);
-    check(step('iterates')===10&&scene('iterates').dataset.mode==='manual','Narrow screens begin with the complete diagram');
-    check(!scene('iterates').querySelector('[data-action="play"]').disabled&&scene('iterates').querySelector('[data-action="scroll"]').disabled,'Narrow screens retain manual playback without scroll following');
-    click('iterates','previous');window.dispatchEvent(new Event('scroll'));frame(6000);
-    check(step('iterates')===9,'Narrow-screen manual step survives scrolling');
+    check(step('reflection')===9&&scene('reflection').dataset.mode==='manual','Narrow screens begin with the complete diagram');
+    check(!scene('reflection').querySelector('[data-action="play"]').disabled&&scene('reflection').querySelector('[data-action="scroll"]').disabled,'Narrow screens retain manual playback without scroll following');
+    click('reflection','previous');window.dispatchEvent(new Event('scroll'));frame(6000);
+    check(step('reflection')===8,'Narrow-screen manual step survives scrolling');
     document.querySelector('h1').textContent=passed+' controller checks passed';
     document.body.dataset.result='pass';
   } catch(error) {

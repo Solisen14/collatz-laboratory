@@ -1,4 +1,4 @@
-/* Progressive enhancement for three local, reversible mathematical stories. */
+/* Progressive enhancement for two local, reversible mathematical stories. */
 (function () {
   'use strict';
   const M = window.CollatzDeeperMotion;
@@ -23,11 +23,10 @@
       el('path', {d:'M0 0 L10 5 L0 10Z',fill:stroke}, marker);
     }
   }
-  function node(svg, value, p, label) {
+  function node(svg, value, p) {
     const g = el('g', {class:'deeper-motion-node'}, svg);
     el('circle', {cx:p.x,cy:p.y,r:27,stroke:colour(value)}, g);
     el('text', {x:p.x,y:p.y}, g, display(value));
-    if (label) el('text', {x:p.x,y:p.y+56,class:'motion-iterate-label'}, svg, label);
     return g;
   }
   function edge(svg, a, b, value, id) {
@@ -48,34 +47,6 @@
   function equation(start, step, value) { return `C<sup>${step}</sup>(${display(start)}) = <strong>${display(value)}</strong>`; }
 
   const configs = {
-    iterates: {
-      title:'Every arrow is one application.', label:'ITERATES · KEEP COUNTING', max:10,
-      description:'The orbit 3, 10, 5, 16, 8, 4, 2, 1, 4, 2, 1. Superscripts count applications; reaching 1 does not stop iteration.',
-      beats:()=>[
-        [0,'BEFORE THE FIRST STEP','Start at step zero.','C⁰(3) = 3. We have a starting value, but have not applied the function yet.'],
-        [3,'FEED THE OUTPUT BACK','Three applications, three arrows.','Each output becomes the next input: 3 → 10 → 5 → 16. The superscript counts how often C has been applied.'],
-        [7,'FIRST ARRIVAL AT 1','Seven steps to reach 1.','The path has eight displayed values, including the starting value. Reaching 1 takes seven applications: C⁷(3) = 1.'],
-        [10,'KEEP ITERATING','The function keeps going.','Because 1 is odd, C⁸(3) = 4. Then C⁹(3) = 2 and C¹⁰(3) = 1. The values repeat while the application count increases.']
-      ],
-      build(svg,id) {
-        svg.setAttribute('viewBox','0 0 900 330');
-        const points=M.iterations.map((_,i)=>i<8?{x:75+i*106,y:80}:{x:817-(i-8)*106,y:230});
-        const edges=M.iterations.slice(1).map((_,i)=>edge(svg,points[i],points[i+1],M.iterations[i],id));
-        const nodes=M.iterations.map((n,i)=>node(svg,n,points[i],'C'+String(i).replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)])+'(3)'));
-        const playhead=marker(svg);
-        return (step,state,ui)=>{
-          nodes.forEach((n,i)=>future(n,i>step));edges.forEach((n,i)=>future(n,i>=step));
-          move(playhead,points[step],M.iterations[step]);
-          ui.equation.innerHTML=equation(3,step,M.iterations[step]);
-          const caption=step===0?'Starting value · no applications yet.':
-            step<7?`${M.iterations[step-1]} → ${M.iterations[step]} · ${M.iterations[step-1]%2===0?'divide by 2':'multiply by 3 and add 1'} · ${step} applications so far.`:
-            step===7?'First arrival at 1. Seven arrows, seven applications.':
-            `The orbit has reached 1 before. The next applications continue the 1 → 4 → 2 → 1 cycle.`;
-          ui.caption.textContent=caption;
-          return `Step ${step} of 10. C applied ${step} times to 3 gives ${M.iterations[step]}. ${caption}`;
-        };
-      }
-    },
     periodic: {
       title:'An initial path. Then a repeating cycle.',label:'PERIODIC · EVENTUALLY PERIODIC',max:14,
       description:'The orbit from 3 takes five steps to enter the cycle at 4. The cycle is 4 to 2 to 1 to 4, of period 3. Starting at 4 begins inside that cycle.',
@@ -189,7 +160,7 @@
       <p class="deeper-motion-hint">Swipe or scroll sideways to explore the full diagram.</p>
       <p class="deeper-motion-caption"></p>
       <div class="deeper-motion-progress" aria-hidden="true"><span></span></div>
-      <div class="deeper-motion-controls" role="group" aria-label="${key==='iterates'?'Iteration':key==='periodic'?'Periodicity':'Reflection'} animation controls">
+      <div class="deeper-motion-controls" role="group" aria-label="${key==='periodic'?'Periodicity':'Reflection'} animation controls">
         <button type="button" data-action="previous">Previous step</button><button type="button" data-action="play">Play</button><button type="button" data-action="next">Next step</button><button type="button" data-action="scroll" aria-pressed="true">Follow scroll</button>
       </div><div class="deeper-motion-status deeper-motion-sr" role="status" aria-live="polite"></div>
     </div><div class="deeper-motion-beats"></div></div>`;

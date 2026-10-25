@@ -1,4 +1,4 @@
-/* Three local scroll narratives; existing article and Fractals styles stay independent. */
+/* Two local scroll narratives; existing article and Fractals styles stay independent. */
 .deeper-motion-story {
   position:relative;
   width:min(1120px,calc(100vw - max(14vw,60px)));
@@ -34,7 +34,6 @@
 .deeper-motion-node text {text-anchor:middle;dominant-baseline:central;font-size:23px;font-weight:620;}
 .deeper-motion-node,.deeper-motion-edge,.deeper-motion-row,.deeper-motion-tail,.deeper-motion-cycle-halo {transition:opacity .35s ease;}
 .deeper-motion-node.is-future,.deeper-motion-edge.is-future {opacity:.1;}
-.deeper-motion-svg .motion-iterate-label {font-family:'Cambria Math',serif;font-size:17px;fill:#aabbd0;text-anchor:middle;}
 .deeper-motion-svg .motion-row-label {font-size:15px;letter-spacing:.1em;fill:#b7c8dc;font-weight:700;}
 .deeper-motion-svg .motion-rule-label {font-size:15px;fill:#ffd479;text-anchor:end;}
 .deeper-motion-edge {fill:none;stroke-width:2.5;stroke-linecap:round;}

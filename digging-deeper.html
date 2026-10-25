@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="digging-fixed-points.css?v=20261023-scroll-1" />
   <link rel="stylesheet" href="digging-negatives.css?v=20261023-universe-2" />
   <link rel="stylesheet" href="digging-landscape.css?v=20261023-reflection-1" />
-  <link rel="stylesheet" href="digging-motion.css?v=20261024-1" />
+  <link rel="stylesheet" href="digging-motion.css?v=20261024-2" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -147,57 +147,6 @@
           <p>The superscript tells us <strong>how many times the function has been applied</strong>. For example, <span class="iterate-math">C²(3)</span> means apply <span class="iterate-math">C</span> twice, not square the number <span class="iterate-math">C(3)</span>.</p>
           <p>We also write <span class="iterate-math">C⁰(3) = 3</span> for the starting value, before any steps have taken place.</p>
         </div>
-
-        <figure class="iterates-figure" data-motion-source="iterates">
-          <p class="diagram-topline">SEVEN ITERATIONS · STARTING AT 3</p>
-          <div class="iterates-figure-viewport">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1030 188" role="img" aria-labelledby="iterates-figure-title iterates-figure-description">
-              <title id="iterates-figure-title">Seven iterates of the Collatz function, beginning with 3</title>
-              <desc id="iterates-figure-description">The ordered sequence 3, 10, 5, 16, 8, 4, 2, 1, with labels C to the zero of 3 through C to the seventh of 3 underneath each number. Odd-number steps are gold, even-number steps are cyan, and the first arrival at 1 is highlighted green.</desc>
-              <defs>
-                <marker id="iter-odd-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#ffd479"/></marker>
-                <marker id="iter-even-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#7ae7ff"/></marker>
-              </defs>
-              <line x1="98" y1="75" x2="154" y2="75" stroke="#ffd479" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-odd-arrow)"/>
-              <circle cx="67" cy="75" r="27" fill="#0b1724" stroke="#ffd479" stroke-width="2.5"/>
-              <text x="67" y="82" class="iterates-node-text">3</text>
-              <text x="67" y="143" class="iterates-node-label">C⁰(3)</text>
-              <line x1="223" y1="75" x2="279" y2="75" stroke="#7ae7ff" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-even-arrow)"/>
-              <circle cx="192" cy="75" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.5"/>
-              <text x="192" y="82" class="iterates-node-text">10</text>
-              <text x="192" y="143" class="iterates-node-label">C¹(3)</text>
-              <line x1="348" y1="75" x2="404" y2="75" stroke="#ffd479" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-odd-arrow)"/>
-              <circle cx="317" cy="75" r="27" fill="#0b1724" stroke="#ffd479" stroke-width="2.5"/>
-              <text x="317" y="82" class="iterates-node-text">5</text>
-              <text x="317" y="143" class="iterates-node-label">C²(3)</text>
-              <line x1="473" y1="75" x2="529" y2="75" stroke="#7ae7ff" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-even-arrow)"/>
-              <circle cx="442" cy="75" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.5"/>
-              <text x="442" y="82" class="iterates-node-text">16</text>
-              <text x="442" y="143" class="iterates-node-label">C³(3)</text>
-              <line x1="598" y1="75" x2="654" y2="75" stroke="#7ae7ff" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-even-arrow)"/>
-              <circle cx="567" cy="75" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.5"/>
-              <text x="567" y="82" class="iterates-node-text">8</text>
-              <text x="567" y="143" class="iterates-node-label">C⁴(3)</text>
-              <line x1="723" y1="75" x2="779" y2="75" stroke="#7ae7ff" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-even-arrow)"/>
-              <circle cx="692" cy="75" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.5"/>
-              <text x="692" y="82" class="iterates-node-text">4</text>
-              <text x="692" y="143" class="iterates-node-label">C⁵(3)</text>
-              <line x1="848" y1="75" x2="904" y2="75" stroke="#7ae7ff" stroke-width="2.4" stroke-linecap="round" marker-end="url(#iter-even-arrow)"/>
-              <circle cx="817" cy="75" r="27" fill="#0b1724" stroke="#7ae7ff" stroke-width="2.5"/>
-              <text x="817" y="82" class="iterates-node-text">2</text>
-              <text x="817" y="143" class="iterates-node-label">C⁶(3)</text>
-              <circle cx="942" cy="75" r="27" fill="#0b1724" stroke="#86f0bd" stroke-width="2.5"/>
-              <text x="942" y="82" class="iterates-node-text">1</text>
-              <text x="942" y="143" class="iterates-node-label">C⁷(3)</text>
-            </svg>
-          </div>
-          <div class="iterates-legend" aria-label="Diagram legend">
-            <span><i class="iterates-legend-dot odd-dot"></i>Odd-number rule</span>
-            <span><i class="iterates-legend-dot even-dot"></i>Even-number rule</span>
-            <span><i class="iterates-legend-dot arrived-dot"></i>First arrival at 1</span>
-          </div>
-          <figcaption>Each arrow is one application of <span class="iterate-math">C</span>. The labels below the values show the iterate number: <span class="iterate-math">C⁰(3)</span> through <span class="iterate-math">C⁷(3)</span>.</figcaption>
-        </figure>
 
         <div class="article-prose">
           <p>After seven applications, the value is 1. We can write this as <span class="iterate-math">C⁷(3) = 1</span>. But reaching 1 doesn't mean the process stops.</p>
@@ -961,7 +910,7 @@
     </div>
   </main>
   <script src="digging-motion-model.js?v=20261024-1" defer></script>
-  <script src="digging-motion.js?v=20261024-1" defer></script>
+  <script src="digging-motion.js?v=20261024-2" defer></script>
   <script src="digging-fixed-scroll.js?v=20261023-scroll-3" defer></script>
   <script src="digging-negatives.js?v=20261023-universe-2" defer></script>
   <script src="digging-landscape.js?v=20261024-separated-1" defer></script>
