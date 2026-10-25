@@ -368,3 +368,105 @@
 @media(prefers-reduced-motion:reduce){
   .history-page .history-origins-graph-link img{transition:none;}
 }
+
+
+/* 1985: one two-person biography panel after both quotations. The
+   Erdős–Tao working photograph retains its original placement and crop. */
+.history-page .history-mathematicians{
+  margin:38px 0 27px;
+  padding:clamp(20px,2.6vw,27px);
+  border:1px solid rgba(164,179,217,.22);
+  border-radius:17px;
+  background:linear-gradient(128deg,rgba(23,29,50,.87),rgba(11,20,37,.94));
+}
+.history-page .history-mathematicians-title{
+  margin:0 0 22px;
+  color:#c9b0f7;
+  font-size:12px;
+  font-weight:780;
+  letter-spacing:.15em;
+  line-height:1.4;
+  text-transform:uppercase;
+}
+.history-page .history-mathematicians-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:20px;
+  align-items:stretch;
+}
+.history-page .history-mathematician-card{
+  display:grid;
+  grid-template-columns:92px minmax(0,1fr);
+  grid-template-rows:auto 1fr;
+  gap:13px 15px;
+  align-items:start;
+  min-width:0;
+  padding:17px;
+  border:1px solid rgba(163,183,214,.16);
+  border-radius:12px;
+  background:rgba(4,11,23,.38);
+}
+.history-page .history-mathematician-portrait{
+  width:92px;
+  margin:0;
+}
+.history-page .history-mathematician-portrait a{
+  display:block;
+  border-radius:9px;
+  overflow:hidden;
+  border:1px solid rgba(154,184,226,.24);
+}
+.history-page .history-mathematician-portrait img{
+  display:block;
+  width:100%;
+  height:116px;
+  max-height:none;
+  object-fit:cover;
+  object-position:center 22%;
+  border-radius:0;
+  background:#0d182c;
+}
+.history-page .history-mathematician-details{min-width:0;}
+.history-page .history-mathematician-details h5{
+  margin:0 0 7px;
+  font-size:18px;
+  line-height:1.22;
+  letter-spacing:-.022em;
+  color:#f0eaff;
+}
+.history-page .history-mathematician-details .history-bio-sub{
+  margin:0 0 11px;
+  color:#9bb0cc;
+  font-size:12px;
+  line-height:1.4;
+}
+.history-page .history-mathematician-details .history-bio-text{
+  margin:0;
+  font-size:13px;
+  line-height:1.69;
+  color:#b9cbe0;
+}
+.history-page .history-mathematician-credit{
+  grid-column:1/-1;
+  align-self:end;
+  margin:5px 0 0;
+  padding-top:9px;
+  border-top:1px solid rgba(157,186,226,.12);
+  font-size:10px;
+  line-height:1.5;
+  color:#88a2bd;
+}
+.history-page .history-mathematician-credit a{color:#a5dbea;}
+@media(max-width:1100px){
+  .history-page .history-mathematicians-grid{grid-template-columns:1fr;gap:14px;}
+  .history-page .history-mathematician-card{grid-template-columns:106px minmax(0,1fr);}
+  .history-page .history-mathematician-portrait{width:106px;}
+  .history-page .history-mathematician-portrait img{height:124px;}
+}
+@media(max-width:540px){
+  .history-page .history-mathematicians{padding:17px;margin-top:30px;}
+  .history-page .history-mathematician-card{grid-template-columns:80px minmax(0,1fr);gap:11px;padding:12px;}
+  .history-page .history-mathematician-portrait{width:80px;}
+  .history-page .history-mathematician-portrait img{height:101px;}
+  .history-page .history-mathematician-details h5{font-size:16px;}
+}
