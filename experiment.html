@@ -1,15 +1,17 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#07090f" />
-  <title>Experiment | The Collatz Laboratory</title>
-  <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1" />
-  <link rel="stylesheet" href="chapters.css?v=20261021-1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07090f">
+  <meta name="description" content="Experiment with generalized an+b Collatz-style rules. Explore 25 positive integer paths, cycles and peaks in an interactive visualizer.">
+  <title>Explore a n + b | The Collatz Laboratory</title>
+  <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
+  <link rel="stylesheet" href="anb-explore.css?v=20261025-first25-1">
+  <script src="anb-explore.js?v=20261025-first25-1" defer></script>
 </head>
-<body class="chapter-page">
-  <header class="site-header">
+<body class="anb-page">
+<header class="site-header">
     <a class="brand" href="index.html" aria-label="The Collatz Laboratory home">
       <span class="brand-mark"></span><span>THE COLLATZ LABORATORY</span>
     </a>
@@ -23,22 +25,107 @@
       <a href="about.html">ABOUT</a>
     </nav>
   </header>
-  <main class="chapter-shell">
-    <section class="chapter-content" aria-labelledby="chapter-heading">
-      <p class="chapter-crumb">THE COLLATZ LABORATORY · EXPLORE FURTHER</p>
-      <p class="chapter-number">04 / 05</p>
-      <h1 id="chapter-heading" class="chapter-title"><span>Experiment</span>.</h1>
-      <p class="chapter-deck">Change a starting value. Follow what happens. Use the patterns you find to ask better mathematical questions.</p>
-      <div class="chapter-placeholder">
-        <p class="chapter-placeholder-tag">IN DEVELOPMENT</p>
-        <h2>INSERT TEXT HERE</h2>
-        <p>We will develop this section using the content and investigations in our shared Collatz Laboratory Story Script. Its mathematical material is intentionally left for the project authors.</p>
+<main class="anb-shell" id="top">
+  <section class="anb-hero" aria-labelledby="anb-heading">
+    <div>
+      <p class="anb-eyebrow">THE COLLATZ LABORATORY · EXPERIMENT</p>
+      <h1 id="anb-heading">Change the rule.<br><em>Follow the paths.</em></h1>
+      <p class="anb-deck">What if the odd-number rule were <strong>an + b</strong> instead of <strong>3n + 1</strong>? Change two numbers and watch the first 25 positive integers travel through a different mathematical landscape.</p>
+      <div class="anb-mini-label"><span class="anb-pulse" aria-hidden="true"></span> 25 starting values · 2 sliders · 1 shared map</div>
+    </div>
+    <div class="anb-rule-card" aria-label="Generalized Collatz rule">
+      <p class="anb-rule-overline">THE RULE</p>
+      <div class="anb-rule-equation"><span>T(n) =</span><div><p><strong>n ÷ 2</strong><small>if n is even</small></p><p><strong><span id="anb-rule-a">3</span>n + <span id="anb-rule-b">1</span></strong><small>if n is odd</small></p></div></div>
+      <p id="anb-rule-caption">Start with 3n + 1, then discover what changing the odd step does.</p>
+    </div>
+  </section>
+
+  <section class="anb-workspace" aria-labelledby="anb-map-heading">
+    <aside class="anb-controls" aria-label="Experiment settings">
+      <p class="anb-panel-eyebrow">01 / ADJUST THE RULE</p>
+      <h2>Choose <em>a</em> and <em>b</em>.</h2>
+      <p class="anb-panel-intro">Even numbers are always divided by 2. The sliders change what happens to odd numbers.</p>
+      <div class="anb-slider">
+        <label for="anb-a"><span>Multiplier <em>a</em></span><output id="anb-a-value" for="anb-a">3</output></label>
+        <input id="anb-a" type="range" min="1" max="11" step="1" value="3">
+        <div class="anb-slider-scale"><span>1</span><span>11</span></div>
       </div>
-      <nav class="chapter-next" aria-label="Continue exploring">
-        <a href="index.html#story"><span aria-hidden="true">←</span> Back to the story</a>
-        <a href="visualize.html">Visualize <span aria-hidden="true">→</span></a>
-      </nav>
-    </section>
-  </main>
+      <div class="anb-slider">
+        <label for="anb-b"><span>Addend <em>b</em></span><output id="anb-b-value" for="anb-b">1</output></label>
+        <input id="anb-b" type="range" min="1" max="19" step="1" value="1">
+        <div class="anb-slider-scale"><span>1</span><span>19</span></div>
+      </div>
+      <p class="anb-control-note">We allow positive integer values of a and b, including even choices. Some combinations create cycles; others grow beyond our finite viewing limit.</p>
+      <div class="anb-presets">
+        <h3>Try a different rule</h3>
+        <div class="anb-preset-grid">
+          <button type="button" class="anb-preset" data-a="3" data-b="1">3n + 1</button>
+          <button type="button" class="anb-preset" data-a="5" data-b="1">5n + 1</button>
+          <button type="button" class="anb-preset" data-a="3" data-b="3">3n + 3</button>
+          <button type="button" class="anb-preset" data-a="2" data-b="1">2n + 1</button>
+        </div>
+      </div>
+      <div class="anb-summary" aria-label="Outcome summary for starting values 1 through 25">
+        <h3>25 paths at a glance</h3>
+        <div class="anb-metric-row"><span><i class="anb-status-dot one"></i> Reached 1</span><strong id="anb-reached">0</strong></div>
+        <div class="anb-metric-row"><span><i class="anb-status-dot cycle"></i> Other cycles</span><strong id="anb-cycles">0</strong></div>
+        <div class="anb-metric-row"><span><i class="anb-status-dot cap"></i> Beyond value limit</span><strong id="anb-capped">0</strong></div>
+        <div class="anb-metric-row"><span><i class="anb-status-dot limit"></i> Step limit</span><strong id="anb-limited">0</strong></div>
+      </div>
+      <button id="anb-share" class="anb-share" type="button"><span aria-hidden="true">↗</span> Copy link to these settings</button>
+      <p id="anb-share-status" class="anb-share-status" role="status" aria-live="polite"></p>
+    </aside>
+
+    <div class="anb-main">
+      <div class="anb-plot-heading">
+        <div><p class="anb-panel-eyebrow">02 / VISUALIZE THE PATHS</p><h2 id="anb-map-heading">25 integers. <span id="anb-current-title">One rule.</span></h2><p>Each colour traces one starting value, from 1 to 25. Paths can merge, revisit numbers, or grow dramatically.</p></div>
+        <div class="anb-map-actions">
+          <button type="button" id="anb-show-all">Show all paths</button>
+          <button type="button" id="anb-save-svg">Save SVG</button>
+        </div>
+      </div>
+      <div class="anb-stage">
+        <div class="anb-stage-toolbar">
+          <p><span class="anb-swatch-line"></span> ONE PATH PER STARTING INTEGER <span class="anb-swatch-highlight"></span> SELECT A PATH TO TRACE</p>
+          <p id="anb-map-stats">Computing paths…</p>
+        </div>
+        <div class="anb-stage-scroll" role="region" aria-label="Scrollable visualization of 25 integer trajectories" tabindex="0">
+          <svg id="anb-path-map" viewBox="0 0 1280 700" role="img" aria-label="Logarithmic value-versus-step plot for 25 positive starting integers under the selected generalized rule. Select an integer below to highlight its path."></svg>
+        </div>
+        <div class="anb-stage-footer"><span>HORIZONTAL: iteration step <strong>k</strong></span><span>VERTICAL: value <strong>n</strong> on a log₂ scale</span></div>
+      </div>
+
+      <section class="anb-seeds" aria-labelledby="anb-seeds-heading">
+        <div class="anb-seeds-heading"><div><p class="anb-panel-eyebrow">03 / PICK A STARTING VALUE</p><h3 id="anb-seeds-heading">Which path do you want to follow?</h3></div><p>Select any integer to highlight its entire path in the graph.</p></div>
+        <div id="anb-seed-grid" class="anb-seed-grid" role="group" aria-label="Select one of the first 25 positive integers"></div>
+      </section>
+
+      <section class="anb-inspector" aria-labelledby="anb-inspector-heading">
+        <div class="anb-inspector-head">
+          <div><p class="anb-panel-eyebrow">04 / LOOK CLOSELY</p><h3 id="anb-inspector-heading">Inspect a single path</h3></div>
+          <div class="anb-inspector-actions"><button id="anb-play" type="button" disabled>Animate trace</button><button id="anb-copy-path" type="button" disabled>Copy path</button></div>
+        </div>
+        <div id="anb-inspector-placeholder" class="anb-inspector-placeholder">Choose a starting integer above, or click a coloured path, to see the exact values and outcome.</div>
+        <div id="anb-inspector-data" hidden>
+          <div class="anb-inspector-metrics"><div><span>START</span><strong id="anb-detail-start">1</strong></div><div><span>STEPS SHOWN</span><strong id="anb-detail-steps">0</strong></div><div><span>HIGHEST VALUE</span><strong id="anb-detail-peak">1</strong></div><div><span>OUTCOME</span><strong id="anb-detail-outcome">Reached 1</strong></div></div>
+          <div id="anb-path-values" class="anb-path-values" aria-label="Integer sequence for selected path"></div>
+          <p id="anb-detail-note" class="anb-detail-note"></p>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="anb-footnote" aria-labelledby="anb-notes-heading">
+    <p class="anb-panel-eyebrow">HOW TO READ THIS EXPERIMENT</p>
+    <h2 id="anb-notes-heading">Finite paths. Open questions.</h2>
+    <div class="anb-notes-grid">
+      <p><strong>Only positive starts.</strong> We use starting numbers 1 to 25, positive a and b, and ordinary integer arithmetic. All subsequent values are positive.</p>
+      <p><strong>Logarithmic height.</strong> Each upward step on the chart doubles the value. This keeps large peaks and small values visible together.</p>
+      <p><strong>Stopping rules.</strong> We stop at the first 1, the first repeated value, 200 steps, or before exceeding 1,000,000,000,000. A path that stops due to a limit is not necessarily divergent.</p>
+      <p><strong>No proof by picture.</strong> Changing a and b creates different dynamical systems. Seeing 25 paths does not establish what happens for all starting values.</p>
+    </div>
+    <nav class="anb-bottom-nav" aria-label="Continue exploring"><a href="visualize.html">Explore the original Collatz visualizer <span aria-hidden="true">↗</span></a><a href="fractals.html">Fractals <span aria-hidden="true">↗</span></a></nav>
+  </section>
+</main>
 </body>
 </html>
