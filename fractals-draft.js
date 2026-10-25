@@ -369,6 +369,213 @@
   updateComplexCollatz();
 
 
+  // SECTION 05A: Five steps starting at z₀ = 3 + ti.
+  // A true linear complex plane is used. Large iterates are reported as
+  // off-scale rather than being secretly compressed or plotted incorrectly.
+  const orbitSlider=$('orbit-imag-offset');
+  const orbitReadout=$('orbit-imag-readout');
+  const orbitSVG=$('fractal-orbit-svg');
+  const orbitStatus=$('fractal-orbit-status');
+  const orbitStart=$('orbit-iterate');
+  const orbitReset=$('orbit-reset');
+  const orbitRows=[...document.querySelectorAll('#fractal-orbit-steps li')];
+  const ORBIT_BOX={left:72,right:682,top:44,bottom:408,real:20,imag:12};
+  const ORBIT_PAUSE=760;
+  const orbitReduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const orbitState={t:0,points:[],shown:0,playing:false,timers:[]};
+  function orbitShown(n){return Number.isFinite(n) ? n : null;}
+  function orbitFormat(n){
+    if(!Number.isFinite(n))return 'outside numerical range';
+    if(Math.abs(n)<.0005)return '0.000';
+    if(Math.abs(n)>=1000 || Math.abs(n)<.001)return n.toExponential(2);
+    return n.toFixed(3);
+  }
+  function orbitComplexLabel(value){
+    if(!value)return 'Beyond computer numerical range';
+    const imag=value.im<0?' − ':' + ';
+    return orbitFormat(value.re)+imag+orbitFormat(Math.abs(value.im))+'i';
+  }
+  function orbitCompute(t){
+    const points=[{re:3,im:t}];
+    for(let n=1;n<=5;n++){
+      const before=points[n-1];
+      if(!before){points.push(null);continue;}
+      const after=chamberland(before.re,before.im);
+      if(!Number.isFinite(after.re)||!Number.isFinite(after.im)){
+        points.push(null);continue;
+      }
+      points.push(after);
+    }
+    return points;
+  }
+  function orbitX(re){return ORBIT_BOX.left+(re+ORBIT_BOX.real)/(2*ORBIT_BOX.real)*(ORBIT_BOX.right-ORBIT_BOX.left);}
+  function orbitY(im){return ORBIT_BOX.bottom-(im+ORBIT_BOX.imag)/(2*ORBIT_BOX.imag)*(ORBIT_BOX.bottom-ORBIT_BOX.top);}
+  function orbitInside(p){
+    return p!==null&&Math.abs(p.re)<=ORBIT_BOX.real&&Math.abs(p.im)<=ORBIT_BOX.imag;
+  }
+  function orbitClip(from,to){
+    // Normalize before intersecting: coordinates can be ~1e200.
+    const dx=to.re-from.re,dy=to.im-from.im;
+    const norm=Math.max(Math.abs(dx)/ORBIT_BOX.real,Math.abs(dy)/ORBIT_BOX.imag,1);
+    const vx=dx/norm,vy=dy/norm;
+    if(!Number.isFinite(vx)||!Number.isFinite(vy))return null;
+    const tx=vx>0?(ORBIT_BOX.real-from.re)/vx:vx<0?(-ORBIT_BOX.real-from.re)/vx:Infinity;
+    const ty=vy>0?(ORBIT_BOX.imag-from.im)/vy:vy<0?(-ORBIT_BOX.imag-from.im)/vy:Infinity;
+    const factor=Math.min(tx,ty);
+    if(!Number.isFinite(factor)||factor<0)return null;
+    return {re:from.re+vx*factor,im:from.im+vy*factor};
+  }
+  function orbitMarker(parent,n,p,latest,isNew){
+    const g=svg('g',{'class':isNew?'orbit-new-node':''},parent);
+    const color=n===0?'#7ae7ff':'#c4a8fb';
+    svg('circle',{
+      'class':'orbit-marker'+(latest?' latest':''),
+      cx:orbitX(p.re),cy:orbitY(p.im),r:8.5,
+      stroke:latest?'#ffd479':color
+    },g);
+    svg('text',{
+      'class':'orbit-step-label',x:orbitX(p.re),y:orbitY(p.im)+(n%2===0?-17:25),
+      'text-anchor':'middle'
+    },g,'z'+n);
+    svg('title',{},g,'Step '+n+': '+orbitComplexLabel(p));
+    return g;
+  }
+  function orbitAxes(){
+    orbitSVG.replaceChildren();
+    svg('title',{},orbitSVG,'Five steps of the complex Collatz extension on labelled linear axes');
+    svg('desc',{},orbitSVG,'Horizontal axis: real part from minus 20 to 20. Vertical axis: imaginary part from minus 12 to 12. Off-scale results are flagged, not plotted as if they were in range.');
+    const defs=svg('defs',{},orbitSVG);
+    const marker=svg('marker',{id:'fractal-orbit-tip',viewBox:'0 0 10 10',
+      refX:9,refY:5,markerWidth:7,markerHeight:7,orient:'auto'},defs);
+    svg('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:'#bca5f7'},marker);
+    const offMarker=svg('marker',{id:'fractal-orbit-off-tip',viewBox:'0 0 10 10',
+      refX:9,refY:5,markerWidth:7,markerHeight:7,orient:'auto'},defs);
+    svg('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:'#ffd479'},offMarker);
+    svg('rect',{x:ORBIT_BOX.left,y:ORBIT_BOX.top,
+      width:ORBIT_BOX.right-ORBIT_BOX.left,height:ORBIT_BOX.bottom-ORBIT_BOX.top,
+      rx:9,fill:'#061222',stroke:'#31485d','stroke-width':1},orbitSVG);
+    for(const k of [-20,-10,0,10,20]){
+      const x=orbitX(k);
+      svg('line',{x1:x,y1:ORBIT_BOX.top,x2:x,y2:ORBIT_BOX.bottom,
+        stroke:k===0?'#83b9d6':'#24425a','stroke-opacity':k===0?.86:.42,
+        'stroke-width':k===0?2:1},orbitSVG);
+      svg('text',{'class':'orbit-tick-label',x,y:ORBIT_BOX.bottom+19,
+        'text-anchor':'middle'},orbitSVG,String(k));
+    }
+    for(const k of [-10,-5,0,5,10]){
+      const y=orbitY(k);
+      svg('line',{x1:ORBIT_BOX.left,y1:y,x2:ORBIT_BOX.right,y2:y,
+        stroke:k===0?'#83b9d6':'#24425a','stroke-opacity':k===0?.86:.42,
+        'stroke-width':k===0?2:1},orbitSVG);
+      if(k!==0)svg('text',{'class':'orbit-tick-label',x:ORBIT_BOX.left-10,y:y+4,
+        'text-anchor':'end'},orbitSVG,String(k));
+    }
+    svg('text',{'class':'orbit-axis-label',x:ORBIT_BOX.right,y:ORBIT_BOX.bottom+42,
+      'text-anchor':'end'},orbitSVG,'Real axis (Re)');
+    svg('text',{'class':'orbit-axis-label',x:ORBIT_BOX.left+10,y:ORBIT_BOX.top-14,
+      'text-anchor':'start'},orbitSVG,'Imaginary axis (Im)');
+  }
+  function orbitRender(newStep){
+    orbitAxes();
+    const paths=svg('g',{},orbitSVG);
+    const nodes=svg('g',{},orbitSVG);
+    const reveal=[];
+    let lastInRange=-1;
+    for(let n=0;n<=orbitState.shown;n++){
+      const p=orbitState.points[n],prev=n>0?orbitState.points[n-1]:null;
+      const inside=orbitInside(p);
+      const isNew=n===newStep;
+      if(n>0&&prev&&orbitInside(prev)&&p){
+        const destination=inside?p:orbitClip(prev,p);
+        if(destination){
+          const off=!inside;
+          const path=svg('path',{
+            'class':'orbit-edge'+(off?' off-scale':'')+(isNew?' is-new':''),
+            d:'M '+orbitX(prev.re)+' '+orbitY(prev.im)+
+              ' L '+orbitX(destination.re)+' '+orbitY(destination.im),
+            'marker-end':off?'url(#fractal-orbit-off-tip)':'url(#fractal-orbit-tip)',
+            pathLength:1
+          },paths);
+          if(isNew)reveal.push(path);
+        }
+      }
+      if(inside){
+        lastInRange=n;
+        const g=orbitMarker(nodes,n,p,n===orbitState.shown,isNew);
+        if(isNew)reveal.push(g);
+      }
+    }
+    const last=orbitState.points[orbitState.shown];
+    if(orbitState.shown>0&&!orbitInside(last)){
+      svg('text',{x:ORBIT_BOX.right-12,y:ORBIT_BOX.top+22,
+        'text-anchor':'end',fill:'#ffd479',
+        style:'font:700 13px Inter,system-ui,sans-serif'},orbitSVG,
+        'z'+orbitState.shown+' · outside view');
+    }
+    if(newStep!==null&&reveal.length){
+      if(orbitReduced)reveal.forEach(node=>node.classList.add('is-revealed'));
+      else requestAnimationFrame(()=>reveal.forEach(node=>node.classList.add('is-revealed')));
+    }
+  }
+  function orbitStop(){
+    orbitState.timers.forEach(timer=>clearTimeout(timer));
+    orbitState.timers=[];
+    orbitState.playing=false;
+    orbitStart.disabled=false;
+  }
+  function orbitUpdateRows(){
+    for(let n=0;n<orbitRows.length;n++){
+      const el=orbitRows[n],visible=n<=orbitState.shown;
+      el.classList.toggle('is-shown',visible);
+      el.classList.toggle('is-current',visible&&n===orbitState.shown);
+      el.classList.toggle('is-offscreen',visible&&n>0&&!orbitInside(orbitState.points[n]));
+      const label=el.querySelector('strong');
+      if(visible)label.textContent=orbitComplexLabel(orbitState.points[n]);
+      else label.textContent=n===1?'Press Iterate':'Not shown yet';
+    }
+  }
+  function orbitResetView(){
+    orbitStop();
+    orbitState.t=Number(orbitSlider.value);
+    orbitState.points=orbitCompute(orbitState.t);
+    orbitState.shown=0;
+    orbitReadout.textContent='t = '+(orbitState.t>0?'+':'')+orbitState.t.toFixed(3);
+    orbitStart.textContent='Iterate five times →';
+    orbitUpdateRows();
+    orbitRender(null);
+    orbitStatus.textContent='Starting at z₀ = '+orbitComplexLabel(orbitState.points[0])+'.';
+  }
+  function orbitReveal(n){
+    orbitState.shown=n;
+    orbitUpdateRows();
+    orbitRender(n);
+    const p=orbitState.points[n];
+    orbitStatus.textContent=
+      'Step '+n+' of 5: '+orbitComplexLabel(p)+
+      (!p?' (precision limit)':orbitInside(p)?'':' (outside the plotted window)');
+    if(n===5){
+      orbitState.playing=false;
+      orbitState.timers=[];
+      orbitStart.disabled=false;
+      orbitStart.textContent='Play again →';
+    }
+  }
+  orbitSlider.addEventListener('input',orbitResetView);
+  orbitReset.addEventListener('click',orbitResetView);
+  orbitStart.addEventListener('click',()=>{
+    orbitStop();
+    orbitState.shown=0;
+    orbitUpdateRows();
+    orbitRender(null);
+    orbitState.playing=true;
+    orbitStart.disabled=true;
+    orbitStatus.textContent='Iterating F(z) five times…';
+    for(let n=1;n<=5;n++){
+      orbitState.timers.push(setTimeout(()=>orbitReveal(n),n*(orbitReduced?210:ORBIT_PAUSE)));
+    }
+  });
+  orbitResetView();
+
   // SECTION 05B: A finite orbit-threshold image of ONE complex Collatz
   // interpolation. Crossing the threshold does not prove divergence.
   // The orbit data are never treated as Julia/Mandelbrot membership.
