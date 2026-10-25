@@ -7,8 +7,8 @@
   <meta name="description" content="Explore fractals, inverse Collatz trees, complex numbers, and the Julia and Mandelbrot sets through interactive mathematics.">
   <title>Fractals · Early Draft | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
-  <link rel="stylesheet" href="fractals-draft.css?v=20261025-early-review-1">
-  <script src="fractals-draft.js?v=20261025-detail-2" defer></script>
+  <link rel="stylesheet" href="fractals-draft.css?v=20261025-complex-landscape-1">
+  <script src="fractals-draft.js?v=20261025-complex-landscape-1" defer></script>
 </head>
 <body class="fractal-page">
   <header class="site-header">
@@ -115,7 +115,7 @@
         <p>Consider the deceptively simple iteration <strong>z<sub>n+1</sub> = z<sub>n</sub>² + c</strong>. Repeat it, and ask whether the values remain bounded or eventually escape. The answer depends on what we choose to hold fixed.</p>
       </div>
       <fieldset class="fractal-palette-picker" id="fractal-palette-picker">
-        <legend>Choose a colour palette <span>Both explorers update together. Only the appearance changes, not the mathematics.</span></legend>
+        <legend>Choose a colour palette <span>All three landscapes update together. Only the appearance changes, not the mathematics.</span></legend>
         <div class="fractal-palette-options">
           <label class="fractal-palette-option">
             <input type="radio" name="fractal-palette" value="ocean">
@@ -211,6 +211,36 @@
           <p>This is a single iterate of the complex extension. It is <strong>not</strong> the classical Mandelbrot map, and one calculation cannot establish what happens after infinitely many steps.</p>
         </div>
       </div>
+      <section class="fractal-collatz-landscape" id="complex-collatz-explorer" aria-labelledby="fractal-collatz-landscape-title">
+        <div class="fractal-collatz-landscape-heading">
+          <p class="fractal-tool-label">EXPLORE THE COMPLEX EXTENSION</p>
+          <h3 id="fractal-collatz-landscape-title">What happens when we iterate F(z)?</h3>
+          <p>Now test a whole region of the complex plane. Each point is a starting value. The colours show how many steps pass before its orbit <strong>first exceeds magnitude 40</strong>, within a maximum of <strong>24 iterations</strong>. Dark points did not cross that threshold in our finite test.</p>
+        </div>
+        <div class="fractal-collatz-landscape-layout">
+          <div class="fractal-collatz-plot">
+            <canvas id="collatz-complex-canvas" role="img" tabindex="0" aria-label="Interactive experiment with the complex Collatz interpolation F(z). Colour represents the first of at most 24 steps in which orbit magnitude exceeds 40. Dark does not mean proved bounded. Click to zoom."></canvas>
+            <div class="fractal-collatz-plot-readout" id="collatz-complex-status" aria-live="polite">Scroll here to calculate the landscape.</div>
+          </div>
+          <div class="fractal-collatz-controls">
+            <label for="collatz-complex-view">Explore a region</label>
+            <select id="collatz-complex-view">
+              <option value="near-zero">Near the origin</option>
+              <option value="near-three">Near 3</option>
+              <option value="wide">Wider view</option>
+            </select>
+            <div class="fractal-render-buttons" aria-label="Complex Collatz explorer zoom controls">
+              <button type="button" data-complex-action="in" aria-label="Zoom into complex Collatz landscape">+</button>
+              <button type="button" data-complex-action="out" aria-label="Zoom out of complex Collatz landscape">−</button>
+              <button type="button" data-complex-action="reset">Reset</button>
+            </div>
+            <p class="fractal-collatz-key"><span class="fractal-collatz-key-dot"></span><strong>Coloured:</strong> threshold crossed within 24 steps.</p>
+            <p class="fractal-collatz-key"><span class="fractal-collatz-key-dot dark"></span><strong>Dark:</strong> threshold not crossed in 24 steps.</p>
+            <p class="fractal-collatz-plot-hint">Click or tap to zoom toward a point. Shift-click to zoom out. Arrow keys pan; + / − zoom; R resets.</p>
+          </div>
+        </div>
+        <p class="fractal-collatz-accuracy"><strong>Important:</strong> This is an experiment with one particular complex extension of the Collatz rule. Crossing a threshold does not prove an orbit diverges forever, and remaining dark does not prove an orbit is bounded. Neither outcome proves or disproves the original integer Collatz conjecture.</p>
+      </section>
       <div class="fractal-research-note">
         <h3>One more twist: there's more than one way to extend Collatz.</h3>
         <p>The agreement on integers does <strong>not</strong> determine a unique complex function. Letherman, Schleicher and Wood investigated holomorphic extensions and their dynamics; Dumont and Reiter visualized other complex generalizations; Joseph L. Pe examined a different parity-inspired rule in the complex plane. <a href="#sources">[6–8]</a></p>
