@@ -402,3 +402,13 @@
   transform:none!important;
   transition:none!important;
 }
+/* Let the reader follow one moving 3 without a competing label. */
+.sticky-stage .primary-sequence-row .row-label {
+  transition:opacity .33s ease;
+}
+.sticky-stage.pattern-handoff-running .primary-sequence-row .row-label {
+  opacity:0;
+}
+@media(prefers-reduced-motion:reduce) {
+  .sticky-stage .primary-sequence-row .row-label {transition:none;}
+}
