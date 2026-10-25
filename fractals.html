@@ -7,8 +7,8 @@
   <meta name="description" content="Explore fractals, inverse Collatz trees, complex numbers, and the Julia and Mandelbrot sets through interactive mathematics.">
   <title>Fractals · Early Draft | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
-  <link rel="stylesheet" href="fractals-draft.css?v=20261025-orbit-layout-fix-3">
-  <script src="fractals-draft.js?v=20261025-orbit-init-fix-2" defer></script>
+  <link rel="stylesheet" href="fractals-draft.css?v=20261025-one-step-bridge-1">
+  <script src="fractals-draft.js?v=20261025-one-step-bridge-1" defer></script>
 </head>
 <body class="fractal-page">
   <header class="site-header">
@@ -192,7 +192,7 @@
         <h2 id="fractal-collatz-complex-title">Can we bring Collatz into the complex plane?</h2>
         <p>Our original rule asks whether an <em>integer</em> is odd or even. But what would “odd” mean for <strong>3 + 0.2i</strong>? It doesn't mean anything under the usual definition of parity. We need a new idea.</p>
       </div>
-      <div class="fractal-complex-explanation">
+      <div class="fractal-split fractal-complex-pair">
         <div class="fractal-prose">
           <h3>Extend the rule without losing the integers.</h3>
           <p>One approach is to construct an <strong>interpolating function</strong>: a function agreeing with our original Collatz rule at every integer, while also accepting real and complex inputs. This particular trigonometric interpolation is discussed in Marc Chamberland's survey alongside a related formula for the <em>shortcut</em> Collatz rule, where odd integers undergo an immediate division by 2. <a href="#sources">[5]</a></p>
@@ -200,13 +200,30 @@
           <p>At an even integer the cosine-squared term is 1 and the sine-squared term is 0, so the function halves the number. At an odd integer, the roles swap, giving <strong>3n + 1</strong>. The original rule is preserved.</p>
           <p>Beyond the integers, something completely new happens. We can iterate <strong>F(z)</strong> for complex z-values and investigate orbits, stable behaviour and the boundaries separating different outcomes.</p>
         </div>
+        <div class="fractal-try-panel fractal-one-step-panel">
+          <p class="fractal-tool-label">TRY A POINT JUST ABOVE 3</p>
+          <h3>What changes when we leave the real axis?</h3>
+          <p class="fractal-one-step-intro">Start at <strong>z₀ = 3 + ti</strong>. Slide <strong>t</strong> away from zero to see where one application of the complex Collatz rule takes us.</p>
+          <label for="imag-offset">Imaginary offset <strong id="imag-offset-value">t = 0.00</strong></label>
+          <input id="imag-offset" type="range" min="0" max="0.6" value="0" step="0.01">
+          <div class="fractal-one-step-scale" aria-hidden="true"><span>0</span><span>0.3</span><span>0.6</span></div>
+          <div class="fractal-one-step-plane">
+            <svg id="one-step-complex-svg" viewBox="0 0 420 215" role="img" aria-label="Small labelled complex plane showing the starting value 3 plus t times i and the result after one step of the complex Collatz function.">
+              <title>One step from 3 plus t times i</title>
+            </svg>
+          </div>
+          <div class="fractal-complex-result"><span>START · z₀</span><strong id="complex-start">3.000 + 0.000i</strong></div>
+          <div class="fractal-complex-arrow" aria-hidden="true">↓ F(z)</div>
+          <div class="fractal-complex-result"><span>AFTER ONE STEP · z₁</span><strong id="complex-output">10.000 + 0.000i</strong></div>
+          <p class="fractal-one-step-note">One step is only the beginning. Next, follow the point through <strong>five iterations</strong>.</p>
+        </div>
       </div>
       <section class="fractal-orbit-lab" id="five-complex-iterations" aria-labelledby="fractal-orbit-heading">
         <div class="fractal-orbit-head">
           <p class="fractal-tool-label">FROM ONE STEP TO FIVE · FOLLOW ONE COMPLEX ORBIT</p>
-          <h3 id="fractal-orbit-heading">What changes when we leave the real axis?</h3>
+          <h3 id="fractal-orbit-heading">Now follow the orbit.</h3>
           <p>On the real axis, the familiar journey begins <strong>3 → 10 → 5 → 16 → 8 → 4</strong>. But a tiny imaginary offset may send these five steps to very different places.</p>
-          <p>Start at <strong>z₀ = 3 + ti</strong>. Here <strong>t</strong> is the imaginary offset you choose, not the parameter c in the Julia and Mandelbrot explorers. Move the slider, click <strong>Iterate five times</strong>, and follow each numbered point across the labelled complex plane.</p>
+          <p>Choose a starting value <strong>z₀ = 3 + ti</strong> and click <strong>Iterate five times</strong>. Watch each point appear in sequence on the labelled complex plane. Here <strong>t</strong> controls only the starting imaginary offset.</p>
         </div>
         <div class="fractal-orbit-toolbar">
           <div class="fractal-orbit-slider">
