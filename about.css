@@ -125,3 +125,8 @@ body.about-page{min-width:0;overflow-x:hidden;color:#f4f7ff;background:#060a13;}
   .about-person-info{padding:25px 23px 29px;}
   .about-person-info>p:not(.about-person-role,.about-person-affiliation,.about-photo-note){font-size:15px;}
 }
+
+
+/* Portrait labels removed: allow both photos to sit naturally centered. */
+.about-person-visual{padding-bottom:20px;}
+@media(max-width:530px){.about-person-visual{padding-bottom:20px;}}
