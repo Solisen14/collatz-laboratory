@@ -339,6 +339,7 @@
       for(const [name,entry] of Object.entries(data)){
         if(entry.everRendered)renderFractal(name);
       }
+      if(complexExplorer.everRendered)renderComplexLandscape();
     });
   });
 
@@ -367,6 +368,144 @@
   slider.addEventListener('input',updateComplexCollatz);
   updateComplexCollatz();
 
+
+  // SECTION 05B: A finite orbit-threshold image of ONE complex Collatz
+  // interpolation. Crossing the threshold does not prove divergence.
+  // The orbit data are never treated as Julia/Mandelbrot membership.
+  const complexViews={
+    'near-zero':{x:0.75,y:0,span:3.15},
+    'near-three':{x:3,y:0,span:2.55},
+    'wide':{x:1.3,y:0,span:7.5}
+  };
+  const complexExplorer={
+    canvas:$('collatz-complex-canvas'),
+    status:$('collatz-complex-status'),
+    view:$('collatz-complex-view'),
+    x:0.75,y:0,span:3.15,
+    token:0,everRendered:false
+  };
+  const COMPLEX_ITERATIONS=24;
+  const COMPLEX_THRESHOLD=40;
+  function complexFirstCrossing(real,imag) {
+    for(let i=1;i<=COMPLEX_ITERATIONS;i++){
+      const result=chamberland(real,imag);
+      real=result.re;imag=result.im;
+      if(!Number.isFinite(real)||!Number.isFinite(imag))return {step:i,mag:COMPLEX_THRESHOLD*2};
+      const mag=Math.hypot(real,imag);
+      if(mag>COMPLEX_THRESHOLD)return {step:i,mag};
+    }
+    return {step:0,mag:0};
+  }
+  function renderComplexLandscape() {
+    const s=complexExplorer,canvas=s.canvas;
+    const ctx=canvas.getContext('2d',{alpha:false});
+    const {w,h}=canvasFit(canvas,ctx,550);
+    const img=ctx.createImageData(w,h),pixels=img.data;
+    const generation=++s.token;
+    const spanY=s.span*h/w;
+    const left=s.x-s.span/2, top=s.y+spanY/2;
+    const dx=s.span/w,dy=spanY/h;
+    s.everRendered=true;
+    s.status.textContent='Calculating…';
+    let row=0;
+    function work() {
+      if(generation!==s.token)return;
+      const start=row;
+      const deadline=performance.now()+11;
+      do {
+        const im=top-(row+.5)*dy;
+        for(let col=0;col<w;col++){
+          const re=left+(col+.5)*dx;
+          const out=complexFirstCrossing(re,im);
+          const k=4*(row*w+col);
+          if(out.step===0){
+            pixels[k]=4;pixels[k+1]=9;pixels[k+2]=20;
+          }else{
+            // Reuse the SAME selected colour palette as the two
+            // quadratic explorers. This does not alter any orbit.
+            const smooth=out.step*3.6+0.75*Math.log2(1+out.mag);
+            const rgb=palettes[currentPalette][paletteIndex(smooth)];
+            pixels[k]=rgb[0];pixels[k+1]=rgb[1];pixels[k+2]=rgb[2];
+          }
+          pixels[k+3]=255;
+        }
+        row++;
+      } while(row<h && performance.now()<deadline);
+      ctx.putImageData(img,0,0,0,start,w,row-start);
+      if(row<h){requestAnimationFrame(work);return;}
+      // Faint real and imaginary axes help locate the integer rule.
+      ctx.save();
+      ctx.strokeStyle='rgba(220,240,255,0.36)';
+      ctx.lineWidth=Math.max(1,w/550);
+      if(left<0 && left+s.span>0){
+        const axisX=-left/dx;
+        ctx.beginPath();ctx.moveTo(axisX,0);ctx.lineTo(axisX,h);ctx.stroke();
+      }
+      if(top>0 && top-spanY<0){
+        const axisY=top/dy;
+        ctx.beginPath();ctx.moveTo(0,axisY);ctx.lineTo(w,axisY);ctx.stroke();
+      }
+      ctx.restore();
+      const zoom=complexViews[s.view.value].span/s.span;
+      s.status.textContent='24 steps · first crossing |Fⁿ(z)| > 40 · Zoom ×'+
+        (zoom<10?zoom.toFixed(1):Math.round(zoom).toLocaleString());
+    }
+    requestAnimationFrame(work);
+  }
+  function complexZoomAt(px,py,factor) {
+    const s=complexExplorer;
+    const bounds=s.canvas.getBoundingClientRect();
+    if(!bounds.width||!bounds.height)return;
+    const hitX=s.x+(px-.5)*s.span;
+    const hitY=s.y-(py-.5)*s.span*bounds.height/bounds.width;
+    const newSpan=Math.max(0.00001,Math.min(12,s.span*factor));
+    if(newSpan===s.span)return;
+    const ratio=newSpan/s.span;
+    s.x=hitX+(s.x-hitX)*ratio;
+    s.y=hitY+(s.y-hitY)*ratio;
+    s.span=newSpan;
+    renderComplexLandscape();
+  }
+  function resetComplexLandscape() {
+    const v=complexViews[complexExplorer.view.value];
+    complexExplorer.x=v.x;
+    complexExplorer.y=v.y;
+    complexExplorer.span=v.span;
+    renderComplexLandscape();
+  }
+  complexExplorer.view.addEventListener('change',resetComplexLandscape);
+  complexExplorer.canvas.addEventListener('click',event=>{
+    const rect=complexExplorer.canvas.getBoundingClientRect();
+    complexZoomAt(
+      (event.clientX-rect.left)/rect.width,
+      (event.clientY-rect.top)/rect.height,
+      event.shiftKey?1.8:.55
+    );
+  });
+  complexExplorer.canvas.addEventListener('keydown',event=>{
+    if(['+','=','Enter',' '].includes(event.key)){event.preventDefault();complexZoomAt(.5,.5,.55);}
+    else if(['-','_'].includes(event.key)){event.preventDefault();complexZoomAt(.5,.5,1.8);}
+    else if(event.key==='r'||event.key==='R'){event.preventDefault();resetComplexLandscape();}
+    else {
+      const motion={
+        ArrowLeft:[-.14,0],ArrowRight:[.14,0],
+        ArrowUp:[0,.14],ArrowDown:[0,-.14]
+      }[event.key];
+      if(motion){
+        event.preventDefault();
+        complexExplorer.x+=motion[0]*complexExplorer.span;
+        complexExplorer.y+=motion[1]*complexExplorer.span;
+        renderComplexLandscape();
+      }
+    }
+  });
+  document.querySelectorAll('button[data-complex-action]').forEach(button=>{
+    button.addEventListener('click',()=>{
+      if(button.dataset.complexAction==='reset')resetComplexLandscape();
+      else complexZoomAt(.5,.5,button.dataset.complexAction==='in'?.55:1.8);
+    });
+  });
+
   // No computation until the relevant canvas is scrolled near the viewport.
   // This keeps the introduction responsive even on older devices.
   if('IntersectionObserver' in window){
@@ -380,8 +519,18 @@
     },{rootMargin:'250px'});
     seen.observe(data.julia.canvas);
     seen.observe(data.mandelbrot.canvas);
+    const complexSeen=new IntersectionObserver(entries=>{
+      for(const entry of entries){
+        if(entry.isIntersecting){
+          if(!complexExplorer.everRendered)renderComplexLandscape();
+          complexSeen.unobserve(entry.target);
+        }
+      }
+    },{rootMargin:'250px'});
+    complexSeen.observe(complexExplorer.canvas);
   }else{
     renderFractal('julia');renderFractal('mandelbrot');
+    renderComplexLandscape();
   }
   let resizeTimer=0;
   window.addEventListener('resize',()=>{
@@ -389,6 +538,7 @@
     resizeTimer=setTimeout(()=>{
       drawComplex();
       for(const [name,s] of Object.entries(data))if(s.everRendered)renderFractal(name);
+      if(complexExplorer.everRendered)renderComplexLandscape();
     },160);
   },{passive:true});
   drawComplex();
