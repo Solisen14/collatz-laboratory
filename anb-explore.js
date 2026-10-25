@@ -62,78 +62,248 @@
     return {start,values,status,cycleStart:repeatedAt,overshoot,peak};
   }
   function allPaths(a,b){return STARTS.map(n=>trace(n,a,b));}
-  function sceneGeometry(){
-    const maxSteps=Math.max(10,...state.paths.map(p=>p.values.length-1));
-    const maxPeak=Math.max(16,...state.paths.map(p=>Number(p.peak)));
-    const highestPow=Math.max(4,Math.ceil(Math.log2(maxPeak)));
-    const box={left:91,right:1219,top:66,bottom:612};
-    const x=n=>box.left+n/maxSteps*(box.right-box.left);
-    const y=n=>box.bottom-Math.log2(Number(n))/highestPow*(box.bottom-box.top);
-    return {box,maxSteps,highestPow,x,y};
+  // Directed functional graph: one node per distinct integer. Arrows
+  // go from n to T(n). Shared successors are merged, never duplicated.
+  // Cycles are real: we temporarily cut one edge ONLY for the tree layout
+  // and draw that directed cycle-closing edge back in magenta.
+  const GRAPH_EDGES_PER_START=32;
+  const VIEW_WIDTH=1200,VIEW_HEIGHT=730;
+  const camera={scale:1,fit:1,x:0,y:0};
+  const graphState={group:null,world:null,edges:new Map(),nodes:new Map(),timers:[],stats:"",drag:null,suppressClick:false};
+  const nodeKey=n=>String(n);
+  function compactValue(v){
+    const s=String(v);
+    if(s.length<=4)return s;
+    const prefix=s.slice(0,s.length%3||3);
+    const unit=['','k','m','b','t'][Math.floor((s.length-1)/3)]||'e';
+    if(unit==='e')return s.slice(0,3)+'e'+(s.length-3);
+    const rest=s.slice(prefix.length).replace(/^0+/,'');
+    return prefix+(rest?'.'+rest[0]:'')+unit;
   }
-  function plotString(p,g){
-    return p.values.map((v,i)=>(i===0?'M ':' L ')+g.x(i).toFixed(2)+' '+g.y(v).toFixed(2)).join('');
-  }
-  function renderAxes(g){
-    const {box,maxSteps,highestPow,x,y}=g;
-    svg('rect',{x:box.left,y:box.top,width:box.right-box.left,height:box.bottom-box.top,rx:9,
-      fill:'#08182a',stroke:'#2a4765','stroke-opacity':'.55'},root);
-    const layers=svg('g',{},root);
-    for(let e=0;e<=highestPow;e++){
-      if(highestPow>18&&e%2!==0&&e!==highestPow)continue;
-      const val=2**e,py=y(val);
-      svg('line',{'class':'anb-path-gridline',x1:box.left,y1:py,x2:box.right,y2:py},layers);
-      svg('text',{'class':'anb-path-tick',x:box.left-13,y:py+5,'text-anchor':'end'},layers,
-        numberText(val));
-    }
-    const tick=Math.max(1,Math.ceil(maxSteps/10));
-    for(let k=0;k<=maxSteps;k+=tick){
-      const px=x(k);
-      svg('line',{'class':'anb-path-gridline',x1:px,y1:box.top,x2:px,y2:box.bottom},layers);
-      svg('text',{'class':'anb-path-tick',x:px,y:box.bottom+27,'text-anchor':'middle'},layers,k);
-    }
-    svg('line',{'class':'anb-path-axis',x1:box.left,y1:box.bottom,x2:box.right,y2:box.bottom},layers);
-    svg('line',{'class':'anb-path-axis',x1:box.left,y1:box.top,x2:box.left,y2:box.bottom},layers);
-    svg('text',{'class':'anb-path-axis-label',x:(box.left+box.right)/2,y:681,'text-anchor':'middle'},root,
-      'Iteration step  k');
-    svg('text',{'class':'anb-path-axis-label',x:26,y:343,transform:'rotate(-90 26 343)','text-anchor':'middle'},root,
-      'Value  n  (log₂ scale)');
-  }
-  function renderGraph(){
-    cancelAnimationFrame(state.animFrame);
-    root.replaceChildren();
-    svg('title',{},root,'First 25 positive-integer trajectories for '+state.a+'n + '+state.b);
-    svg('desc',{},root,'Each coloured line represents one trajectory using n/2 for even values and an+b for odd values. The horizontal axis is iteration count; the vertical axis shows values on a logarithmic scale. Only a finite number of steps is tested.');
-    const g=sceneGeometry();
-    state.geometry=g;
-    renderAxes(g);
-    const paths=svg('g',{},root);
-    const selected=state.selected;
-    // Draw longer paths behind shorter ones so all 25 can be inspected.
-    const ordered=state.paths.slice().sort((p,q)=>q.values.length-p.values.length);
-    for(const p of ordered){
-      const attrs={'class':'anb-trajectory'+(selected!==null&&(p.start===selected?' is-selected':' is-muted')),
-        d:plotString(p,g),stroke:p.start===selected?'#ffd479':colorFor(p.start),
-        'data-seed':p.start,'aria-label':'Starting '+p.start+': '+labels[p.status],
-        'stroke-width':p.start===selected?5:2.2};
-      const line=svg('path',attrs,paths);
-      svg('title',{},line,'Start '+p.start+' · '+labels[p.status]+' · '+(p.values.length-1)+' steps');
-      // Include a visible point for single-point paths such as seed 1.
-      if(p.values.length===1||p.start===selected){
-        const end=p.values[p.values.length-1],i=p.values.length-1;
-        svg('circle',{'class':'anb-endpoint',cx:g.x(i),cy:g.y(end),
-          r:p.start===selected?7:4,fill:p.start===selected?'#ffd479':colorFor(p.start)},paths);
+  function buildDirectedGraph(){
+    const nodes=new Map(),cycleCuts=new Set(),cycleNodes=new Set();
+    const get=value=>{
+      const id=nodeKey(value);
+      if(!nodes.has(id))nodes.set(id,{id,value,next:null,children:[],depth:0,x:0,y:0,seed:value>=1n&&value<=25n});
+      return nodes.get(id);
+    };
+    let cutPaths=0;
+    for(const p of state.paths){
+      const used=p.values.slice(0,GRAPH_EDGES_PER_START+1);
+      used.forEach(get);
+      for(let i=0;i<used.length-1;i++){
+        const src=get(used[i]),target=get(used[i+1]);
+        if(src.next!==null && src.next!==target.id)throw Error('Inconsistent rule at '+src.id);
+        src.next=target.id;
       }
+      if(p.values.length>used.length)cutPaths++;
     }
-    if(selected!==null){
-      const p=state.paths.find(v=>v.start===selected);
-      if(p)svg('circle',{cx:g.x(0),cy:g.y(p.values[0]),r:7,
-        fill:'#ffd479',stroke:'#071120','stroke-width':2},root);
+    const examined=new Set(),cycles=[];
+    for(const candidate of nodes.values()){
+      if(examined.has(candidate.id))continue;
+      const localIndex=new Map(),chain=[];
+      let id=candidate.id;
+      while(id!==null&&nodes.has(id)&&!examined.has(id)&&!localIndex.has(id)){
+        localIndex.set(id,chain.length);
+        chain.push(id);
+        id=nodes.get(id).next;
+      }
+      if(id!==null&&localIndex.has(id)){
+        const members=chain.slice(localIndex.get(id));
+        cycles.push(members);
+        members.forEach(c=>cycleNodes.add(c));
+        const cut=members.slice().sort((x,y)=>BigInt(x)<BigInt(y)?-1:BigInt(x)>BigInt(y)?1:0)[0];
+        cycleCuts.add(cut);
+      }
+      chain.forEach(v=>examined.add(v));
     }
-    const longest=Math.max(...state.paths.map(p=>p.values.length-1));
-    const highest=state.paths.reduce((v,p)=>p.peak>v?p.peak:v,0n);
-    els.mapStats.textContent=longest+' longest steps · peak '+numberText(highest);
+    for(const node of nodes.values()){
+      if(node.next!==null&&!cycleCuts.has(node.id))nodes.get(node.next).children.push(node);
+    }
+    const roots=[...nodes.values()].filter(n=>n.next===null||cycleCuts.has(n.id))
+      .sort((a,b)=>a.id==='1'?-1:b.id==='1'?1:a.value<b.value?-1:a.value>b.value?1:0);
+    // Every node belongs to exactly one cycle-pruned rooted component.
+    let leafIndex=0,maxDepth=0;
+    const nodeVisited=new Set();
+    function lay(node,depth){
+      if(nodeVisited.has(node.id))throw Error('Layout contains a directed cycle at '+node.id);
+      nodeVisited.add(node.id);
+      node.depth=depth;maxDepth=Math.max(maxDepth,depth);
+      node.children.sort((a,b)=>{
+        const ae=a.value%2n===0n,be=b.value%2n===0n;
+        if(ae!==be)return ae?1:-1; // odd branch to the left of the even trunk
+        return a.value<b.value?-1:a.value>b.value?1:0;
+      });
+      if(!node.children.length){node.x=leafIndex*92;leafIndex++;return;}
+      node.children.forEach(c=>lay(c,depth+1));
+      node.x=(node.children[0].x+node.children[node.children.length-1].x)/2;
+    }
+    roots.forEach((n,i)=>{if(i&&leafIndex>0)leafIndex+=.9;lay(n,0);});
+    for(const n of nodes.values())n.y=(maxDepth-n.depth)*69;
+    if(nodeVisited.size!==nodes.size)throw Error('Layout omitted a graph node');
+    const positions=[...nodes.values()];
+    const minX=Math.min(...positions.map(n=>n.x)),maxX=Math.max(...positions.map(n=>n.x));
+    const minY=Math.min(...positions.map(n=>n.y)),maxY=Math.max(...positions.map(n=>n.y));
+    return {nodes,roots,cycleCuts,cycleNodes,cycles,cutPaths,
+      totalArrows:positions.filter(n=>n.next!==null).length,
+      world:{minX:minX-115,maxX:maxX+115,minY:minY-105,maxY:maxY+105}};
   }
+  function cameraUpdate(){
+    if(graphState.group)graphState.group.setAttribute('transform',
+      'translate('+camera.x.toFixed(3)+' '+camera.y.toFixed(3)+') scale('+camera.scale.toFixed(5)+')');
+  }
+  function fitGraph(){
+    const w=graphState.world;
+    if(!w)return;
+    const width=Math.max(1,w.maxX-w.minX),height=Math.max(1,w.maxY-w.minY);
+    camera.scale=Math.min((VIEW_WIDTH-58)/width,(VIEW_HEIGHT-60)/height);
+    camera.fit=camera.scale;
+    camera.x=VIEW_WIDTH/2-camera.scale*(w.minX+w.maxX)/2;
+    camera.y=VIEW_HEIGHT/2-camera.scale*(w.minY+w.maxY)/2;
+    cameraUpdate();
+  }
+  function zoomGraph(factor,pX=VIEW_WIDTH/2,pY=VIEW_HEIGHT/2){
+    const newScale=Math.max(camera.fit*.45,Math.min(Math.max(2.8,camera.fit*17),camera.scale*factor));
+    const ratio=newScale/camera.scale;
+    camera.x=pX-(pX-camera.x)*ratio;
+    camera.y=pY-(pY-camera.y)*ratio;
+    camera.scale=newScale;
+    cameraUpdate();
+  }
+  function svgPointFromEvent(event){
+    const rect=root.getBoundingClientRect();
+    return {x:(event.clientX-rect.left)*VIEW_WIDTH/rect.width,
+      y:(event.clientY-rect.top)*VIEW_HEIGHT/rect.height};
+  }
+  function graphEdgePath(a,b,cycle){
+    const dx=b.x-a.x,dy=b.y-a.y;
+    if(cycle){
+      if(a===b)return 'M '+(a.x+25)+' '+a.y+' C '+(a.x+115)+' '+(a.y-90)+' '+(a.x+95)+' '+(a.y+90)+' '+(a.x+18)+' '+(a.y+17);
+      const right=Math.max(a.x,b.x)+Math.max(95,Math.abs(dx)*.18+65);
+      return 'M '+(a.x+20)+' '+a.y+' C '+right+' '+(a.y-24)+' '+right+' '+(b.y+24)+' '+(b.x+20)+' '+b.y;
+    }
+    const length=Math.max(1,Math.hypot(dx,dy)),ux=dx/length,uy=dy/length;
+    const sx=a.x+ux*24,sy=a.y+uy*24,ex=b.x-ux*28,ey=b.y-uy*28;
+    return 'M '+sx.toFixed(1)+' '+sy.toFixed(1)+' L '+ex.toFixed(1)+' '+ey.toFixed(1);
+  }
+  function renderGraph(preserveCamera=false){
+    clearAnimation();
+    const graph=buildDirectedGraph();
+    graphState.data=graph;
+    graphState.world=graph.world;
+    root.replaceChildren();
+    root.setAttribute('viewBox','0 0 '+VIEW_WIDTH+' '+VIEW_HEIGHT);
+    svg('title',{},root,'Directed integer graph for '+state.a+'n + '+state.b+', showing paths from positive starts 1 to 25');
+    svg('desc',{},root,'Unique integer nodes connect by arrows pointing toward the next term. Cyan arrows divide even numbers by two; gold arrows apply the odd a n plus b rule. Magenta links close any cycles.');
+    const defs=svg('defs',{},root);
+    for(const [kind,color] of [['even','#7ae7ff'],['odd','#ffd479'],['cycle','#ff78b8']]){
+      const marker=svg('marker',{id:'anb-arrow-'+kind,viewBox:'0 0 10 10',
+        refX:9,refY:5,markerWidth:7,markerHeight:7,orient:'auto',markerUnits:'userSpaceOnUse'},defs);
+      svg('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:color},marker);
+    }
+    svg('rect',{width:VIEW_WIDTH,height:VIEW_HEIGHT,fill:'#071120'},root);
+    const world=svg('g',{'class':'anb-world'},root);
+    graphState.group=world;graphState.edges=new Map();graphState.nodes=new Map();
+    const edges=svg('g',{'class':'anb-graph-links'},world);
+    const allNodes=svg('g',{'class':'anb-graph-nodes'},world);
+    const chosen=state.paths.find(p=>p.start===state.selected);
+    const highlightNodes=new Set(chosen?chosen.values.slice(0,GRAPH_EDGES_PER_START+1).map(nodeKey):[]);
+    const highlightEdges=new Set();
+    if(chosen){
+      for(let i=0;i<chosen.values.length-1&&i<GRAPH_EDGES_PER_START;i++)
+        highlightEdges.add(nodeKey(chosen.values[i])+'>'+nodeKey(chosen.values[i+1]));
+    }
+    for(const node of graph.nodes.values()){
+      if(node.next===null)continue;
+      const dest=graph.nodes.get(node.next);
+      const cycle=graph.cycleCuts.has(node.id);
+      const odd=node.value%2n!==0n;
+      const type=cycle?'cycle':odd?'odd':'even';
+      const chosenEdge=highlightEdges.has(node.id+'>'+node.next);
+      const className='anb-graph-edge anb-'+type+'-edge'+
+        (state.selected!==null?(chosenEdge?' is-highlight':' is-muted'):'');
+      const element=svg('path',{'class':className,
+        d:graphEdgePath(node,dest,cycle),
+        'marker-end':'url(#anb-arrow-'+type+')',
+        'data-edge-from':node.id,'data-edge-to':node.next
+      },edges);
+      svg('title',{},element,node.id+' → '+node.next+' ('+(odd?state.a+'n + '+state.b:'n ÷ 2')+')');
+      graphState.edges.set(node.id+'>'+node.next,element);
+    }
+    for(const node of graph.nodes.values()){
+      const highlighted=highlightNodes.has(node.id);
+      const klass='anb-graph-node'+(node.seed?' is-seed':'')+
+        (graph.cycleNodes.has(node.id)?' is-cycle':'')+
+        (node.id==='1'?' is-one':'')+
+        (state.selected!==null?(highlighted?' is-highlight':' is-muted'):'');
+      const group=svg('g',{'class':klass,'data-node-value':node.id,
+        'role':'button','tabindex':'0','aria-label':'Integer '+node.id+'. Click to trace an associated starting path.'},allNodes);
+      const label=compactValue(node.value),length=label.length;
+      const rx=Math.max(23,12+length*5.5);
+      svg('rect',{x:node.x-rx,y:node.y-23,width:2*rx,height:46,rx:23,'class':'anb-graph-node-shape'},group);
+      svg('text',{x:node.x,y:node.y+5,'class':'anb-graph-node-label','text-anchor':'middle'},group,label);
+      if(node.seed)svg('circle',{cx:node.x+rx-4,cy:node.y-18,r:4,fill:'#ffd479'},group);
+      if(node.next===null&&node.id!=='1'){
+        svg('text',{x:node.x,y:node.y+42,'class':'anb-graph-tail',
+          'text-anchor':'middle'},group,'finite endpoint');
+      }
+      svg('title',{},group,'Integer '+node.id+(node.seed?' · one of the 25 starting values':'')+
+        (graph.cycleNodes.has(node.id)?' · observed cycle':''));
+      graphState.nodes.set(node.id,group);
+    }
+    if(!preserveCamera||!camera.fit)fitGraph();
+    else cameraUpdate();
+    graphState.stats=graph.nodes.size+' distinct integers · '+graph.totalArrows+
+      ' arrows · '+graph.roots.length+' component'+(graph.roots.length===1?'':'s')+
+      (graph.cutPaths?' · '+graph.cutPaths+' paths truncated on graph':'');
+    els.mapStats.textContent=graphState.stats;
+  }
+  // The graph remains in the fixed SVG viewport and moves under the camera.
+  // Keep buttons, wheel-zoom and pointer pan reversible, with keyboard access.
+  const graphZoomIn=$('anb-zoom-in'),graphZoomOut=$('anb-zoom-out'),graphFit=$('anb-fit');
+  graphZoomIn.addEventListener('click',()=>zoomGraph(1.3));
+  graphZoomOut.addEventListener('click',()=>zoomGraph(1/1.3));
+  graphFit.addEventListener('click',fitGraph);
+  root.addEventListener('wheel',event=>{
+    event.preventDefault();
+    const p=svgPointFromEvent(event);
+    zoomGraph(event.deltaY<0?1.15:1/1.15,p.x,p.y);
+  },{passive:false});
+  root.addEventListener('pointerdown',event=>{
+    if(event.button!==0)return;
+    graphState.drag={x:event.clientX,y:event.clientY,
+      baseX:camera.x,baseY:camera.y,moved:false};
+    if(root.setPointerCapture)root.setPointerCapture(event.pointerId);
+  });
+  root.addEventListener('pointermove',event=>{
+    const drag=graphState.drag;
+    if(!drag)return;
+    const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
+    if(Math.hypot(dx,dy)>4)drag.moved=true;
+    if(!drag.moved)return;
+    const rect=root.getBoundingClientRect();
+    camera.x=drag.baseX+dx*VIEW_WIDTH/rect.width;
+    camera.y=drag.baseY+dy*VIEW_HEIGHT/rect.height;
+    cameraUpdate();
+  });
+  function pointerRelease(event){
+    if(!graphState.drag)return;
+    if(graphState.drag.moved){
+      graphState.suppressClick=true;
+      setTimeout(()=>{graphState.suppressClick=false;},0);
+    }
+    graphState.drag=null;
+    if(root.hasPointerCapture&&root.hasPointerCapture(event.pointerId))
+      root.releasePointerCapture(event.pointerId);
+  }
+  root.addEventListener('pointerup',pointerRelease);
+  root.addEventListener('pointercancel',pointerRelease);
+  root.addEventListener('keydown',event=>{
+    if(event.target!==root)return;
+    if(['+','='].includes(event.key)){event.preventDefault();zoomGraph(1.3);}
+    if(event.key==='-'){event.preventDefault();zoomGraph(1/1.3);}
+    if(event.key.toLowerCase()==='f'){event.preventDefault();fitGraph();}
+  });
   function renderSeedButtons(){
     els.seedGrid.replaceChildren();
     for(const p of state.paths){
