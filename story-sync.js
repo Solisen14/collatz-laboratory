@@ -228,7 +228,6 @@ function syncStoryCopy() {
   if (heroSub) heroSub.textContent = "Discover and Explore the Collatz Conjecture.";
 
   setStoryCard("intro", `
-    <p class="step-number">01.1</p>
     <h3>BEGIN WITH A SINGLE POSITIVE INTEGER</h3>
     <p>Let’s start with 3.</p>
     <p>Scroll slowly. The sequence will build from left to right.</p>
@@ -263,7 +262,7 @@ function syncStoryCopy() {
   `);
 
   setStoryCard("conjecture", `
-    <p class="step-number">A FIRST CONJECTURE</p>
+    <p class="step-number">A CONJECTURE</p>
     <h3>Under these rules, every positive integer reaches 1 after exactly 7 steps.</h3>
     <p>Three examples agree. Is that enough?</p>
   `);
