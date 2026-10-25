@@ -16,8 +16,8 @@
 
     "choose-seven": { chapter: "03", kicker: "TRY 20 AND 21" },
 
-    conjecture: { chapter: "04", kicker: "FIRST CONJECTURE" },
-    "conjecture-big": { chapter: "04", kicker: "FIRST CONJECTURE" },
+    conjecture: { chapter: "04", kicker: "A CONJECTURE" },
+    "conjecture-big": { chapter: "04", kicker: "A CONJECTURE" },
 
     "test-conjecture": { chapter: "05", kicker: "TEST THE CONJECTURE" },
     refine: { chapter: "06", kicker: "BREAK / REFINE THE CONJECTURE" },
