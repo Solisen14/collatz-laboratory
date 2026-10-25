@@ -290,3 +290,39 @@
 @media(prefers-reduced-motion:reduce){
   .history-page .history-event,.history-page .history-node{transition:none!important;transform:none!important;opacity:1!important;}
 }
+
+/* History illustration refinements: edit only display crop, not Commons original. */
+.history-erdos-tao .history-photo-viewport{
+  display:block;
+  overflow:hidden;
+  width:100%;
+  aspect-ratio:515 / 260;
+  border-radius:13px;
+  background:#050b16;
+}
+.history-erdos-tao .history-photo-viewport img{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:none;
+  max-height:none;
+  object-fit:cover;
+  object-position:center center;
+  border-radius:0;
+  transform:none;
+}
+.history-angle-path .history-angle-link{
+  display:block;
+  overflow:hidden;
+  background:#071022;
+  border:1px solid rgba(140,181,232,.14);
+  border-radius:14px;
+}
+.history-angle-path .history-angle-link img{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:none;
+  border-radius:0;
+  object-fit:contain;
+}
