@@ -315,3 +315,56 @@
   border-radius:0;
   object-fit:contain;
 }
+
+
+/* Origins: portrait + Story-derived directed graph, kept together as
+   a single visual pair without altering Collatz's photo or its credits. */
+.history-page .history-origins-visuals{
+  display:grid;
+  grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);
+  gap:20px;
+  align-items:start;
+  margin:22px 0 8px;
+}
+.history-page .history-origins-visuals .history-feature-image{
+  min-width:0;
+  margin:0;
+}
+.history-page .history-origins-portrait img{
+  display:block;
+  width:auto;
+  max-width:100%;
+  height:auto;
+  max-height:410px;
+  object-fit:contain;
+}
+.history-page .history-origins-graph-link{
+  display:block;
+  width:100%;
+  max-width:350px;
+  overflow:hidden;
+  border:1px solid rgba(133,187,231,.23);
+  border-radius:13px;
+  background:#071021;
+  box-shadow:0 12px 32px rgba(1,4,13,.2);
+}
+.history-page .history-origins-graph-link img{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:none;
+  object-fit:contain;
+  border-radius:0;
+  transition:transform .35s ease;
+}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .history-page .history-origins-graph-link:hover img{transform:scale(1.018);}
+}
+@media(max-width:900px){
+  .history-page .history-origins-visuals{grid-template-columns:1fr;gap:24px;}
+  .history-page .history-origins-portrait img{max-height:400px;}
+  .history-page .history-origins-graph-link{max-width:350px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .history-page .history-origins-graph-link img{transition:none;}
+}
