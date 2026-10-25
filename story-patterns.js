@@ -176,42 +176,59 @@
     chosen.style.setProperty('--focus-y',(target.y-centreY).toFixed(2)+'px');
   }
 
-  // Keep the focused 3 in place across the DOM switch, then physically
-  // carry that same visual into the first actual SVG node. Start the overlay
-  // BEFORE rendering the new scene to prevent a one-frame disappearing act.
+  // The focused 3 is still part of the integer grid at the transition.
+  // Keep an exact visual facsimile at its PRESENT on-screen geometry before
+  // the grid is replaced; morph it into the measured destination SVG node.
   let handoff=null;
   function stopHandoff(){
     if(!handoff)return;
-    const ongoing=handoff;
+    const previous=handoff;
     handoff=null;
-    if(ongoing.animation) ongoing.animation.cancel();
-    ongoing.ghost.remove();
-    stage.classList.remove('pattern-handoff-running');
-    const target=holder.querySelector('.primary-node[data-row-start="3"][data-node-index="0"]');
-    if(target){
-      target.style.transition='none';
-      // Reveal the real 3 in exactly the same frame as the overlay leaves.
-      requestAnimationFrame(()=>target.style.removeProperty('transition'));
+    if(previous.fadeTimer!==null)window.clearTimeout(previous.fadeTimer);
+    if(previous.animation)previous.animation.cancel();
+    previous.ghost.remove();
+    const actual=holder.querySelector('.primary-node[data-row-start="3"][data-node-index="0"]');
+    // Remove both stage controls in the same turn: the visible real node
+    // replaces the faded ghost, including after rapid/reverse scrolling.
+    if(actual){
+      actual.style.transition='none';
+      actual.classList.add('visible');
     }
+    stage.classList.remove('pattern-handoff-running','pattern-handoff-settling');
+    if(actual)requestAnimationFrame(()=>actual.style.removeProperty('transition'));
   }
-  function startHandoff(from){
-    if(!from || (reduced && reduced.matches))return false;
-    if(!(from.width>0 && from.height>0))return false;
+  function startHandoff(chosen){
+    if(!chosen || (reduced && reduced.matches))return false;
     if(!window.Element || typeof Element.prototype.animate!=='function')return false;
+    const from=chosen.getBoundingClientRect();
+    if(!(from.width>0 && from.height>0))return false;
+
+    // A stock ghost uses a different font, colour and circle outline, and
+    // visually jumps even if its position matches. Take the real tile's
+    // effective type size, border, background and colours instead.
+    const computed=window.getComputedStyle(chosen);
+    const visualScale=from.width/Math.max(1,chosen.offsetWidth);
     const ghost=document.createElement('div');
     ghost.className='pattern-handoff-ghost';
     ghost.textContent='3';
     ghost.setAttribute('aria-hidden','true');
     Object.assign(ghost.style,{
-      left:from.left+'px',top:from.top+'px',
-      width:from.width+'px',height:from.height+'px',
-      fontSize:Math.max(18,from.height*.37)+'px'
+      left:from.left+'px',
+      top:from.top+'px',
+      width:from.width+'px',
+      height:from.height+'px',
+      fontSize:(parseFloat(computed.fontSize)*visualScale)+'px',
+      fontWeight:computed.fontWeight,
+      color:computed.color,
+      background:computed.background,
+      borderColor:computed.borderColor,
+      borderWidth:(parseFloat(computed.borderTopWidth)*visualScale)+'px',
+      borderStyle:computed.borderStyle,
+      boxShadow:computed.boxShadow
     });
-    // The destination node is hidden by CSS from its very first painted
-    // frame, and the overlay is already present while the DOM is replaced.
     stage.classList.add('pattern-handoff-running');
     document.body.appendChild(ghost);
-    handoff={ghost,animation:null};
+    handoff={ghost,animation:null,fadeTimer:null};
     return true;
   }
   function completeHandoff(){
@@ -219,25 +236,35 @@
     const target=holder.querySelector(
       '.primary-node[data-row-start="3"][data-node-index="0"] circle'
     );
-    if(!target || !target.isConnected){stopHandoff();return;}
+    if(!target||!target.isConnected){stopHandoff();return;}
     const to=target.getBoundingClientRect();
     const ghost=handoff.ghost;
     const from=ghost.getBoundingClientRect();
-    if(!(to.width>0 && to.height>0 && from.width>0)){stopHandoff();return;}
+    if(!(to.width>0&&to.height>0&&from.width>0)){stopHandoff();return;}
+
     const dx=to.left+to.width/2-(from.left+from.width/2);
     const dy=to.top+to.height/2-(from.top+from.height/2);
     const scale=to.width/from.width;
+    // Morph the circle gradually. Blend its different SVG appearance over
+    // the final 22% rather than showing a new circle on the last frame.
     const animation=ghost.animate([
-      {transform:'translate(0,0) scale(1)',opacity:1},
-      {transform:'translate('+dx+'px,'+dy+'px) scale('+scale+')',opacity:1}
+      {offset:0,transform:'translate(0,0) scale(1)',opacity:1},
+      {offset:.78,transform:'translate('+dx+'px,'+dy+'px) scale('+scale+')',opacity:1},
+      {offset:1,transform:'translate('+dx+'px,'+dy+'px) scale('+scale+')',opacity:0}
     ],{
-      duration:1020,
-      easing:'cubic-bezier(.24,.62,.2,1)',
+      duration:1050,
+      easing:'cubic-bezier(.22,.66,.22,1)',
       fill:'forwards'
     });
     handoff.animation=animation;
+    // The real node begins a short fade-in before the facsimile fades out.
+    // Keep the label hidden until the facsimile leaves the stage.
+    handoff.fadeTimer=window.setTimeout(()=>{
+      if(handoff&&handoff.animation===animation)
+        stage.classList.add('pattern-handoff-settling');
+    },820);
     animation.addEventListener('finish',()=>{
-      if(handoff && handoff.animation===animation)stopHandoff();
+      if(handoff&&handoff.animation===animation)stopHandoff();
     },{once:true});
   }
 
@@ -347,15 +374,12 @@
     const isPattern=patternScenes.has(scene);
     const shouldHandoff=was==='pattern-three'&&scene==='intro'
       &&holder.dataset.mode==='pattern-prologue'&&!reduced.matches;
-    // Read the position of the actual, enlarged 3. Its original grid will
-    // be destroyed by the existing scene handler below.
-    let source=null;
-    if(shouldHandoff){
-      const chosen=holder.querySelector('.pattern-integer-field [data-value="3"]');
-      if(chosen)source=chosen.getBoundingClientRect();
-    }
+    // Snapshot the ACTUAL focused tile, not a guessed radius or font size.
+    const chosen=shouldHandoff
+      ? holder.querySelector('.pattern-integer-field [data-value="3"]')
+      : null;
     stopHandoff();
-    const carrying=shouldHandoff && startHandoff(source);
+    const carrying=shouldHandoff && startHandoff(chosen);
     if(!isPattern) {
       stage.classList.remove('is-pattern-prologue');
       holder.classList.remove('pattern-number-field-mode');
@@ -367,7 +391,10 @@
   };
 
   // Keep focus alignment responsive without recentering the page on resize.
-  window.addEventListener('resize',()=>requestAnimationFrame(focusOnThree),{passive:true});
+  window.addEventListener('resize',()=>{
+    stopHandoff();
+    requestAnimationFrame(focusOnThree);
+  },{passive:true});
 
   // The base script may have selected the first scene during initialization.
   if(patternScenes.has(state.scene)){
