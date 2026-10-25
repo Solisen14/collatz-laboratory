@@ -161,3 +161,16 @@ body.about-page{min-width:0;overflow-x:hidden;color:#f4f7ff;background:#060a13;}
 
 /* Retain a semantic section heading without displaying the retired headline. */
 .about-purpose-heading-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+/* Understated technology and AI acknowledgment beneath the project story. */
+.about-technical-note{
+  display:grid;grid-template-columns:155px minmax(0,1fr);gap:24px;
+  align-items:baseline;padding:0 0 44px;
+}
+.about-technical-note .about-eyebrow{margin:0;}
+.about-technical-note p:not(.about-eyebrow){
+  color:#a9bed3;max-width:860px;font-size:13px;line-height:1.8;margin:0;
+}
+.about-technical-note a{color:#9de9f7;text-underline-offset:3px;}
+.about-technical-note a:hover{color:#d5f8ff;}
+@media(max-width:740px){.about-technical-note{grid-template-columns:1fr;gap:10px;padding-bottom:35px;}}
