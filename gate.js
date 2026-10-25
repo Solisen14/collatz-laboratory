@@ -143,7 +143,10 @@ function installBranchStorySteps() {
   const textStep = storySteps.find(step => step.dataset.scene === "text-placeholder");
   if (!textStep) return;
 
-  const revisit = makeBranchStoryStep("revisit-three", "REVISIT", "Let's revisit the first three paths.");
+  const revisit = makeBranchStoryStep(
+    "revisit-three", "REVISIT", "Let's revisit the first three paths.",
+    "tall-step", "Do you see any repeated values?"
+  );
   const merge = makeBranchStoryStep(
     "merge-three",
     "BRANCHING",
