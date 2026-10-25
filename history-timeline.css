@@ -470,3 +470,211 @@
   .history-page .history-mathematician-portrait img{height:101px;}
   .history-page .history-mathematician-details h5{font-size:16px;}
 }
+
+
+/* 2019: an accessible explanation of logarithmic density with two
+   scroll beats. Numeric highlights are illustrative, never measured data. */
+.history-page .history-tao-definition{
+  margin:25px 0 21px;
+  padding:23px clamp(20px,2.8vw,29px);
+  border:1px solid rgba(174,156,238,.3);
+  border-radius:16px;
+  background:linear-gradient(130deg,rgba(60,46,101,.29),rgba(17,28,51,.64));
+}
+.history-page .history-tao-definition .history-kicker{margin-bottom:9px;}
+.history-page .history-tao-definition h4{
+  margin:0 0 15px;color:#f0e8ff;
+  font-size:clamp(23px,2.35vw,28px);line-height:1.22;letter-spacing:-.035em;
+}
+.history-page .history-tao-definition p{
+  font-size:15px;line-height:1.74;margin:0 0 12px;
+}
+.history-page .history-tao-definition p:last-child{margin-bottom:0;}
+.history-page .history-tao-result-clarification{margin:21px 0 12px;}
+.history-page .history-tao-visual-story{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1.24fr) minmax(0,.76fr);
+  gap:clamp(15px,2vw,24px);
+  align-items:start;
+  margin:28px 0 30px;
+}
+.history-page .history-tao-pin{
+  position:sticky;
+  top:86px;
+  align-self:start;
+  min-width:0;
+  z-index:2;
+}
+.history-page .history-tao-illustration{
+  padding:17px 15px 16px;
+  background:
+    radial-gradient(ellipse at 52% 50%,rgba(26,47,83,.56),transparent 74%),
+    linear-gradient(136deg,#111e35,#080f20);
+  border:1px solid rgba(139,181,228,.28);
+  border-radius:17px;
+  box-shadow:0 15px 45px rgba(2,7,17,.27);
+}
+.history-page .history-tao-visual-head{
+  min-height:42px;
+  display:flex;
+  justify-content:space-between;
+  align-items:start;
+  flex-wrap:wrap;gap:6px 12px;
+  margin-bottom:15px;
+}
+.history-page .history-tao-visual-kicker{
+  color:#8faaca;font-size:10px;letter-spacing:.11em;
+  line-height:1.45;font-weight:780;
+}
+.history-page .history-tao-visual-status{
+  color:#b7c9de;font-size:12px;font-weight:700;
+  transition:color .25s ease;
+}
+.history-page .history-tao-illustration[data-tao-phase="almost"] .history-tao-visual-status{color:#7ae7ff;}
+.history-page .history-tao-illustration[data-tao-phase="every"] .history-tao-visual-status{color:#ffd479;}
+.history-page .history-tao-integer-grid{
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  gap:clamp(3px,.44vw,5px);
+}
+.history-page .history-tao-number{
+  display:grid;
+  place-items:center;
+  aspect-ratio:1;
+  min-width:0;
+  color:#8196b2;
+  border:1px solid rgba(134,167,215,.21);
+  border-radius:50%;
+  background:rgba(6,16,31,.82);
+  font-size:clamp(9px,1vw,12px);
+  font-variant-numeric:tabular-nums;
+  font-weight:650;
+  line-height:1;
+  transition:color .5s ease,background .5s ease,border-color .5s ease,
+    box-shadow .5s ease,opacity .5s ease;
+}
+.history-page .history-tao-illustration[data-tao-phase="almost"] .history-tao-number:not(.is-illustrative-gap){
+  color:#f1fcff;
+  border-color:rgba(122,231,255,.7);
+  background:rgba(22,78,107,.8);
+  box-shadow:0 0 11px rgba(122,231,255,.22);
+}
+.history-page .history-tao-illustration[data-tao-phase="almost"] .history-tao-number.is-illustrative-gap{
+  color:#62728d;
+  opacity:.5;
+}
+.history-page .history-tao-illustration[data-tao-phase="every"] .history-tao-number{
+  color:#fff9e8;
+  border-color:rgba(255,212,121,.84);
+  background:rgba(105,75,25,.78);
+  box-shadow:0 0 12px rgba(255,212,121,.24);
+  opacity:1;
+}
+.history-page .history-tao-visual-key{
+  display:flex;align-items:flex-start;gap:9px;
+  color:#a9bad2;font-size:11px;line-height:1.5;
+  min-height:35px;margin-top:15px;
+}
+.history-page .history-tao-visual-key-dot{
+  flex:none;width:10px;height:10px;margin-top:3px;
+  border-radius:50%;background:#586d88;
+  transition:background .25s ease,box-shadow .25s ease;
+}
+.history-page .history-tao-illustration[data-tao-phase="almost"] .history-tao-visual-key-dot{
+  background:#7ae7ff;box-shadow:0 0 10px rgba(122,231,255,.45);
+}
+.history-page .history-tao-illustration[data-tao-phase="every"] .history-tao-visual-key-dot{
+  background:#ffd479;box-shadow:0 0 10px rgba(255,212,121,.45);
+}
+.history-page .history-tao-demo-disclaimer{
+  margin:10px 3px 0!important;
+  color:#99acc6!important;
+  font-size:11px!important;
+  line-height:1.65!important;
+}
+.history-page .history-tao-beats{display:flex;flex-direction:column;gap:18px;}
+.history-page .history-tao-beat{
+  display:flex;flex-direction:column;justify-content:center;
+  min-height:clamp(380px,68vh,620px);
+  padding:clamp(16px,2vw,22px);
+  border:1px solid rgba(149,179,220,.19);
+  border-radius:14px;
+  background:rgba(9,18,35,.67);
+  opacity:.63;
+  transition:opacity .45s ease,border-color .45s ease,background .45s ease;
+}
+.history-page .history-tao-beat.is-active{
+  opacity:1;border-color:rgba(155,195,239,.43);
+  background:linear-gradient(133deg,rgba(31,48,76,.87),rgba(12,21,39,.93));
+}
+.history-page .history-tao-beat[data-tao-beat="every"].is-active{
+  border-color:rgba(255,212,121,.44);
+}
+.history-page .history-tao-beat .history-tao-beat-kicker{
+  margin:0 0 17px;color:#9aaecb;letter-spacing:.1em;
+  font-size:10px;font-weight:780;line-height:1.5;
+}
+.history-page .history-tao-beat h4{
+  margin:0 0 18px;
+  font-size:clamp(29px,3vw,40px);line-height:1.07;
+  letter-spacing:-.05em;color:#7ae7ff;
+}
+.history-page .history-tao-beat[data-tao-beat="every"] h4{color:#ffd479;}
+.history-page .history-tao-beat p{
+  font-size:14px;line-height:1.7;color:#c4d1e3;margin:0 0 13px;
+}
+.history-page .history-tao-beat .history-tao-beat-foot{
+  padding-top:12px;border-top:1px solid rgba(182,199,225,.15);
+  font-size:12px;line-height:1.6;color:#9fb5ce;margin-top:4px;
+}
+.history-page .history-tao-connection{
+  margin:35px 0 22px!important;
+  padding:18px 21px;
+  border-left:3px solid #c6a5f9;
+  border-radius:0 10px 10px 0;
+  background:rgba(67,48,105,.2);
+  color:#d4c9ed!important;
+}
+.history-page .history-tao-bio{
+  grid-template-columns:155px minmax(0,1fr);
+  gap:23px;
+  border:1px solid rgba(169,191,226,.2);
+  border-radius:15px;
+  background:rgba(12,22,39,.67);
+  padding:20px;
+  margin:22px 0 0;
+}
+.history-page .history-tao-bio .history-tao-bio-portrait{margin:0;min-width:0;}
+.history-page .history-tao-bio .history-tao-bio-portrait img{
+  display:block;width:100%;max-height:210px;height:auto;
+  object-fit:cover;object-position:center 15%;
+}
+.history-page .history-tao-bio .history-tao-bio-portrait figcaption{
+  font-size:10px;line-height:1.5;
+}
+.history-page .history-tao-bio-content{min-width:0;}
+@media(max-width:1100px){
+  .history-page .history-tao-visual-story{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);}
+  .history-page .history-tao-number{font-size:10px;}
+}
+@media(max-width:760px){
+  .history-page .history-tao-visual-story{display:block;}
+  .history-page .history-tao-pin{top:76px;}
+  .history-page .history-tao-illustration{padding:13px 12px;}
+  .history-page .history-tao-number{font-size:clamp(9px,2vw,12px);}
+  .history-page .history-tao-beats{margin-top:14px;gap:14px;}
+  .history-page .history-tao-beat{min-height:clamp(220px,41vh,360px);}
+  .history-page .history-tao-bio{grid-template-columns:120px minmax(0,1fr);gap:14px;padding:15px;}
+  .history-page .history-tao-bio .history-tao-bio-portrait img{max-height:165px;}
+}
+@media(max-width:520px){
+  .history-page .history-tao-bio{grid-template-columns:1fr;}
+  .history-page .history-tao-bio .history-tao-bio-portrait{max-width:175px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .history-page .history-tao-number,
+  .history-page .history-tao-beat,
+  .history-page .history-tao-visual-key-dot,
+  .history-page .history-tao-visual-status{transition:none!important;}
+}
