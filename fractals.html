@@ -7,7 +7,7 @@
   <meta name="description" content="Explore fractals, inverse Collatz trees, complex numbers, and the Julia and Mandelbrot sets through interactive mathematics.">
   <title>Fractals | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
-  <link rel="stylesheet" href="fractals-draft.css?v=20261025-one-step-bridge-1">
+  <link rel="stylesheet" href="fractals-draft.css?v=20261025-editorial-1">
   <script src="fractals-draft.js?v=20261025-one-step-bridge-1" defer></script>
 </head>
 <body class="fractal-page">
@@ -29,7 +29,7 @@
   <main id="top" class="fractal-main">
     <section class="fractal-hero" aria-labelledby="fractal-title">
       <p class="fractal-overline">THE COLLATZ LABORATORY / FRACTALS</p>
-      <h1 id="fractal-title">A simple rule.<br><em>An astonishing landscape.</em></h1>
+      <h1 id="fractal-title" class="fractal-hero-title-long">Connecting the <em>Collatz</em> Conjecture to <em>Fractals</em>.</h1>
       <p class="fractal-deck">We've followed numbers through the Collatz sequence and watched them form branching trees. But what happens when we keep repeating rules, zoom into the patterns they create, and finally move beyond the number line?</p>
       <a class="fractal-scroll-link" href="#what-is-a-fractal">BEGIN EXPLORING <span aria-hidden="true">↓</span></a>
       <div class="fractal-hero-ornament" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
@@ -43,7 +43,7 @@
       </div>
       <div class="fractal-split">
         <div class="fractal-prose">
-          <h3>Simple rules. Repeated endlessly.</h3>
+          <h3>Fractals involve simple rules that can be repeated endlessly.</h3>
           <p>A fractal is often built by <strong>iteration</strong>: apply a rule, take the result, and apply the rule again. The resulting image may show <strong>self-similarity</strong>, where smaller portions resemble the whole. Some fractals have exact self-similarity; others display much subtler detail.</p>
           <p>Not every complicated picture is a fractal. Not every branching diagram is one, either. The important questions are how the object is defined and what happens to its structure as we examine it more closely. <a href="#sources">[1]</a></p>
           <div class="fractal-question">What could an extremely simple repeated rule create?</div>
@@ -58,7 +58,7 @@
             </g>
             <text x="210" y="270" text-anchor="middle" font-size="11" fill="#bacadc" letter-spacing="2">REPEAT · BRANCH · REPEAT</text>
           </svg>
-          <p>An illustration of recursive branching, not a claim that the Collatz tree is a mathematical fractal.</p>
+          <p>An illustration of recursive branching.</p>
         </div>
       </div>
     </section>
@@ -67,7 +67,8 @@
       <div class="fractal-section-head">
         <p class="fractal-index">02 / A FAMILIAR SHAPE</p>
         <h2 id="fractal-tree-title">Is the Collatz tree an infinite binary tree?</h2>
-        <p>In our Story, many starting values flowed toward the same positive cycle. When we reverse the arrows, a tree of predecessors grows outward. It certainly resembles the infinite binary trees we've studied. But look carefully at the branching.</p>
+        <p>An <strong>infinite binary tree</strong> has endlessly many nodes, and each node can have up to two children. In a <strong>full infinite binary tree</strong>, every node has exactly two children.</p>
+        <p>In our Story, many starting values flowed toward the same positive cycle. When we reverse the arrows, a tree of predecessors grows outward. It certainly resembles an infinite binary tree. But look carefully at the branching.</p>
       </div>
       <div class="fractal-tree-lab">
         <div class="fractal-tool-head">
@@ -79,7 +80,10 @@
           <div class="fractal-viz-panel"><div class="fractal-viz-meta"><h3>Inverse Collatz tree</h3><span id="collatz-count">0 nodes</span></div><svg id="collatz-inverse-svg" viewBox="0 0 520 330" role="img" aria-label="Finite inverse Collatz tree rooted at one, with some nodes having only one predecessor"></svg><p>Every positive integer has the predecessor <code>2n</code>; a second predecessor exists only for particular values.</p></div>
         </div>
         <div class="fractal-math-note"><span>THE IMPORTANT DIFFERENCE</span>
-          <p>Working backward from <strong>n</strong>, the even predecessor is always <strong>2n</strong>. An odd predecessor <strong>(n − 1)/3</strong> exists only when it is a positive odd integer, equivalently when <strong>n ≡ 4 (mod 6)</strong>. We omit the return edge 1 → 4 so the familiar 1–4–2 cycle can be represented as a rooted tree.</p>
+          <p>Working backward from a number <strong>n</strong>, we can always find one predecessor by doubling it: <strong>2n</strong>.</p>
+          <p>Sometimes we can find a second predecessor. Subtract 1 from n, then divide by 3. If the result is a <strong>positive odd whole number</strong>, it also leads to n under the Collatz rule.</p>
+          <p>For example, <strong>(10 − 1) ÷ 3 = 3</strong>, so 3 leads to 10. But <strong>(8 − 1) ÷ 3</strong> is not a whole number, so 8 has no second predecessor.</p>
+          <p>When we draw the tree, we leave out the arrow from 1 back to 4, allowing us to show the repeating 1–4–2 cycle as a branching tree.</p>
           <p>And there's a deeper question: does this backwards-growing component contain every positive integer? That's another way of asking the Collatz conjecture, <strong>not</strong> something our picture proves.</p>
         </div>
       </div>
@@ -105,7 +109,7 @@
     <section class="fractal-section" id="two-famous-sets" aria-labelledby="fractal-sets-title">
       <div class="fractal-section-head">
         <p class="fractal-index">04 / TWO REMARKABLE LANDSCAPES</p>
-        <h2 id="fractal-sets-title">Julia and Mandelbrot: the same rule, two different questions.</h2>
+        <h2 id="fractal-sets-title">Julia and Mandelbrot: the same rule with two different questions.</h2>
         <p>Consider the deceptively simple iteration <strong>z<sub>n+1</sub> = z<sub>n</sub>² + c</strong>. Repeat it, and ask whether the values remain bounded or eventually escape. The answer depends on what we choose to hold fixed.</p>
       </div>
       <fieldset class="fractal-palette-picker" id="fractal-palette-picker">
@@ -140,7 +144,7 @@
       </fieldset>
       <div class="fractal-dual">
         <section class="fractal-render-panel" aria-labelledby="julia-title">
-          <div class="fractal-render-copy"><p class="fractal-render-kicker">FIX c · CHANGE z₀</p><h3 id="julia-title">Julia sets</h3><p>Choose one value of <strong>c</strong>. Test different starting points <strong>z₀</strong> across the complex plane. The dark region approximates the <em>filled Julia set</em>, whose boundary is the Julia set. <a href="#sources">[3]</a></p></div>
+          <div class="fractal-render-copy"><p class="fractal-render-kicker">FIX c · CHANGE z₀</p><h3 id="julia-title">Julia sets</h3><p>Choose one value of <strong>c</strong>, then try different starting points <strong>z₀</strong> across the complex plane.</p><p><strong>Black</strong> shows starting points that have not escaped the boundary during our test. Together, those points approximate the <em>filled Julia set</em>. The edge of that set is called the Julia set. <a href="#sources">[3]</a></p></div>
           <div class="fractal-render-wrap"><canvas id="julia-canvas" aria-label="Interactive escape-time image for a quadratic filled Julia set; click to zoom" tabindex="0"></canvas><div class="fractal-render-status" id="julia-status" aria-live="polite">Rendering…</div></div>
           <div class="fractal-render-controls">
             <label for="julia-preset">Choose c</label>
@@ -160,7 +164,7 @@
           <p class="fractal-render-tip">Click a detail to zoom toward it. Shift-click to zoom out.</p>
         </section>
         <section class="fractal-render-panel" aria-labelledby="mandelbrot-title">
-          <div class="fractal-render-copy"><p class="fractal-render-kicker">FIX z₀ = 0 · CHANGE c</p><h3 id="mandelbrot-title">The Mandelbrot set</h3><p>Start from <strong>z₀ = 0</strong>. Now vary <strong>c</strong>, and ask which choices keep the orbit bounded. Those c-values form the Mandelbrot set. <a href="#sources">[4]</a></p></div>
+          <div class="fractal-render-copy"><p class="fractal-render-kicker">FIX z₀ = 0 · CHANGE c</p><h3 id="mandelbrot-title">The Mandelbrot set</h3><p>Start at <strong>z₀ = 0</strong> and try different values of <strong>c</strong>.</p><p><strong>Black</strong> shows choices of c whose sequences have not escaped the boundary during our test. These points approximate the <em>Mandelbrot set</em>, which consists of the values of c whose sequences remain bounded. <a href="#sources">[4]</a></p></div>
           <div class="fractal-render-wrap"><canvas id="mandelbrot-canvas" aria-label="Interactive escape-time image for the Mandelbrot set; click to zoom" tabindex="0"></canvas><div class="fractal-render-status" id="mandelbrot-status" aria-live="polite">Rendering…</div></div>
           <div class="fractal-render-controls">
             <span class="fractal-control-static">Explore the parameter c</span>
@@ -175,7 +179,10 @@
       </div>
       <div class="fractal-math-note">
         <span>WHAT ARE THE COLOURS?</span>
-        <p>These images are calculated here in your browser, not downloaded pictures. Each palette colours the smoothly estimated escape time, cycling through its colours to reveal changes across the full iteration range. Different escape times can share a colour. Changing palettes does not change the set, the current zoom, or the chosen Julia parameter. Nearly black points did not escape within the number of iterations calculated. That is an approximation, not a proof of boundedness at every dark pixel.</p>
+        <p>Each point in the picture follows the rule <strong>z<sub>n+1</sub> = z<sub>n</sub>² + c</strong>. We repeat the rule and check whether the values move beyond a set boundary.</p>
+        <p><strong>Black</strong> means the values have not escaped the boundary during the steps we calculated. They might still escape if we continue for longer.</p>
+        <p><strong>Other colours</strong> show points that did escape. The colours tell us how quickly they crossed the boundary. Because the palette repeats, the same colour can represent more than one escape time.</p>
+        <p>In a Julia image we change the starting point <strong>z₀</strong> and keep <strong>c</strong> fixed. In the Mandelbrot image we start at <strong>z₀ = 0</strong> and change <strong>c</strong>. Switching colour palettes changes only how the picture looks, not the calculations.</p>
         <p><strong>Julia changes the starting point.</strong> <strong>Mandelbrot changes the parameter.</strong> The iteration is the same; the experiment is different.</p>
       </div>
     </section>
