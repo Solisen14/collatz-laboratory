@@ -465,3 +465,14 @@ input[type=range]{accent-color:#7ae7ff;cursor:pointer;width:100%}
 .fractal-hero h1.fractal-hero-title-long{font-size:clamp(49px,6.4vw,94px);max-width:1160px;letter-spacing:-.062em;color:#f4f8ff;text-wrap:balance}
 .fractal-hero h1.fractal-hero-title-long em{color:#cab4ff;font-style:normal}
 @media(max-width:600px){.fractal-hero h1.fractal-hero-title-long{font-size:clamp(36px,9vw,56px);letter-spacing:-.065em;text-wrap:pretty}}
+
+/* Hero: the former five-dot ornament becomes a quiet complex-plane orbit. */
+.fractal-hero-ornament.fractal-orbit-ornament{right:0;bottom:14%;width:min(29vw,295px);height:auto;opacity:.58;pointer-events:none}
+.fractal-orbit-ornament svg{display:block;width:100%;height:auto;overflow:visible}
+.fractal-orbit-ornament .orbit-grid path{stroke:#b3c1ed;stroke-opacity:.33;fill:none;stroke-width:1.15}
+.fractal-orbit-ornament .orbit-grid .orbit-grid-ticks{stroke-opacity:.26}
+.fractal-orbit-ornament .orbit-path path{stroke:#c6afff;stroke-opacity:.79;stroke-width:1.75;fill:none;stroke-linecap:round}
+.fractal-orbit-ornament .orbit-points circle{stroke:#cbb8ff;stroke-width:1.5;fill:#11192c}
+.fractal-orbit-ornament .orbit-points circle:first-child{fill:#7ae7ff;stroke:#7ae7ff}
+.fractal-orbit-ornament .orbit-labels text{fill:#c8b7ef;font:600 12px system-ui,sans-serif}
+@media(max-width:900px){.fractal-hero-ornament.fractal-orbit-ornament{display:none}}
