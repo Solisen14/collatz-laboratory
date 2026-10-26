@@ -7,8 +7,8 @@
   <meta name="description" content="Explore fractals, inverse Collatz trees, complex numbers, and the Julia and Mandelbrot sets through interactive mathematics.">
   <title>Fractals | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
-  <link rel="stylesheet" href="fractals-draft.css?v=20261025-fern-scroll-1">
-  <script src="fractals-draft.js?v=20261025-one-step-bridge-1" defer></script>
+  <link rel="stylesheet" href="fractals-draft.css?v=20261025-complex-axis-1">
+  <script src="fractals-draft.js?v=20261025-complex-axis-1" defer></script>
   <script src="fern-zoom.js?v=20261025-scroll-1" defer></script>
 </head>
 <body class="fractal-page">
@@ -304,16 +304,19 @@
         </div>
         <div class="fractal-collatz-landscape-layout">
           <div class="fractal-collatz-plot">
-            <canvas id="collatz-complex-canvas" role="img" tabindex="0" aria-label="Interactive experiment with the complex Collatz interpolation F(z). Colour represents the first of at most 24 steps in which orbit magnitude exceeds 40. Dark does not mean proved bounded. Click to zoom."></canvas>
+            <canvas id="collatz-complex-canvas" role="img" tabindex="0" aria-label="Interactive complex Collatz interpolation centred at the origin. The initial real axis runs from minus 5 to 5. Colours show when each orbit first crosses the magnitude-40 threshold, within at most 24 iterations. Click to zoom."></canvas>
             <div class="fractal-collatz-plot-readout" id="collatz-complex-status" aria-live="polite">Scroll here to calculate the landscape.</div>
           </div>
           <div class="fractal-collatz-controls">
-            <label for="collatz-complex-view">Explore a region</label>
-            <select id="collatz-complex-view">
-              <option value="near-zero">Near the origin</option>
-              <option value="near-three">Near 3</option>
-              <option value="wide">Wider view</option>
+            <label for="collatz-complex-palette">Colour palette</label>
+            <select id="collatz-complex-palette" aria-label="Choose a colour palette for the complex extension">
+              <option value="ocean">Midnight Ocean</option>
+              <option value="fire">Cosmic Fire</option>
+              <option value="scientific">Scientific Gradient</option>
+              <option value="mono">Monochrome</option>
+              <option value="amethyst" selected>Amethyst</option>
             </select>
+            <p class="fractal-complex-coordinate-note">Starting view: Real −5 to 5, centred at (0,0).</p>
             <div class="fractal-render-buttons" aria-label="Complex Collatz explorer zoom controls">
               <button type="button" data-complex-action="in" aria-label="Zoom into complex Collatz landscape">+</button>
               <button type="button" data-complex-action="out" aria-label="Zoom out of complex Collatz landscape">−</button>
