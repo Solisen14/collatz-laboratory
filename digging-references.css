@@ -1,0 +1,67 @@
+/* Digging Deeper: sources, aligned visually with the Fractals reading list. */
+html{scroll-padding-top:90px}
+.digging-sources{
+  margin:34px 0 42px;
+  padding:48px 0 28px;
+  border-top:1px solid rgba(162,191,237,.22);
+}
+.digging-sources h2{
+  margin:0 0 12px;
+  font-size:clamp(24px,3vw,30px);
+  font-weight:700;
+  letter-spacing:-.03em;
+  color:#ecf5ff;
+}
+.digging-sources>p{
+  margin:0 0 18px;
+  color:#a9bdcf;
+  line-height:1.75;
+  font-size:15px;
+}
+.digging-sources ol{
+  margin:0;
+  padding-left:29px;
+  color:#a9bfd2;
+}
+.digging-sources li{
+  margin:0;
+  padding:9px 0;
+  font-size:15px;
+  line-height:1.75;
+}
+.digging-sources li::marker{color:#9fd9f0;font-weight:700}
+.digging-sources li a{
+  color:#a3e4f1;
+  text-decoration:underline;
+  text-decoration-color:rgba(163,228,241,.5);
+  text-underline-offset:3px;
+}
+.digging-sources li a:hover{color:#ddf8fc;text-decoration-color:currentColor}
+.digging-sources .digging-source-note{
+  margin:17px 0 0;
+  padding:14px 17px;
+  border-left:2px solid #a1dbe9;
+  background:rgba(24,52,73,.27);
+  color:#aabfd1;
+  font-size:13px;
+  line-height:1.75;
+}
+.digging-cite{
+  display:inline-block;
+  white-space:nowrap;
+  vertical-align:baseline;
+  font-size:.74em;
+  font-weight:700;
+  color:#97dff1;
+  text-decoration:none;
+  margin-left:3px;
+}
+.digging-cite:hover{text-decoration:underline}
+.digging-cite:focus-visible,.digging-sources a:focus-visible{
+  outline:2px solid #ffd479;outline-offset:3px;border-radius:2px;
+}
+@media(max-width:600px){
+  .digging-sources{margin-top:25px;padding-top:36px}
+  .digging-sources ol{padding-left:24px}
+  .digging-sources li{font-size:14px}
+}
