@@ -11,14 +11,19 @@
   const panel=$('angle-path-experiment');
   const ruleA=$('anb-a'),ruleB=$('anb-b');
   const countSelect=$('exp-angle-count'),paletteSelect=$('exp-angle-palette');
+  const sampling=$('exp-angle-sampling'),maximum=$('exp-angle-maximum');
+  const maximumWrap=$('exp-angle-maximum-wrap'),resample=$('exp-angle-randomize');
+  const layout=$('exp-angle-layout'),layoutNote=$('exp-angle-layout-note');
   const directA=$('exp-angle-a'),directB=$('exp-angle-b');
+  const numericA=$('exp-angle-a-number'),numericB=$('exp-angle-b-number');
   const directAValue=$('exp-angle-a-value'),directBValue=$('exp-angle-b-value');
   const ruleLabel=$('exp-angle-rule'),outcome=$('exp-angle-outcome');
   const oneCount=$('exp-angle-one'),otherCount=$('exp-angle-other');
   const openCount=$('exp-angle-open'),status=$('exp-angle-status');
   const save=$('exp-angle-save');
   const model=window.CollatzExperiment;
-  if(!panel||!canvas||!ruleA||!ruleB||!model||!countSelect||!paletteSelect||!directA||!directB)return;
+  if(!panel||!canvas||!ruleA||!ruleB||!model||!countSelect||!paletteSelect||
+     !directA||!directB||!numericA||!numericB||!sampling||!maximum||!layout)return;
   const context=canvas.getContext('2d',{alpha:false});
   if(!context){status.textContent='The drawing canvas is unavailable in this browser.';return;}
 
@@ -42,8 +47,31 @@
       [255,154,102],[245,190,110],[213,102,74],[255,220,157]]}
   };
 
-  const state={a:3,b:1,traces:[],curves:[],bounds:null,delay:0};
+  const state={a:3,b:1,traces:[],curves:[],bounds:null,delay:0,
+    sampleSeed:20150902,seeds:[],rawBounds:null};
   const clamp=(x,min,max)=>Math.max(min,Math.min(max,x));
+
+  // Reproducible, unique random starts like the original Visualize applet.
+  // Keep the same sample as a and b change so comparisons are meaningful.
+  function mulberry32(seed){
+    let t=seed>>>0;
+    return function(){
+      t=(t+0x6D2B79F5)>>>0;
+      let x=t;
+      x=Math.imul(x^(x>>>15),x|1);
+      x^=x+Math.imul(x^(x>>>7),x|61);
+      return ((x^(x>>>14))>>>0)/4294967296;
+    };
+  }
+  function sampledStarts(){
+    const count=Number(countSelect.value);
+    if(sampling.value!=='random')
+      return Array.from({length:count},(_,i)=>i+1);
+    const max=Math.max(count,Number(maximum.value));
+    const rand=mulberry32(state.sampleSeed),picked=new Set();
+    while(picked.size<count)picked.add(1+Math.floor(rand()*max));
+    return Array.from(picked).sort((a,b)=>b-a);
+  }
 
   function traceForDrawing(seed,a,b){
     const path=model.trace(seed,a,b);
@@ -55,19 +83,24 @@
     // in this abstract drawing; the note below the image makes this clear.
     if(path.status==='one'||path.status==='cycle'){
       const cycle=values.slice(path.cycleStart,-1);
-      if(!cycle.length)return {path,sequence:values.slice().reverse()};
+      if(!cycle.length)return {path,sequence:values.slice().reverse(),
+        group:'unfinished:'+path.status,anchor:null};
       const anchor=cycle.reduce((x,y)=>x<y?x:y);
       const end=values.findIndex(value=>value===anchor);
-      return {path,sequence:values.slice(0,end+1).reverse()};
+      return {path,sequence:values.slice(0,end+1).reverse(),
+        group:'cycle:'+anchor.toString(),anchor:anchor.toString()};
     }
     // A safety-limited trajectory has no verified terminal cycle.
     // Its last COMPUTED value is merely our drawing starting point.
-    return {path,sequence:values.slice().reverse()};
+    return {path,sequence:values.slice().reverse(),
+      group:'unfinished:'+path.status,anchor:null};
   }
 
   function syncRuleSliders(){
     directA.value=ruleA.value;
     directB.value=ruleB.value;
+    numericA.value=ruleA.value;
+    numericB.value=ruleB.value;
     directAValue.textContent=ruleA.value;
     directBValue.textContent=ruleB.value;
   }
@@ -76,10 +109,11 @@
     syncRuleSliders();
     state.a=Number(ruleA.value);
     state.b=Number(ruleB.value);
-    const count=Number(countSelect.value);
-    state.traces=Array.from({length:count},(_,i)=>traceForDrawing(i+1,state.a,state.b));
+    state.seeds=sampledStarts();
+    const count=state.seeds.length;
+    state.traces=state.seeds.map(seed=>traceForDrawing(seed,state.a,state.b));
     let minX=0,maxX=0,minY=0,maxY=0;
-    state.curves=state.traces.map(({path,sequence},index)=>{
+    state.curves=state.traces.map(({path,sequence,group,anchor},index)=>{
       let x=0,y=0,theta=0;
       const points=new Float64Array((sequence.length+1)*2);
       for(let k=0;k<sequence.length;k++){
@@ -95,13 +129,15 @@
         minX=Math.min(minX,x);maxX=Math.max(maxX,x);
         minY=Math.min(minY,y);maxY=Math.max(maxY,y);
       }
-      const seed=index+1;
+      const seed=state.seeds[index];
       const slot=Math.floor((seed*.00013+index*.43)%ORIGINAL.length);
       const frac=seed/count;
-      return {points,slot,alpha:.065+.30*Math.pow(frac,2),
+      return {seed,group,anchor,points,slot,offsetX:0,offsetY:0,
+        alpha:.065+.30*Math.pow(frac,2),
         width:.45+2.1*Math.pow(1-frac,4*STEP_EXPONENT)};
     });
-    state.bounds={minX,maxX,minY,maxY};
+    state.rawBounds={minX,maxX,minY,maxY};
+    arrangeCurves();
     const stats={one:0,cycle:0,open:0};
     state.traces.forEach(({path})=>{
       if(path.status==='one')stats.one++;
@@ -123,8 +159,9 @@
       btn.classList.toggle('is-current',current);
       btn.setAttribute('aria-pressed',String(current));
     });
-    status.textContent=count+' observed starting integers · '+state.a+'n + '+state.b+
-      ' · '+model.MAX_STEPS+'-step maximum per path';
+    status.textContent=count.toLocaleString('en-CA')+' tested starts · '+state.a+'n + '+state.b+
+      (sampling.value==='random'?' · random up to '+Number(maximum.value).toLocaleString('en-CA'):' · 1 to '+count.toLocaleString('en-CA'))+
+      ' · max '+model.MAX_STEPS+' steps';
     draw();
   }
 
