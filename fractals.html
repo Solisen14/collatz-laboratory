@@ -7,8 +7,8 @@
   <meta name="description" content="Explore fractals, inverse Collatz trees, complex numbers, and the Julia and Mandelbrot sets through interactive mathematics.">
   <title>Fractals | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
-  <link rel="stylesheet" href="fractals-draft.css?v=20261025-complex-axis-1">
-  <script src="fractals-draft.js?v=20261025-complex-50-1" defer></script>
+  <link rel="stylesheet" href="fractals-draft.css?v=20261026-panorama-1">
+  <script src="fractals-draft.js?v=20261026-panorama-1" defer></script>
   <script src="fern-zoom.js?v=20261025-scroll-1" defer></script>
 </head>
 <body class="fractal-page">
@@ -304,26 +304,35 @@
         </div>
         <div class="fractal-collatz-landscape-layout">
           <div class="fractal-collatz-plot">
-            <canvas id="collatz-complex-canvas" role="img" tabindex="0" aria-label="Interactive complex Collatz interpolation centred at the origin. The initial real axis runs from minus 5 to 5. Colours show when each orbit first crosses the magnitude-40 threshold, within at most 50 iterations. Click to zoom."></canvas>
+            <canvas id="collatz-complex-canvas" role="img" tabindex="0" aria-label="Interactive complex Collatz interpolation centred at the origin. The initial real axis runs from minus 5 to 5 and the imaginary axis from minus 1.4 to 1.4, with equal units on both axes. Colours show when each orbit first crosses the magnitude-40 threshold, within at most 50 iterations. Click to zoom."></canvas>
             <div class="fractal-collatz-plot-readout" id="collatz-complex-status" aria-live="polite">Scroll here to calculate the landscape.</div>
           </div>
           <div class="fractal-collatz-controls">
-            <label for="collatz-complex-palette">Colour palette</label>
-            <select id="collatz-complex-palette" aria-label="Choose a colour palette for the complex extension">
-              <option value="ocean">Midnight Ocean</option>
-              <option value="fire">Cosmic Fire</option>
-              <option value="scientific">Scientific Gradient</option>
-              <option value="mono">Monochrome</option>
-              <option value="amethyst" selected>Amethyst</option>
-            </select>
-            <p class="fractal-complex-coordinate-note">Starting view: Real −5 to 5, centred at (0,0).</p>
-            <div class="fractal-render-buttons" aria-label="Complex Collatz explorer zoom controls">
-              <button type="button" data-complex-action="in" aria-label="Zoom into complex Collatz landscape">+</button>
-              <button type="button" data-complex-action="out" aria-label="Zoom out of complex Collatz landscape">−</button>
-              <button type="button" data-complex-action="reset">Reset</button>
+            <div class="fractal-collatz-tools">
+              <div class="fractal-collatz-palette-field">
+                <label for="collatz-complex-palette">Colour palette</label>
+                <select id="collatz-complex-palette" aria-label="Choose a colour palette for the complex extension">
+                  <option value="ocean">Midnight Ocean</option>
+                  <option value="fire">Cosmic Fire</option>
+                  <option value="scientific">Scientific Gradient</option>
+                  <option value="mono">Monochrome</option>
+                  <option value="amethyst" selected>Amethyst</option>
+                </select>
+              </div>
+              <div class="fractal-collatz-zoom-group">
+                <span class="fractal-collatz-control-label">Zoom</span>
+                <div class="fractal-render-buttons" aria-label="Complex Collatz explorer zoom controls">
+                  <button type="button" data-complex-action="in" aria-label="Zoom into complex Collatz landscape">+</button>
+                  <button type="button" data-complex-action="out" aria-label="Zoom out of complex Collatz landscape">−</button>
+                  <button type="button" data-complex-action="reset">Reset</button>
+                </div>
+              </div>
+              <p class="fractal-complex-coordinate-note">Starting view: Real −5 to 5 · Imaginary −1.4 to 1.4 · Origin centred</p>
             </div>
-            <p class="fractal-collatz-key"><span class="fractal-collatz-key-dot"></span><strong>Coloured:</strong> threshold crossed within 50 steps.</p>
-            <p class="fractal-collatz-key"><span class="fractal-collatz-key-dot dark"></span><strong>Dark:</strong> threshold not crossed in 50 steps.</p>
+            <div class="fractal-collatz-legend" aria-label="Colour meaning">
+              <p class="fractal-collatz-key"><span class="fractal-collatz-key-dot"></span><strong>Coloured:</strong> threshold crossed within 50 steps.</p>
+              <p class="fractal-collatz-key"><span class="fractal-collatz-key-dot dark"></span><strong>Dark:</strong> threshold not crossed in 50 steps.</p>
+            </div>
             <p class="fractal-collatz-plot-hint">Click or tap to zoom toward a point. Shift-click to zoom out. Arrow keys pan; + / − zoom; R resets.</p>
           </div>
         </div>
