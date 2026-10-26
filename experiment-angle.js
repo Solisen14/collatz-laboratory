@@ -204,6 +204,7 @@
       // One input event is sufficient: the existing workbench reads both
       // slider values together, and this panel listens to the same event.
       ruleA.dispatchEvent(new Event('input',{bubbles:true}));
+      window.clearTimeout(state.delay);
       generate();
     });
   });
