@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="digging-motion.css?v=20261025-review-1" />
   <link rel="stylesheet" href="digging-inline-orbits.css?v=20261024-1" />
   <link rel="stylesheet" href="digging-trajectory.css?v=20261025-flow-2" />
+  <link rel="stylesheet" href="digging-references.css?v=20261025-1" />
 </head>
 <body class="chapter-page digging-page">
   <header class="site-header">
@@ -183,7 +184,7 @@
           <h3>Collatz as a Discrete Dynamical System</h3>
           <p>These very different paths come from repeatedly applying the same function. That makes Collatz a <strong>discrete dynamical system</strong>.</p>
           <p>The graph confirms that these tested starts reach 1; it does not prove the conjecture for every positive integer. And our picture stops at the <em>first</em> 1: the orbit itself continues, as we’ll explore next.</p>
-          <p>A <strong>discrete dynamical system</strong> is a mathematical process in which a function is applied repeatedly, with each output becoming the next input. The word <em>discrete</em> means that the process advances in individual steps rather than continuously.</p>
+          <p>A <strong>discrete dynamical system</strong> is a mathematical process in which a function is applied repeatedly, with each output becoming the next input. The word <em>discrete</em> means that the process advances in individual steps rather than continuously. <a class="digging-cite" href="#digging-ref-1" aria-label="Reference 1">[1]</a></p>
           <p>The Collatz function is one example. Both of its rules produce another positive integer, so the function maps positive integers back to positive integers: <span class="inline-math">C : ℤ⁺ → ℤ⁺</span>. Starting with any positive integer, we apply the appropriate rule to find the next number, then repeat.</p>
           <p>The sequence of values generated from a particular starting number is called its <strong>orbit</strong>. Each individual step is straightforward, but predicting the long-term behaviour of an orbit is surprisingly difficult.</p>
         </div>
@@ -485,7 +486,7 @@
 
           <h3>The Question We Still Can't Answer</h3>
           <p>We've shown that there are no positive integer fixed points of Collatz, and we've found one repeating cycle, <span class="fixed-math">1 → 4 → 2 → 1</span>. But is it the only possible long-term behaviour?</p>
-          <p>Could a positive integer enter an entirely different cycle? Could an orbit continue forever without ever repeating a value?</p>
+          <p>Could a positive integer enter an entirely different cycle? Could an orbit continue forever without ever repeating a value? <a class="digging-cite" href="#digging-ref-2" aria-label="Reference 2">[2]</a></p>
           <p>These possibilities take us back to the conjecture itself. <strong>Every positive integer is conjectured to eventually reach 1 and enter the same period-3 cycle.</strong></p>
           <p>Although enormous ranges of starting values have been checked by computer, there is still no proof that this must happen for <em>every</em> positive integer.</p>
         </div>
@@ -723,7 +724,7 @@
         <div class="article-prose">
           <h3>One Final Surprise: Eighteen Steps</h3>
           <p>We've found cycles of length 2 and 5. But the negative integers contain another known cycle, beginning at <span class="negative-math">−17</span>. This one takes <strong>18 steps</strong> to return to its starting value.</p>
-          <p>That's 18 different integers, connected by the exact same two rules we started with.</p>
+          <p>That's 18 different integers, connected by the exact same two rules we started with. <a class="digging-cite" href="#digging-ref-3" aria-label="Reference 3">[3]</a></p>
         </div>
 
         <figure class="negative-fig negative-cycle-large negative-reveal" data-negative-stage="eighteen">
@@ -856,7 +857,7 @@
 
         <div class="article-prose">
           <p>A tiny difference in the constant, from <span class="negative-math">+1</span> to <span class="negative-math">−1</span>, accompanies very different known repeating cycles.</p>
-          <p>Does that tell us that the positive integers <em>must</em> all enter the one familiar cycle? No. That remains the unproved Collatz conjecture.</p>
+          <p>Does that tell us that the positive integers <em>must</em> all enter the one familiar cycle? No. That remains the unproved Collatz conjecture. <a class="digging-cite" href="#digging-ref-4" aria-label="Reference 4">[4]</a></p>
         </div>
 
         <aside class="negative-takeaway">
@@ -866,7 +867,6 @@
 
         <p class="negative-ending">If the same simple rules can produce several different cycles below zero, what would it take to prove that every positive orbit finds just one?</p>
 
-        <p class="negative-reference">Further reading: <a href="https://ccchallenge.org/story" target="_blank" rel="noopener noreferrer">The Collatz Conjecture Challenge: The Collatz problem beyond natural numbers</a> explores the known negative cycles and the questions that remain open.</p>
       </article>
 
 
@@ -967,6 +967,18 @@
             <a href="fractals.html">Explore beyond the real axis <span aria-hidden="true">→</span></a>
           </div>
         </div>
+      </section>
+
+      <section class="digging-sources" id="digging-sources" aria-labelledby="digging-sources-title">
+        <h2 id="digging-sources-title">Research and further reading</h2>
+        <p>Explore the mathematics behind the sequences, cycles, and questions in this chapter.</p>
+        <ol>
+          <li id="digging-ref-1"><a href="https://cemc.uwaterloo.ca/sites/default/files/documents/2024/Grade1112_20230301_DynamicalSystemsAndFractals1.html" target="_blank" rel="noopener noreferrer">University of Waterloo CEMC, <em>Dynamical Systems and Fractals, Part 1</em></a>. A Grade 11/12 introduction to iteration, orbits, fixed points, and dynamical systems.</li>
+          <li id="digging-ref-2"><a href="https://mathworld.wolfram.com/CollatzConjecture.html" target="_blank" rel="noopener noreferrer">Wolfram MathWorld, <em>Collatz Conjecture</em></a>. Definitions, sequence behaviour, computational results, and the open problem.</li>
+          <li id="digging-ref-3"><a href="https://ccchallenge.org/story" target="_blank" rel="noopener noreferrer">The Collatz Conjecture Challenge, <em>The Collatz Problem Beyond Natural Numbers</em></a>. The negative-integer cycles and questions about what happens outside the positive integers.</li>
+          <li id="digging-ref-4"><a href="https://arxiv.org/abs/2111.02635" target="_blank" rel="noopener noreferrer">Jeffrey C. Lagarias, <em>The 3x+1 Problem: An Overview</em></a>. A deeper mathematical survey of the conjecture and why proving it is difficult.</li>
+        </ol>
+        <p class="digging-source-note"><strong>A note about counting steps:</strong> Some sources use a shortcut version of Collatz that divides by 2 immediately after each odd step. Our visualizations count each application of the original rule separately, so cycle lengths and iteration counts may differ.</p>
       </section>
 
       <nav class="chapter-next digging-bottom-nav" aria-label="Continue exploring">
