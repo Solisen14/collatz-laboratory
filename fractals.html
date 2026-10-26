@@ -7,7 +7,7 @@
   <meta name="description" content="Explore fractals, inverse Collatz trees, complex numbers, and the Julia and Mandelbrot sets through interactive mathematics.">
   <title>Fractals | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
-  <link rel="stylesheet" href="fractals-draft.css?v=20261025-editorial-1">
+  <link rel="stylesheet" href="fractals-draft.css?v=20261025-orbit-1">
   <script src="fractals-draft.js?v=20261025-one-step-bridge-1" defer></script>
 </head>
 <body class="fractal-page">
@@ -32,7 +32,21 @@
       <h1 id="fractal-title" class="fractal-hero-title-long">Connecting the <em>Collatz</em> Conjecture to <em>Fractals</em>.</h1>
       <p class="fractal-deck">We've followed numbers through the Collatz sequence and watched them form branching trees. But what happens when we keep repeating rules, zoom into the patterns they create, and finally move beyond the number line?</p>
       <a class="fractal-scroll-link" href="#what-is-a-fractal">BEGIN EXPLORING <span aria-hidden="true">↓</span></a>
-      <div class="fractal-hero-ornament" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="fractal-hero-ornament fractal-orbit-ornament" aria-hidden="true">
+        <svg viewBox="0 0 280 180" focusable="false">
+          <defs>
+            <marker id="hero-orbit-arrow" markerWidth="6" markerHeight="6" refX="4.8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M1 1 L5 3 L1 5" fill="none" stroke="#c7b5ff" stroke-width="1.2"/></marker>
+          </defs>
+          <g class="orbit-grid"><path d="M24 98 H257 M128 158 V18"/><path class="orbit-grid-ticks" d="M63 94 V102 M192 94 V102 M124 53 H132 M124 140 H132"/></g>
+          <g class="orbit-path">
+            <path d="M126 99 Q145 61 169 73" marker-end="url(#hero-orbit-arrow)"/>
+            <path d="M169 73 Q195 82 181 119" marker-end="url(#hero-orbit-arrow)"/>
+            <path d="M181 119 Q214 127 232 61" marker-end="url(#hero-orbit-arrow)"/>
+          </g>
+          <g class="orbit-points"><circle cx="126" cy="99" r="4.5"/><circle cx="169" cy="73" r="4.5"/><circle cx="181" cy="119" r="4.5"/><circle cx="232" cy="61" r="4.5"/></g>
+          <g class="orbit-labels"><text x="261" y="102">Re</text><text x="134" y="21">Im</text><text x="110" y="113">z₀</text><text x="156" y="62">z₁</text><text x="165" y="139">z₂</text><text x="237" y="53">z₃</text></g>
+        </svg>
+      </div>
     </section>
 
     <section class="fractal-section" id="what-is-a-fractal" aria-labelledby="fractal-intro-title">
