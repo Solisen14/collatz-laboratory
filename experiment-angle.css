@@ -162,3 +162,37 @@
   .anb-angle-metric strong{font-size:22px}
   .anb-angle-canvas{aspect-ratio:1.12}
 }
+
+/* The local a,b controls mirror the sliders in the original workbench. */
+.anb-angle-rule-sliders{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px 28px;margin:-1px 0 22px;
+  padding:17px 20px 13px;
+  border:1px solid rgba(137,176,224,.23);
+  border-radius:13px;
+  background:rgba(9,22,41,.74)
+}
+.anb-angle-slider{min-width:0}
+.anb-angle-slider label{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:12px;color:#c7dcea;font-size:14px;font-weight:630;
+  margin-bottom:12px
+}
+.anb-angle-slider label em{font-family:Georgia,serif;font-size:16px}
+.anb-angle-slider output{
+  color:#a5ecf6;font-size:18px;font-weight:730;
+  font-variant-numeric:tabular-nums
+}
+.anb-angle-slider input[type="range"]{
+  width:100%;display:block;accent-color:#8fe5f6;cursor:pointer
+}
+.anb-angle-slider-ticks{
+  display:flex;justify-content:space-between;
+  padding-top:4px;color:#829eb6;font-size:11px
+}
+.anb-angle-slider input:focus-visible{
+  outline:2px solid #ffd479;outline-offset:6px;border-radius:2px
+}
+@media(max-width:590px){
+  .anb-angle-rule-sliders{grid-template-columns:1fr;gap:15px;padding:15px}
+}
