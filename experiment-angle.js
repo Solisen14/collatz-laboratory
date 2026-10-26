@@ -19,6 +19,7 @@
   const directAValue=$('exp-angle-a-value'),directBValue=$('exp-angle-b-value');
   const ruleLabel=$('exp-angle-rule'),outcome=$('exp-angle-outcome');
   const oneCount=$('exp-angle-one'),otherCount=$('exp-angle-other');
+  const cyclesDescription=$('exp-angle-cycles-description');
   const openCount=$('exp-angle-open'),status=$('exp-angle-status');
   const save=$('exp-angle-save');
   const model=window.CollatzExperiment;
@@ -148,6 +149,17 @@
     oneCount.textContent=String(stats.one);
     otherCount.textContent=String(stats.cycle);
     openCount.textContent=String(stats.open);
+    const anchors=[...new Set(state.traces.filter(t=>t.anchor!==null).map(t=>t.anchor))]
+      .sort((x,y)=>BigInt(x)<BigInt(y)?-1:BigInt(x)>BigInt(y)?1:0);
+    const anchorSummary=anchors.length
+      ?anchors.length+' distinct observed cycle'+(anchors.length===1?'':'s')+
+        ' (smallest member'+(anchors.length===1?'':'s')+': '+
+        anchors.slice(0,10).join(', ')+(anchors.length>10?', …':'')+').'
+      :'No cycle was found within our calculation limits.';
+    const growth=(state.a+state.b)%2===1;
+    cyclesDescription.textContent=anchorSummary+
+      (growth?' Here, every positive starting value grows without bound: odd numbers remain odd and increase, and even numbers eventually become odd.':
+        ' A limit is where calculation stopped; it does not classify the eventual outcome.');
     outcome.textContent=stats.open?
       stats.open+' finite path'+(stats.open===1?'':'s')+' stopped at calculation limits':
       stats.cycle?
