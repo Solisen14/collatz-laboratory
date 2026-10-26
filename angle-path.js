@@ -25,6 +25,7 @@
   const randomButton = document.getElementById('angleRandomize');
   const animateButton = document.getElementById('angleAnimate');
   const saveButton = document.getElementById('angleSave');
+  const paletteInput = document.getElementById('anglePalette');
   const cards = Array.from(document.querySelectorAll('[data-visualizer-mode]'));
   if (!canvas || !workspace || !card || !countInput || !maxInput || !exponentInput || !strengthInput) return;
 
@@ -40,6 +41,34 @@
     [242,112,157], [255,153,107], [255,203,137], [198,118,210],
     [144,118,229], [103,185,240], [108,223,207], [247,112,105]
   ];
+  // The original scheme above remains exactly as it was, including its
+  // navy backdrop, radial vignette, screen blending, opacity and bloom.
+  // New schemes affect only colours and canvas treatment, never geometry.
+  const EXTRA_PALETTES={
+    monochrome:{
+      backdrop:'#ffffff',ink:'#252830',composite:'source-over',
+      strokes:[
+        [23,25,29],[43,46,51],[62,66,72],[35,38,42],
+        [78,82,87],[46,49,55],[67,70,76],[29,32,37]
+      ]
+    },
+    aurora:{
+      backdrop:'#061624',ink:'#cefef3',composite:'screen',
+      strokes:[
+        [62,205,222],[108,242,211],[117,178,250],[163,130,245],
+        [77,224,177],[147,231,249],[193,162,254],[80,196,223]
+      ]
+    },
+    ember:{
+      backdrop:'#120b0b',ink:'#ffdcaf',composite:'screen',
+      strokes:[
+        [255,183,76],[241,120,76],[249,203,137],[226,88,94],
+        [255,154,102],[245,190,110],[213,102,74],[255,220,157]
+      ]
+    }
+  };
+  let currentPalette='original';
+
   let modeActive = false, loaded = false;
   let selectionSeed = 20150902;
   let seeds = [], reversedOrbits = [], curves = [];
@@ -139,10 +168,12 @@
         minX=Math.min(minX,x);maxX=Math.max(maxX,x);
         minY=Math.min(minY,y);maxY=Math.max(maxY,y);
       }
-      const hue=PALETTE[Math.floor((seed*0.00013+index*.43)%PALETTE.length)];
+      const slot=Math.floor((seed*0.00013+index*.43)%PALETTE.length);
+      const hue=PALETTE[slot];
       const frac=seed/options().maximum;
       curves.push({
-        seed,points,rgb:hue,alpha:0.065+0.30*Math.pow(frac,2.0),
+        seed,points,rgb:hue,paletteSlot:slot,
+        alpha:0.065+0.30*Math.pow(frac,2.0),
         width:.45+2.1*Math.pow(1-frac,4*e)
       });
     }
@@ -167,16 +198,30 @@
     if(!modeActive)return;
     setupCanvas();
     const w=drawingWidth,h=drawingHeight;
+    const scheme=EXTRA_PALETTES[currentPalette]||null;
     context.globalCompositeOperation='source-over';
     context.globalAlpha=1;
-    context.fillStyle='#050813';
+    context.fillStyle=scheme?scheme.backdrop:'#050813';
     context.fillRect(0,0,w,h);
-    // A delicate radial vignette makes shared luminous threads easier to see.
-    const background=context.createRadialGradient(w*.48,h*.46,0,w*.48,h*.46,w*.68);
-    background.addColorStop(0,'rgba(26,32,58,.40)');
-    background.addColorStop(1,'rgba(5,8,19,0)');
-    context.fillStyle=background;
-    context.fillRect(0,0,w,h);
+    if(!scheme){
+      // Original, untouched vignette. The original palette remains identical.
+      const background=context.createRadialGradient(w*.48,h*.46,0,w*.48,h*.46,w*.68);
+      background.addColorStop(0,'rgba(26,32,58,.40)');
+      background.addColorStop(1,'rgba(5,8,19,0)');
+      context.fillStyle=background;
+      context.fillRect(0,0,w,h);
+    } else if(currentPalette!=='monochrome'){
+      const glow=context.createRadialGradient(w*.48,h*.46,0,w*.48,h*.46,w*.70);
+      if(currentPalette==='aurora'){
+        glow.addColorStop(0,'rgba(13,67,77,.31)');
+        glow.addColorStop(1,'rgba(6,22,36,0)');
+      }else{
+        glow.addColorStop(0,'rgba(93,43,28,.25)');
+        glow.addColorStop(1,'rgba(18,11,11,0)');
+      }
+      context.fillStyle=glow;
+      context.fillRect(0,0,w,h);
+    }
     if(!bounds||!curves.length)return;
     const pad=Math.max(24,Math.min(w,h)*.065);
     const sx=w-2*pad,sy=h-2*pad;
@@ -185,22 +230,23 @@
     const cx=(bounds.minX+bounds.maxX)/2,cy=(bounds.minY+bounds.maxY)/2;
     const fx=x=>w/2+(x-cx)*scale;
     const fy=y=>h/2-(y-cy)*scale;
-    context.globalCompositeOperation='screen';
+    context.globalCompositeOperation=scheme?scheme.composite:'screen';
     const count=Math.min(visibleCurves,curves.length);
     for(let i=0;i<count;i++) {
       const curve=curves[i],p=curve.points;
-      const rgb=curve.rgb.join(',');
+      const rgb=(scheme?scheme.strokes[curve.paletteSlot]:curve.rgb).join(',');
       context.beginPath();
       context.moveTo(fx(p[0]),fy(p[1]));
       for(let j=2;j<p.length;j+=2)context.lineTo(fx(p[j]),fy(p[j+1]));
       context.lineJoin='round';
       context.lineCap='round';
       context.strokeStyle='rgb('+rgb+')';
-      context.globalAlpha=curve.alpha;
+      context.globalAlpha=currentPalette==='monochrome'
+        ?Math.min(.76,curve.alpha*1.5+.035):curve.alpha;
       context.lineWidth=curve.width;
       context.stroke();
-      // Slight atmospheric bloom, without replacing the precise path.
-      if(curves.length<=500) {
+      // The original bloom remains identical; ink-on-paper avoids glow.
+      if(curves.length<=500 && currentPalette!=='monochrome') {
         context.globalAlpha=curve.alpha*.18;
         context.lineWidth=curve.width*2.4+1.0;
         context.stroke();
@@ -210,7 +256,7 @@
     context.globalCompositeOperation='source-over';
     // A single shared origin: the first mathematical value in every trail is 1.
     const rootX=fx(0),rootY=fy(0);
-    context.fillStyle='#fff0bc';
+    context.fillStyle=scheme?scheme.ink:'#fff0bc';
     context.beginPath();
     context.arc(rootX,rootY,3.5,0,2*Math.PI);
     context.fill();
@@ -293,6 +339,19 @@
   for(const button of cards) {
     button.addEventListener('click',()=>activate(button.dataset.visualizerMode==='angle'));
   }
+  if(paletteInput){
+    paletteInput.addEventListener('change',()=>{
+      const selected=paletteInput.value;
+      if(selected!=='original' && !EXTRA_PALETTES[selected])return;
+      currentPalette=selected;
+      workspace.dataset.anglePalette=selected;
+      // Only repaint. Keep the sampled seeds, path geometry, and
+      // current animation progress unchanged.
+      draw();
+      statusLine.textContent='Palette: '+paletteInput.selectedOptions[0].textContent.trim()+
+        ' · '+curves.length+' paths unchanged.';
+    });
+  }
   countInput.addEventListener('change',recalculateSamples);
   maxInput.addEventListener('change',recalculateSamples);
   exponentInput.addEventListener('input',scheduleGeometry);
@@ -327,7 +386,8 @@
       firstPath:curves[0]?Array.from(curves[0].points.slice(0,20)):[],
       bounds:bounds?{...bounds}:null,
       origin:[0,0],
-      highestValue:highestValue.toString()
+      highestValue:highestValue.toString(),
+      palette:currentPalette
     };
   };
 })();
