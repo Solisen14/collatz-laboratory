@@ -246,6 +246,18 @@
         </div>
         <p class="anb-angle-rule">CURRENT ODD RULE<strong id="exp-angle-rule">3n + 1</strong></p>
       </div>
+      <div class="anb-angle-rule-sliders" role="group" aria-label="Change the odd-number rule coefficients">
+        <div class="anb-angle-slider">
+          <label for="exp-angle-a">Odd-rule multiplier <em>a</em> <output id="exp-angle-a-value" for="exp-angle-a">3</output></label>
+          <input id="exp-angle-a" type="range" min="1" max="11" step="1" value="3">
+          <div class="anb-angle-slider-ticks"><span>1</span><span>11</span></div>
+        </div>
+        <div class="anb-angle-slider">
+          <label for="exp-angle-b">Odd-rule addend <em>b</em> <output id="exp-angle-b-value" for="exp-angle-b">1</output></label>
+          <input id="exp-angle-b" type="range" min="1" max="19" step="1" value="1">
+          <div class="anb-angle-slider-ticks"><span>1</span><span>19</span></div>
+        </div>
+      </div>
       <div class="anb-angle-presets" role="group" aria-label="Choose a rule for the angle-path experiment">
         <span>TRY ANOTHER RULE</span>
         <button type="button" class="is-current" data-exp-angle-rule="3,1" aria-pressed="true">3n + 1</button>
