@@ -581,13 +581,6 @@ function setScene(scene) {
       break;
     }
 
-    case "text-placeholder":
-      stageTitle.textContent = "The mathematical story continues.";
-      clearTimers();
-      sequenceArea.innerHTML = "";
-      sequenceArea.dataset.mode = "standard";
-      showPrompt("INSERT TEXT HERE");
-      break;
   }
 }
 
@@ -602,9 +595,8 @@ function updateActiveStep() {
   storySteps.forEach(step => {
     const rect = step.getBoundingClientRect();
 
-    // Ignore invisible author placeholders and any other display:none steps.
-    // Their zero-size boxes otherwise appear at (0,0), causing the hidden
-    // final scene to win when the reader scrolls just below the title.
+    // Ignore non-rendered steps; zero-size boxes should not participate
+    // in the active-scene calculation.
     if (rect.width <= 0 || rect.height <= 0) return;
 
     const centre = rect.top + rect.height / 2;
