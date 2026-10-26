@@ -647,7 +647,8 @@
   // The orbit data are never treated as Julia/Mandelbrot membership.
   // Span is the entire REAL-axis width. At reset this makes x∈[-5,5]
   // and centres 0+0i exactly halfway across both axes.
-  const COMPLEX_BASE={x:0,y:0,span:10};
+  const COMPLEX_BASE={x:0,y:0,span:10,imaginarySpan:2.8};
+  const COMPLEX_ASPECT=COMPLEX_BASE.imaginarySpan/COMPLEX_BASE.span;
   const complexExplorer={
     canvas:$('collatz-complex-canvas'),
     status:$('collatz-complex-status'),
@@ -734,10 +735,11 @@
   function renderComplexLandscape() {
     const s=complexExplorer,canvas=s.canvas;
     const ctx=canvas.getContext('2d',{alpha:false});
-    const {w,h}=canvasFit(canvas,ctx,550);
+    const {w,h}=canvasFit(canvas,ctx,1060);
     const img=ctx.createImageData(w,h),pixels=img.data;
     const generation=++s.token;
-    const spanY=s.span*h/w;
+    // At the 25:7 display aspect ratio, real and imaginary units are equal.
+    const spanY=s.span*COMPLEX_ASPECT;
     const left=s.x-s.span/2, top=s.y+spanY/2;
     const dx=s.span/w,dy=spanY/h;
     s.everRendered=true;
@@ -782,7 +784,7 @@
     const bounds=s.canvas.getBoundingClientRect();
     if(!bounds.width||!bounds.height)return;
     const hitX=s.x+(px-.5)*s.span;
-    const hitY=s.y-(py-.5)*s.span*bounds.height/bounds.width;
+    const hitY=s.y-(py-.5)*s.span*COMPLEX_ASPECT;
     const newSpan=Math.max(0.00001,Math.min(40,s.span*factor));
     if(newSpan===s.span)return;
     const ratio=newSpan/s.span;
