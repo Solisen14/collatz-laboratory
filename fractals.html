@@ -7,7 +7,7 @@
   <meta name="description" content="Explore fractals, inverse Collatz trees, complex numbers, and the Julia and Mandelbrot sets through interactive mathematics.">
   <title>Fractals | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
-  <link rel="stylesheet" href="fractals-draft.css?v=20261026-panorama-1">
+  <link rel="stylesheet" href="fractals-draft.css?v=20261026-real-axis-1">
   <script src="fractals-draft.js?v=20261026-panorama-1" defer></script>
   <script src="fern-zoom.js?v=20261025-scroll-1" defer></script>
 </head>
@@ -338,6 +338,21 @@
         </div>
         <p class="fractal-collatz-accuracy"><strong>Important:</strong> This is an experiment with one particular complex extension of the Collatz rule. Crossing a threshold does not prove an orbit diverges forever, and remaining dark does not prove an orbit is bounded. Neither outcome proves or disproves the original integer Collatz conjecture.</p>
       </section>
+      <section class="fractal-axis-reflection" aria-labelledby="fractal-axis-reflection-title">
+        <p class="fractal-tool-label">PAUSE AND LOOK CLOSER</p>
+        <h3 id="fractal-axis-reflection-title">Did you notice something about the real axis?</h3>
+        <p>Look again at the horizontal line running through <strong>(0,0)</strong>. Do the patterns above and below it look familiar? And what happens if our starting point is a <strong>whole number</strong> on that line?</p>
+        <details class="fractal-axis-discovery">
+          <summary>Reveal the connection <span aria-hidden="true">+</span></summary>
+          <div class="fractal-axis-discovery-copy">
+            <p><strong>First, the reflection.</strong> The shapes above and below the real axis are mirror images. Starting at <strong>a + bi</strong> or <strong>a − bi</strong> produces paths with the same magnitudes at every step, so they receive the same escape-time colour.</p>
+            <p><strong>Now the whole numbers.</strong> A point on the real axis stays on the real axis as we iterate. And when that point is an integer, our complex function follows the original Collatz rule exactly: divide an even number by 2, or multiply an odd number by 3 and add 1.</p>
+            <p>For example, starting at <strong>3 + 0i</strong> gives <strong>3 → 10 → 5 → 16 → 8 → 4 → 2 → 1</strong>. The familiar Collatz sequence is hiding inside this complex picture.</p>
+            <p class="fractal-axis-discovery-caution">Remember: a colour tells us whether the orbit crossed our magnitude-40 threshold within 50 steps. It does <em>not</em> tell us whether an integer eventually reaches 1.</p>
+          </div>
+        </details>
+      </section>
+
       <div class="fractal-research-note">
         <h3>One more twist: there's more than one way to extend Collatz.</h3>
         <p>The agreement on integers does <strong>not</strong> determine a unique complex function. Letherman, Schleicher and Wood investigated holomorphic extensions and their dynamics; Dumont and Reiter visualized other complex generalizations; Joseph L. Pe examined a different parity-inspired rule in the complex plane. <a href="#sources">[6–8]</a></p>
