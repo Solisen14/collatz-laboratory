@@ -529,3 +529,60 @@ input[type=range]{accent-color:#7ae7ff;cursor:pointer;width:100%}
 .fractal-collatz-controls .fractal-complex-coordinate-note{margin:-7px 0 0;color:#91afc7;font-size:12px;line-height:1.6}
 .fractal-collatz-plot .fractal-collatz-plot-readout{bottom:auto;left:auto;top:20px;right:20px;text-align:right}
 .fractal-collatz-controls select{cursor:pointer}
+
+/* Complex Collatz panorama: the initial coordinate window is
+   Re [-5, 5] and Im [-1.4, 1.4]. Ratio 25:7 preserves unit lengths. */
+.fractal-collatz-landscape-layout{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:17px;align-items:stretch
+}
+.fractal-collatz-plot{width:100%;min-width:0}
+.fractal-collatz-plot canvas{
+  display:block;width:100%;height:auto;aspect-ratio:25 / 7
+}
+.fractal-collatz-controls{
+  display:flex;flex-direction:column;align-items:stretch;
+  gap:15px;padding:18px 23px
+}
+.fractal-collatz-tools{
+  display:flex;flex-wrap:wrap;gap:16px 26px;
+  align-items:flex-end;width:100%
+}
+.fractal-collatz-palette-field,
+.fractal-collatz-zoom-group{
+  display:flex;flex-direction:column;gap:9px;min-width:0
+}
+.fractal-collatz-palette-field{width:min(275px,100%)}
+.fractal-collatz-palette-field select{width:100%;max-width:none}
+.fractal-collatz-control-label{color:#d2ddec;font-size:14px;font-weight:690}
+.fractal-collatz-zoom-group .fractal-render-buttons{justify-content:flex-start}
+.fractal-collatz-controls .fractal-complex-coordinate-note{
+  margin:0 0 2px;align-self:center;flex:1 1 260px;
+  font-size:12px;line-height:1.55;text-align:right
+}
+.fractal-collatz-legend{
+  display:flex;flex-wrap:wrap;align-items:center;gap:9px 28px;
+  padding-top:12px;border-top:1px solid rgba(155,176,224,.17)
+}
+.fractal-collatz-controls .fractal-collatz-key{max-width:100%}
+.fractal-collatz-controls .fractal-collatz-plot-hint{
+  margin:0!important;font-size:12px;line-height:1.5
+}
+@media(max-width:900px){
+  .fractal-collatz-controls{display:flex;align-items:stretch}
+  .fractal-collatz-tools{display:flex}
+  .fractal-collatz-controls .fractal-render-buttons{justify-content:flex-start}
+  .fractal-collatz-controls .fractal-collatz-plot-hint{grid-column:auto}
+}
+@media(max-width:600px){
+  .fractal-collatz-plot{overflow-x:auto;overscroll-behavior-x:contain}
+  .fractal-collatz-plot canvas{
+    width:max(100%,650px);max-width:none;aspect-ratio:25 / 7
+  }
+  .fractal-collatz-controls{padding:17px;display:flex;align-items:stretch}
+  .fractal-collatz-tools{gap:15px 19px}
+  .fractal-collatz-palette-field{flex:1 1 210px}
+  .fractal-collatz-controls .fractal-complex-coordinate-note{
+    text-align:left;flex:1 1 100%;align-self:auto
+  }
+  .fractal-collatz-legend{gap:8px}
+}
