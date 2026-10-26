@@ -524,3 +524,8 @@ input[type=range]{accent-color:#7ae7ff;cursor:pointer;width:100%}
   .fractal-fern-frame{height:min(65vh,620px)}
   .fractal-fern-footer{display:none}
 }
+
+/* Complex Collatz landscape: clear axis key, status away from bottom tick labels. */
+.fractal-collatz-controls .fractal-complex-coordinate-note{margin:-7px 0 0;color:#91afc7;font-size:12px;line-height:1.6}
+.fractal-collatz-plot .fractal-collatz-plot-readout{bottom:auto;left:auto;top:20px;right:20px;text-align:right}
+.fractal-collatz-controls select{cursor:pointer}
