@@ -328,13 +328,13 @@
   </section>
 
   <section class="anb-footnote" aria-labelledby="anb-notes-heading">
-    <p class="anb-panel-eyebrow">HOW TO READ THIS EXPERIMENT</p>
-    <h2 id="anb-notes-heading">Finite paths. Open questions.</h2>
+    <p class="anb-panel-eyebrow">HOW TO READ OUR RESULTS</p>
+    <h2 id="anb-notes-heading">Considerations</h2>
     <div class="anb-notes-grid">
-      <p><strong>Only positive starts.</strong> The directed graph uses starting numbers 1 to 25, positive a and b, and ordinary integer arithmetic; the Angle-Path Experiment can sample many more starting integers. All subsequent values are positive.</p>
-      <p><strong>A shared directed graph.</strong> Every integer is one node, even when multiple starting values visit it. Each arrow points to the next value; cyclic arrows are shown explicitly.</p>
-      <p><strong>Stopping rules.</strong> We continue through 1 and stop at the first repeated value, after 200 steps, or before exceeding 1,000,000,000,000. A repeated value closes a cycle; the outcome tells us whether that cycle contains 1. The map draws at most the first 32 edges per starting value, while the inspector reports the calculated path and its outcome. Reaching a boundary does not establish that a path tends to infinity.</p>
-      <p><strong>No proof by picture.</strong> Changing a and b creates different dynamical systems. Seeing 25 paths does not establish what happens for all starting values.</p>
+      <p><strong>Positive integers only.</strong> Both experiments start with positive integers and use positive whole-number choices of <em>a</em> and <em>b</em> (from 1 to 99). The directed graph follows starting values 1 through 25; Angle-Path Trails can draw up to 2,000 consecutive or randomly sampled starts. The rules always produce positive integers.</p>
+      <p><strong>What the drawings represent.</strong> In the directed graph, each displayed integer is one node, shared wherever paths visit the same value; arrows show the next step, including visible cycle-closing arrows. Angle-Path Trails is different: it turns a sequence into a drawn curve. Lines appearing to meet in that picture do not, by themselves, mean the number sequences converge.</p>
+      <p><strong>Finite calculations.</strong> We continue beyond 1 and stop when a value repeats, after 200 steps, or before the next value would exceed 1,000,000,000,000. A repeated value establishes a cycle; a step or value limit leaves the eventual behaviour unresolved by that calculation. The directed graph displays at most 32 steps per starting value, while its inspector reports the longer calculated path.</p>
+      <p><strong>What we can conclude.</strong> Changing <em>a</em> and <em>b</em> creates different dynamical systems. Testing 25 or even 2,000 starts cannot establish what happens for every positive integer. Some conclusions do follow from mathematical reasoning, however: for example, under <em>4n + 1</em>, every positive orbit grows without bound. A compelling image is a starting point for a question, not a substitute for a proof.</p>
     </div>
     <nav class="anb-bottom-nav" aria-label="Continue exploring"><a href="visualize.html">Explore the original Collatz visualizer <span aria-hidden="true">↗</span></a><a href="fractals.html">Fractals <span aria-hidden="true">↗</span></a></nav>
   </section>
