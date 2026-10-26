@@ -1,0 +1,164 @@
+/* Experiment: generalized angle-path drawing. Scoped to the extra lab,
+   with no changes to the original Visualize angle palette or renderer. */
+.anb-angle-experiment{
+  width:min(1500px,94vw);margin:88px auto 35px;
+  color:#e9f3ff;
+}
+.anb-angle-head{max-width:1050px;margin:0 0 27px}
+.anb-angle-kicker{
+  font:750 12px/1.5 Inter,system-ui,sans-serif;
+  letter-spacing:.17em;color:#7ae7ff;margin:0 0 11px
+}
+.anb-angle-head h2{
+  font-size:clamp(32px,4.6vw,54px);
+  letter-spacing:-.045em;line-height:1.11;
+  font-weight:680;margin:0 0 16px
+}
+.anb-angle-head h2 em{font-style:normal;color:#c6aeff}
+.anb-angle-head>p:last-child{
+  font-size:clamp(15px,1.6vw,18px);line-height:1.8;
+  max-width:960px;color:#b4c8db;margin:0
+}
+.anb-angle-panel{
+  border:1px solid rgba(151,183,236,.25);
+  border-radius:25px;
+  background:linear-gradient(160deg,#10192d,#090f1f 80%);
+  box-shadow:0 24px 70px rgba(0,0,0,.2);
+  padding:clamp(18px,2.7vw,32px)
+}
+.anb-angle-toolbar{
+  display:flex;align-items:end;justify-content:space-between;
+  gap:16px 25px;flex-wrap:wrap;
+  margin:0 0 21px
+}
+.anb-angle-control{
+  display:flex;flex-direction:column;gap:8px;
+  min-width:175px;flex:0 1 255px
+}
+.anb-angle-control label{
+  font-size:13px;font-weight:680;color:#d1e2f2
+}
+.anb-angle-control select{
+  padding:12px 35px 12px 14px;font:inherit;font-size:14px;
+  min-height:45px;width:100%;border-radius:10px;
+  color:#f1f8ff;background:#13233a;
+  border:1px solid rgba(120,198,224,.32);cursor:pointer
+}
+.anb-angle-rule{
+  min-width:130px;
+  font-size:13px;line-height:1.4;
+  color:#98aec8;
+  text-align:right
+}
+.anb-angle-rule strong{
+  display:block;color:#e8e6ff;
+  font-size:24px;font-weight:700;
+  letter-spacing:-.03em;margin-top:5px
+}
+.anb-angle-presets{
+  display:flex;flex-wrap:wrap;gap:8px;
+  align-items:center;margin:0 0 19px
+}
+.anb-angle-presets>span{
+  font-size:11px;letter-spacing:.11em;font-weight:750;
+  color:#91acc2;margin-right:9px
+}
+.anb-angle-presets button,.anb-angle-save{
+  font:650 13px Inter,system-ui,sans-serif;
+  color:#cce3f3;background:#14243b;
+  border:1px solid rgba(144,182,220,.32);
+  border-radius:9px;padding:10px 14px;
+  min-height:40px;cursor:pointer
+}
+.anb-angle-presets button:hover,.anb-angle-save:hover{
+  background:#263851;border-color:#93e2f3;color:#fff
+}
+.anb-angle-presets button.is-current{
+  color:#071622;background:#abeef9;
+  border-color:#abeef9
+}
+.anb-angle-presets button:focus-visible,.anb-angle-save:focus-visible,
+.anb-angle-control select:focus-visible{
+  outline:2px solid #ffcf79;outline-offset:3px
+}
+.anb-angle-canvas-top{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;
+  margin-bottom:12px
+}
+.anb-angle-canvas-top>p{
+  margin:0;color:#b8cfdf;font-size:11px;
+  font-weight:750;letter-spacing:.15em
+}
+.anb-angle-save{font-size:12px;min-height:36px;padding:8px 13px}
+.anb-angle-canvas-wrap{
+  background:#050813;overflow:hidden;
+  border-radius:17px;border:1px solid rgba(139,187,230,.2);
+  width:100%;position:relative
+}
+.anb-angle-canvas{
+  display:block;width:100%;height:auto;
+  aspect-ratio:1.75;
+  background:#050813
+}
+.anb-angle-experiment[data-palette="monochrome"] .anb-angle-canvas-wrap,
+.anb-angle-experiment[data-palette="monochrome"] .anb-angle-canvas{background:#fff}
+.anb-angle-experiment[data-palette="aurora"] .anb-angle-canvas-wrap,
+.anb-angle-experiment[data-palette="aurora"] .anb-angle-canvas{background:#061624}
+.anb-angle-experiment[data-palette="ember"] .anb-angle-canvas-wrap,
+.anb-angle-experiment[data-palette="ember"] .anb-angle-canvas{background:#120b0b}
+.anb-angle-readout{
+  display:flex;justify-content:space-between;gap:13px;align-items:center;
+  flex-wrap:wrap;color:#9fb7c9;font-size:12px;
+  line-height:1.65;margin:10px 0 0
+}
+.anb-angle-readout span:last-child{color:#c4ddef}
+.anb-angle-metrics{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  margin:22px 0 0;gap:11px
+}
+.anb-angle-metric{
+  border:1px solid rgba(144,174,220,.18);border-radius:13px;
+  padding:14px 17px;background:#0d1b30
+}
+.anb-angle-metric span{
+  display:block;font-size:11px;line-height:1.5;
+  letter-spacing:.1em;color:#93abc0;font-weight:750
+}
+.anb-angle-metric strong{
+  display:block;font-size:clamp(24px,3vw,35px);
+  margin-top:4px;color:#eaf7ff;font-variant-numeric:tabular-nums
+}
+.anb-angle-metric:nth-child(1) strong{color:#a9ecc9}
+.anb-angle-metric:nth-child(2) strong{color:#e3bbfc}
+.anb-angle-metric:nth-child(3) strong{color:#ffd19b}
+.anb-angle-interpretation{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:16px 30px;margin-top:18px;padding-top:20px;
+  border-top:1px solid rgba(149,182,224,.2)
+}
+.anb-angle-interpretation p{
+  color:#b4c5d7;font-size:14px;line-height:1.79;
+  margin:0
+}
+.anb-angle-interpretation strong{color:#f1f8ff}
+.anb-angle-interpretation a{color:#9be5f5;text-underline-offset:3px}
+@media(max-width:800px){
+  .anb-angle-experiment{margin-top:65px}
+  .anb-angle-canvas{aspect-ratio:1.3}
+  .anb-angle-interpretation{grid-template-columns:1fr}
+}
+@media(max-width:590px){
+  .anb-angle-experiment{width:min(100% - 26px,1500px)}
+  .anb-angle-panel{padding:16px}
+  .anb-angle-toolbar{gap:15px}
+  .anb-angle-control{flex:1 1 100%}
+  .anb-angle-rule{text-align:left}
+  .anb-angle-rule strong{display:inline;margin:0 0 0 9px}
+  .anb-angle-presets>span{flex:1 1 100%}
+  .anb-angle-metrics{gap:6px}
+  .anb-angle-metric{padding:12px 9px}
+  .anb-angle-metric span{font-size:9px}
+  .anb-angle-metric strong{font-size:22px}
+  .anb-angle-canvas{aspect-ratio:1.12}
+}
