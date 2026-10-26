@@ -330,16 +330,23 @@
     resetFractal('julia');
   });
 
-  // Palette changes repaint BOTH explorers from the same selected gradient
-  // without changing their zoom, position, quadratic rule, or Julia c.
+  // All three landscapes use one palette. Keep the top radio group
+  // and the complex-extension dropdown in sync; do not reset zoom or c.
+  function applyFractalPalette(value) {
+    if (!palettes[value]) return;
+    currentPalette=value;
+    document.querySelectorAll('input[name="fractal-palette"]').forEach(input=>{
+      input.checked=input.value===value;
+    });
+    if(complexExplorer.palette)complexExplorer.palette.value=value;
+    for(const [name,entry] of Object.entries(data)){
+      if(entry.everRendered)renderFractal(name);
+    }
+    if(complexExplorer.everRendered)renderComplexLandscape();
+  }
   document.querySelectorAll('input[name="fractal-palette"]').forEach(input=>{
     input.addEventListener('change',()=>{
-      if(!input.checked||!palettes[input.value])return;
-      currentPalette=input.value;
-      for(const [name,entry] of Object.entries(data)){
-        if(entry.everRendered)renderFractal(name);
-      }
-      if(complexExplorer.everRendered)renderComplexLandscape();
+      if(input.checked)applyFractalPalette(input.value);
     });
   });
 
@@ -638,18 +645,20 @@
   // SECTION 05B: A finite orbit-threshold image of ONE complex Collatz
   // interpolation. Crossing the threshold does not prove divergence.
   // The orbit data are never treated as Julia/Mandelbrot membership.
-  const complexViews={
-    'near-zero':{x:0.75,y:0,span:3.15},
-    'near-three':{x:3,y:0,span:2.55},
-    'wide':{x:1.3,y:0,span:7.5}
-  };
+  // Span is the entire REAL-axis width. At reset this makes x∈[-5,5]
+  // and centres 0+0i exactly halfway across both axes.
+  const COMPLEX_BASE={x:0,y:0,span:10};
   const complexExplorer={
     canvas:$('collatz-complex-canvas'),
     status:$('collatz-complex-status'),
-    view:$('collatz-complex-view'),
-    x:0.75,y:0,span:3.15,
+    palette:$('collatz-complex-palette'),
+    x:COMPLEX_BASE.x,y:COMPLEX_BASE.y,span:COMPLEX_BASE.span,
     token:0,everRendered:false
   };
+  complexExplorer.palette.value=currentPalette;
+  complexExplorer.palette.addEventListener('change',event=>{
+    applyFractalPalette(event.target.value);
+  });
   const COMPLEX_ITERATIONS=24;
   const COMPLEX_THRESHOLD=40;
   function complexFirstCrossing(real,imag) {
@@ -661,6 +670,66 @@
       if(mag>COMPLEX_THRESHOLD)return {step:i,mag};
     }
     return {step:0,mag:0};
+  }
+  function complexTickStep(span) {
+    const rough=span/10;
+    const power=Math.pow(10,Math.floor(Math.log10(rough)));
+    for(const fraction of [1,2,5,10]){
+      if(fraction*power>=rough-1e-12)return fraction*power;
+    }
+    return 10*power;
+  }
+  function drawComplexCoordinateAxes(ctx,w,h,left,top,dx,dy,spanX,spanY){
+    const bottom=top-spanY, right=left+spanX;
+    const axisX=-left/dx, axisY=top/dy;
+    const xStep=complexTickStep(spanX), yStep=complexTickStep(spanY);
+    const safeFont=Math.max(10,Math.min(12,Math.round(w/48)));
+    const label=value=>{
+      const rounded=Math.abs(value)<1e-10?0:Number(value.toPrecision(5));
+      return String(rounded).replace('-', '−');
+    };
+    ctx.save();
+    ctx.lineWidth=Math.max(.7,w/700);
+    ctx.font='600 '+safeFont+'px system-ui,sans-serif';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.strokeStyle='rgba(6,13,28,.9)';
+    ctx.lineJoin='round';
+    for(let i=Math.ceil(left/xStep-1e-8);i<=Math.floor(right/xStep+1e-8);i++){
+      const v=i*xStep,x=(v-left)/dx;
+      if(x<-.5||x>w+.5)continue;
+      const origin=Math.abs(v)<xStep*1e-4;
+      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.strokeStyle=origin?'rgba(202,236,253,.67)':'rgba(173,215,235,.20)';ctx.lineWidth=origin?1.6:0.75;ctx.stroke();
+      const tx=Math.max(safeFont*1.4,Math.min(w-safeFont*1.4,x));
+      const str=label(v);
+      ctx.lineWidth=3.7;ctx.strokeStyle='rgba(3,9,22,.95)';
+      ctx.strokeText(str,tx,h-12);
+      ctx.fillStyle='#e2f6ff';ctx.fillText(str,tx,h-12);
+    }
+    ctx.textAlign='left';
+    for(let i=Math.ceil(bottom/yStep-1e-8);i<=Math.floor(top/yStep+1e-8);i++){
+      const v=i*yStep,y=(top-v)/dy;
+      if(y<-.5||y>h+.5)continue;
+      const origin=Math.abs(v)<yStep*1e-4;
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.strokeStyle=origin?'rgba(202,236,253,.67)':'rgba(173,215,235,.20)';ctx.lineWidth=origin?1.6:0.75;ctx.stroke();
+      if(origin)continue;
+      const ty=Math.max(16,Math.min(h-27,y));
+      const str=label(v);
+      ctx.lineWidth=3.7;ctx.strokeStyle='rgba(3,9,22,.95)';
+      ctx.strokeText(str,10,ty);ctx.fillStyle='#d0e8fb';ctx.fillText(str,10,ty);
+    }
+    if(axisX>=0&&axisX<=w && axisY>=0&&axisY<=h){
+      ctx.fillStyle='#b5edff';ctx.strokeStyle='rgba(3,9,22,.9)';
+      ctx.beginPath();ctx.arc(axisX,axisY,3.4,0,Math.PI*2);ctx.fill();
+      ctx.lineWidth=3.7;
+      ctx.strokeText('(0,0)',Math.min(w-65,axisX+9),Math.max(17,axisY-14));
+      ctx.fillText('(0,0)',Math.min(w-65,axisX+9),Math.max(17,axisY-14));
+    }
+    ctx.font='700 '+safeFont+'px system-ui,sans-serif';
+    ctx.textAlign='right';ctx.fillStyle='#d5ecfa';
+    ctx.fillText('Re',w-10,h-29);
+    ctx.textAlign='left';ctx.fillText('Im',10,14);
+    ctx.restore();
   }
   function renderComplexLandscape() {
     const s=complexExplorer,canvas=s.canvas;
@@ -699,20 +768,10 @@
       } while(row<h && performance.now()<deadline);
       ctx.putImageData(img,0,0,0,start,w,row-start);
       if(row<h){requestAnimationFrame(work);return;}
-      // Faint real and imaginary axes help locate the integer rule.
-      ctx.save();
-      ctx.strokeStyle='rgba(220,240,255,0.36)';
-      ctx.lineWidth=Math.max(1,w/550);
-      if(left<0 && left+s.span>0){
-        const axisX=-left/dx;
-        ctx.beginPath();ctx.moveTo(axisX,0);ctx.lineTo(axisX,h);ctx.stroke();
-      }
-      if(top>0 && top-spanY<0){
-        const axisY=top/dy;
-        ctx.beginPath();ctx.moveTo(0,axisY);ctx.lineTo(w,axisY);ctx.stroke();
-      }
-      ctx.restore();
-      const zoom=complexViews[s.view.value].span/s.span;
+      // Overlay numbered axes after the rendered pixels. Labels follow
+      // zoom and pan; at reset the real ticks run exactly from -5 to 5.
+      drawComplexCoordinateAxes(ctx,w,h,left,top,dx,dy,s.span,spanY);
+      const zoom=COMPLEX_BASE.span/s.span;
       s.status.textContent='24 steps · first crossing |Fⁿ(z)| > 40 · Zoom ×'+
         (zoom<10?zoom.toFixed(1):Math.round(zoom).toLocaleString());
     }
@@ -724,7 +783,7 @@
     if(!bounds.width||!bounds.height)return;
     const hitX=s.x+(px-.5)*s.span;
     const hitY=s.y-(py-.5)*s.span*bounds.height/bounds.width;
-    const newSpan=Math.max(0.00001,Math.min(12,s.span*factor));
+    const newSpan=Math.max(0.00001,Math.min(40,s.span*factor));
     if(newSpan===s.span)return;
     const ratio=newSpan/s.span;
     s.x=hitX+(s.x-hitX)*ratio;
@@ -733,13 +792,11 @@
     renderComplexLandscape();
   }
   function resetComplexLandscape() {
-    const v=complexViews[complexExplorer.view.value];
-    complexExplorer.x=v.x;
-    complexExplorer.y=v.y;
-    complexExplorer.span=v.span;
+    complexExplorer.x=COMPLEX_BASE.x;
+    complexExplorer.y=COMPLEX_BASE.y;
+    complexExplorer.span=COMPLEX_BASE.span;
     renderComplexLandscape();
   }
-  complexExplorer.view.addEventListener('change',resetComplexLandscape);
   complexExplorer.canvas.addEventListener('click',event=>{
     const rect=complexExplorer.canvas.getBoundingClientRect();
     complexZoomAt(
