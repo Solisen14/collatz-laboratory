@@ -460,3 +460,8 @@ input[type=range]{accent-color:#7ae7ff;cursor:pointer;width:100%}
   .fractal-orbit-plot .orbit-edge.is-new,
   .fractal-orbit-readings li{transition:none!important}
 }
+
+/* Editorial headline: the two mathematical subjects remain purple; the connecting words stay white. */
+.fractal-hero h1.fractal-hero-title-long{font-size:clamp(49px,6.4vw,94px);max-width:1160px;letter-spacing:-.062em;color:#f4f8ff;text-wrap:balance}
+.fractal-hero h1.fractal-hero-title-long em{color:#cab4ff;font-style:normal}
+@media(max-width:600px){.fractal-hero h1.fractal-hero-title-long{font-size:clamp(36px,9vw,56px);letter-spacing:-.065em;text-wrap:pretty}}
