@@ -8,7 +8,7 @@
   <title>Fractals | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
   <link rel="stylesheet" href="fractals-draft.css?v=20261025-complex-axis-1">
-  <script src="fractals-draft.js?v=20261025-complex-axis-1" defer></script>
+  <script src="fractals-draft.js?v=20261025-complex-50-1" defer></script>
   <script src="fern-zoom.js?v=20261025-scroll-1" defer></script>
 </head>
 <body class="fractal-page">
@@ -300,11 +300,11 @@
         <div class="fractal-collatz-landscape-heading">
           <p class="fractal-tool-label">EXPLORE THE COMPLEX EXTENSION</p>
           <h3 id="fractal-collatz-landscape-title">What happens when we iterate F(z)?</h3>
-          <p>Now test a whole region of the complex plane. Each point is a starting value. The colours show how many steps pass before its orbit <strong>first exceeds magnitude 40</strong>, within a maximum of <strong>24 iterations</strong>. Dark points did not cross that threshold in our finite test.</p>
+          <p>Now test a whole region of the complex plane. Each point is a starting value. The colours show how many steps pass before its orbit <strong>first exceeds magnitude 40</strong>, within a maximum of <strong>50 iterations</strong>. Dark points did not cross that threshold in our finite test.</p>
         </div>
         <div class="fractal-collatz-landscape-layout">
           <div class="fractal-collatz-plot">
-            <canvas id="collatz-complex-canvas" role="img" tabindex="0" aria-label="Interactive complex Collatz interpolation centred at the origin. The initial real axis runs from minus 5 to 5. Colours show when each orbit first crosses the magnitude-40 threshold, within at most 24 iterations. Click to zoom."></canvas>
+            <canvas id="collatz-complex-canvas" role="img" tabindex="0" aria-label="Interactive complex Collatz interpolation centred at the origin. The initial real axis runs from minus 5 to 5. Colours show when each orbit first crosses the magnitude-40 threshold, within at most 50 iterations. Click to zoom."></canvas>
             <div class="fractal-collatz-plot-readout" id="collatz-complex-status" aria-live="polite">Scroll here to calculate the landscape.</div>
           </div>
           <div class="fractal-collatz-controls">
@@ -322,8 +322,8 @@
               <button type="button" data-complex-action="out" aria-label="Zoom out of complex Collatz landscape">−</button>
               <button type="button" data-complex-action="reset">Reset</button>
             </div>
-            <p class="fractal-collatz-key"><span class="fractal-collatz-key-dot"></span><strong>Coloured:</strong> threshold crossed within 24 steps.</p>
-            <p class="fractal-collatz-key"><span class="fractal-collatz-key-dot dark"></span><strong>Dark:</strong> threshold not crossed in 24 steps.</p>
+            <p class="fractal-collatz-key"><span class="fractal-collatz-key-dot"></span><strong>Coloured:</strong> threshold crossed within 50 steps.</p>
+            <p class="fractal-collatz-key"><span class="fractal-collatz-key-dot dark"></span><strong>Dark:</strong> threshold not crossed in 50 steps.</p>
             <p class="fractal-collatz-plot-hint">Click or tap to zoom toward a point. Shift-click to zoom out. Arrow keys pan; + / − zoom; R resets.</p>
           </div>
         </div>
