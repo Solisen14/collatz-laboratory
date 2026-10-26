@@ -309,7 +309,41 @@
     ruleB.value=directB.value;
     ruleB.dispatchEvent(new Event('input',{bubbles:true}));
   });
-  countSelect.addEventListener('change',generate);
+  function commitNumber(input,target){
+    const raw=input.value.trim();
+    if(!/^(?:[1-9]|[1-9][0-9])$/.test(raw)){
+      input.value=target.value;
+      status.textContent='Enter a positive whole number from 1 to 99.';
+      return;
+    }
+    target.value=raw;
+    target.dispatchEvent(new Event('input',{bubbles:true}));
+  }
+  numericA.addEventListener('change',()=>commitNumber(numericA,ruleA));
+  numericB.addEventListener('change',()=>commitNumber(numericB,ruleB));
+  function samplingControls(){
+    const random=sampling.value==='random';
+    maximumWrap.hidden=!random;
+    resample.hidden=!random;
+    if(random&&Number(maximum.value)<Number(countSelect.value))
+      maximum.value='100000';
+  }
+  countSelect.addEventListener('change',()=>{
+    samplingControls();generate();
+  });
+  sampling.addEventListener('change',()=>{
+    samplingControls();generate();
+  });
+  maximum.addEventListener('change',()=>{
+    samplingControls();generate();
+  });
+  resample.addEventListener('click',()=>{
+    state.sampleSeed=(state.sampleSeed+0x9E3779B9)>>>0;
+    generate();
+  });
+  layout.addEventListener('change',()=>{
+    arrangeCurves();draw();
+  });
   paletteSelect.addEventListener('change',()=>{
     panel.dataset.palette=paletteSelect.value;
     draw();
@@ -339,11 +373,14 @@
     window.clearTimeout(resize);
     resize=window.setTimeout(draw,120);
   },{passive:true});
+  samplingControls();
   generate();
   // Read-only diagnostics for mathematical and UI regression checks.
   window.collatzExperimentAngleDiagnostics=()=>({
-    a:state.a,b:state.b,palette:paletteSelect.value,
-    paths:state.traces.length,
+    a:state.a,b:state.b,palette:paletteSelect.value,layout:layout.value,
+    sampling:sampling.value,paths:state.traces.length,
+    firstSeeds:state.seeds.slice(0,12),
+    distinctObservedCycles:new Set(state.traces.filter(t=>t.anchor!==null).map(t=>t.group)).size,
     outcomes:state.traces.reduce((s,{path})=>(s[path.status]=(s[path.status]||0)+1,s),{}),
     firstPathValues:state.traces[0]?.path.values.slice(0,24).map(String)||[],
     firstDrawingValues:state.traces[0]?.sequence.slice(0,24).map(String)||[],
