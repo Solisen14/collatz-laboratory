@@ -317,11 +317,12 @@
         <div class="anb-angle-metric"><span>OTHER CYCLE</span><strong id="exp-angle-other">0</strong></div>
         <div class="anb-angle-metric"><span>CALCULATION LIMIT</span><strong id="exp-angle-open">0</strong></div>
       </div>
+      <p class="anb-angle-cycles-description" id="exp-angle-cycles-description">Examining the observed cycles and calculation limits…</p>
       <div class="anb-angle-interpretation">
-        <p><strong>How do we read this?</strong> Each curve represents one sampled starting integer. For a completed cycle, we draw backward from the smallest number in that cycle; for an unfinished calculation, from the last computed value. Parity controls turning, and the integer controls step length.</p>
+        <p><strong>How do we read this?</strong> Each curve represents one sampled starting integer. We draw each path in reverse iteration order: for a completed cycle, backward from its smallest integer; for a calculation-limited path, backward from its last calculated value. Parity controls turning, and the value controls step length. Colours are artistic, not categories of outcomes.</p>
         <p><strong>Are the number sequences converging?</strong> <em>Not necessarily.</em> The artistic overlay places every line at one pen position, even when the sequences head toward different cycles or hit our limits. Separated mode deliberately offsets those destinations to avoid a false impression of convergence; the canvas positions are not numerical coordinates.</p>
         <p><strong>Why can growing numbers make a tiny spiral?</strong> For exponent 1.2, large values produce drawing steps approximately proportional to <em>r</em><sup>−0.2</sup>. Under 4n + 1, each successive odd value grows more than fourfold, so the pen movements shrink geometrically, even while the integers grow without bound.</p>
-        <p><strong>What remains unknown?</strong> A cycle is recorded only if an integer actually repeats. Paths that stop at our 200-step or 10<sup>12</sup> value limit are <em>unfinished</em>, not proved divergent. The picture offers patterns to investigate, not proof.</p>
+        <p><strong>What remains unknown?</strong> A cycle is recorded only if an integer actually repeats. Paths that stop at our 200-step or 10<sup>12</sup> value limit are <em>unfinished</em>. The limit alone does not prove divergence, although some rules, including 4n + 1, are independently known to grow without bound. The picture offers patterns to investigate, not proof.</p>
       </div>
     </div>
   </section>
