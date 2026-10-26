@@ -228,3 +228,18 @@
 @media(prefers-reduced-motion:reduce) {
   .visualizer-mode-card, .angle-actions button {transition:none;}
 }
+/* Optional Angle-Path palettes. The default appearance is untouched. */
+.angle-palette-control{min-width:0}
+.angle-workspace[data-angle-palette="monochrome"] .angle-canvas-wrap,
+.angle-workspace[data-angle-palette="monochrome"] .angle-canvas{
+  background:#ffffff;
+}
+.angle-workspace[data-angle-palette="aurora"] .angle-canvas-wrap,
+.angle-workspace[data-angle-palette="aurora"] .angle-canvas{
+  background:#061624;
+}
+.angle-workspace[data-angle-palette="ember"] .angle-canvas-wrap,
+.angle-workspace[data-angle-palette="ember"] .angle-canvas{
+  background:#120b0b;
+}
+.angle-form #anglePalette{cursor:pointer}
