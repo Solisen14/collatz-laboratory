@@ -165,6 +165,67 @@
     draw();
   }
 
+  // The two arrangements are intentionally different. In overlay mode all
+  // paths share a pen origin solely for artistic comparison. In separated
+  // mode, paths with the SAME observed cycle share a root; unfinished paths
+  // receive distinct offsets because their eventual destination is unknown.
+  // Neither canvas arrangement places integers on a coordinate plane.
+  function arrangeCurves(){
+    const b=state.rawBounds;
+    if(!b){state.bounds=null;return;}
+    const separated=layout.value==='separate';
+    layoutNote.textContent=separated
+      ?'Observed cycles share a drawing origin only with their own cycle. Unfinished paths have separate pen origins. Their spacing has no numerical meaning.'
+      :'Artistic overlay: ALL paths start at the same pen position, even when their integer sequences do not meet. This is not evidence of convergence.';
+    state.curves.forEach(c=>{c.offsetX=0;c.offsetY=0;});
+    if(!separated){state.bounds={...b};return;}
+    const cycleKeys=[...new Set(state.curves.filter(c=>c.anchor!==null).map(c=>c.group))]
+      .sort((x,y)=>{
+        const a=BigInt(x.slice(6)),b=BigInt(y.slice(6));
+        return a<b?-1:a>b?1:0;
+      });
+    const openKeys=[...new Set(state.curves.filter(c=>c.anchor===null).map(c=>c.group))].sort();
+    const keys=cycleKeys.concat(openKeys);
+    const positions=new Map();
+    const columns=Math.max(1,Math.ceil(Math.sqrt(keys.length*1.5)));
+    const rows=Math.ceil(keys.length/columns);
+    const width=Math.max(.6,b.maxX-b.minX),height=Math.max(.6,b.maxY-b.minY);
+    keys.forEach((key,i)=>{
+      const col=i%columns,row=Math.floor(i/columns);
+      positions.set(key,{
+        x:(col-(columns-1)/2)*width*1.65,
+        y:(row-(rows-1)/2)*height*1.65
+      });
+    });
+    function unitHash(n){
+      let x=n>>>0;x^=x>>>16;x=Math.imul(x,0x7feb352d);
+      x^=x>>>15;x=Math.imul(x,0x846ca68b);
+      x^=x>>>16;return (x>>>0)/4294967296;
+    }
+    state.curves.forEach(c=>{
+      const base=positions.get(c.group);
+      if(!base)return;
+      c.offsetX=base.x;
+      c.offsetY=base.y;
+      if(c.anchor===null){
+        // Each safety-limited path has an UNKNOWN destination. Stagger its
+        // pen origin so limits cannot masquerade as genuine convergence.
+        c.offsetX+=(unitHash(c.seed)*2-1)*width*.43;
+        c.offsetY+=(unitHash(c.seed+7919)*2-1)*height*.43;
+      }
+    });
+    let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+    for(const curve of state.curves){
+      const points=curve.points,ox=curve.offsetX,oy=curve.offsetY;
+      for(let k=0;k<points.length;k+=2){
+        const x=points[k]+ox,y=points[k+1]+oy;
+        if(x<minX)minX=x;if(x>maxX)maxX=x;
+        if(y<minY)minY=y;if(y>maxY)maxY=y;
+      }
+    }
+    state.bounds={minX,maxX,minY,maxY};
+  }
+
   function setupCanvas(){
     const rect=canvas.getBoundingClientRect();
     const width=Math.max(320,Math.round(rect.width||960));
@@ -208,10 +269,10 @@
     const X=x=>w/2+(x-midX)*scale,Y=y=>h/2-(y-midY)*scale;
     context.globalCompositeOperation=scheme.blend;
     for(const curve of state.curves){
-      const p=curve.points;
+      const p=curve.points,ox=curve.offsetX,oy=curve.offsetY;
       context.beginPath();
-      context.moveTo(X(p[0]),Y(p[1]));
-      for(let i=2;i<p.length;i+=2)context.lineTo(X(p[i]),Y(p[i+1]));
+      context.moveTo(X(p[0]+ox),Y(p[1]+oy));
+      for(let i=2;i<p.length;i+=2)context.lineTo(X(p[i]+ox),Y(p[i+1]+oy));
       context.lineCap='round';context.lineJoin='round';
       context.strokeStyle='rgb('+scheme.stops[curve.slot].join(',')+')';
       context.lineWidth=curve.width;
@@ -225,10 +286,12 @@
     }
     context.globalAlpha=1;
     context.globalCompositeOperation='source-over';
-    // Marker is a COMMON DRAWING origin. It only represents one shared
-    // integer when the completed orbits have the same actual cycle anchor.
-    context.fillStyle=scheme.root;
-    context.beginPath();context.arc(X(0),Y(0),3.5,0,2*Math.PI);context.fill();
+    // Only Artistic overlay has a common DRAWING origin. Its position
+    // is not mathematical evidence that the sequences reach one number.
+    if(layout.value==='overlay'){
+      context.fillStyle=scheme.root;
+      context.beginPath();context.arc(X(0),Y(0),3.5,0,2*Math.PI);context.fill();
+    }
   }
 
   function schedule(){
