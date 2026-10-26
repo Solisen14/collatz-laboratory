@@ -476,3 +476,51 @@ input[type=range]{accent-color:#7ae7ff;cursor:pointer;width:100%}
 .fractal-orbit-ornament .orbit-points circle:first-child{fill:#7ae7ff;stroke:#7ae7ff}
 .fractal-orbit-ornament .orbit-labels text{fill:#c8b7ef;font:600 12px system-ui,sans-serif}
 @media(max-width:900px){.fractal-hero-ornament.fractal-orbit-ornament{display:none}}
+
+/* Scroll to zoom into one fern frond: a photographic illustration of approximate self-similarity. */
+.fractal-fern-journey{position:relative;height:225vh;min-height:1180px;margin:40px 0 66px}
+.fractal-fern-sticky{position:sticky;top:91px;margin:0;width:100%;z-index:1}
+.fractal-fern-frame{height:min(73vh,690px);min-height:450px;position:relative;isolation:isolate;overflow:hidden;border:1px solid rgba(149,184,228,.27);border-radius:24px;background:#0a1d18;box-shadow:0 18px 65px rgba(0,0,0,.21)}
+.fractal-fern-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:center;transform:scale(1);transform-origin:53% 46%;will-change:transform}
+.fractal-fern-scrim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(2,16,16,.77) 0%,rgba(4,22,20,.49) 40%,rgba(4,17,17,.06) 77%),linear-gradient(0deg,rgba(2,15,16,.85),transparent 42%,rgba(2,15,16,.42))}
+.fractal-fern-topline{position:absolute;top:28px;left:34px;right:34px;display:flex;justify-content:space-between;align-items:center;gap:10px;z-index:2;color:#dcf9ef;font-size:11px;letter-spacing:.17em;font-weight:790;text-shadow:0 2px 9px #07221a}
+.fractal-fern-counter{font-variant-numeric:tabular-nums;color:#b7e8d0}
+.fractal-fern-captions{position:absolute;left:clamp(22px,4.2vw,64px);right:25px;bottom:82px;z-index:2;width:min(620px,calc(100% - 55px));min-height:195px}
+.fractal-fern-caption{position:absolute;bottom:0;left:0;max-width:580px;opacity:0;visibility:hidden;transform:translateY(13px);transition:opacity .25s ease,transform .25s ease,visibility .25s ease}
+.fractal-fern-caption.is-active{opacity:1;visibility:visible;transform:translateY(0)}
+.fractal-fern-label{margin:0 0 10px;font-size:12px!important;letter-spacing:.18em;color:#95f1e3!important;font-weight:780}
+.fractal-fern-caption h3{font-size:clamp(30px,3.6vw,51px);font-weight:700;line-height:1.07;letter-spacing:-.05em;margin:0 0 15px;color:#fff}
+.fractal-fern-caption p:not(.fractal-fern-label){max-width:540px;color:#f1faf7;font-size:clamp(14px,1.3vw,18px);line-height:1.65;margin:0;text-wrap:pretty}
+.fractal-fern-footer{position:absolute;bottom:25px;left:clamp(22px,4.2vw,64px);right:clamp(22px,4.2vw,64px);display:flex;align-items:center;gap:20px;z-index:2}
+.fractal-fern-scroll-cue{white-space:nowrap;font-size:10px;font-weight:790;letter-spacing:.13em;color:#e8fff6}
+.fractal-fern-progress{height:3px;flex:1;max-width:440px;background:rgba(221,255,236,.3);border-radius:9px;overflow:hidden}
+.fractal-fern-progress-fill{height:100%;width:0;background:#a8f5dc;border-radius:9px}
+.fractal-fern-credit{font-size:11px;line-height:1.55;color:#829fb0;text-align:right;padding:9px 6px 0}
+.fractal-fern-credit a{color:#a3d8cb;text-underline-offset:2px}
+@media(max-width:900px){
+  .fractal-fern-journey{height:210vh;min-height:900px;margin:32px 0 50px}
+  .fractal-fern-sticky{top:76px}
+  .fractal-fern-frame{height:68vh;min-height:410px}
+  .fractal-fern-captions{bottom:74px;min-height:170px}
+}
+@media(max-width:600px){
+  .fractal-fern-journey{height:195svh;min-height:850px;margin:25px 0 45px}
+  .fractal-fern-sticky{top:68px}
+  .fractal-fern-frame{height:69svh;min-height:410px;border-radius:17px}
+  .fractal-fern-scrim{background:linear-gradient(0deg,rgba(1,13,12,.93),rgba(1,16,13,.56) 50%,rgba(1,14,13,.20)),linear-gradient(90deg,rgba(3,15,13,.18),transparent)}
+  .fractal-fern-topline{top:19px;left:18px;right:18px;font-size:9px}
+  .fractal-fern-captions{left:20px;right:16px;bottom:67px;min-height:195px;width:calc(100% - 36px)}
+  .fractal-fern-caption h3{font-size:clamp(29px,8vw,39px)}
+  .fractal-fern-caption p:not(.fractal-fern-label){font-size:14px}
+  .fractal-fern-footer{left:20px;right:20px;bottom:23px;gap:12px}
+  .fractal-fern-scroll-cue{font-size:9px}
+  .fractal-fern-credit{text-align:left;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .fractal-fern-journey{height:auto;min-height:0;margin-bottom:45px}
+  .fractal-fern-sticky{position:relative;top:auto}
+  .fractal-fern-photo{transform:none!important;will-change:auto}
+  .fractal-fern-caption{transition:none}
+  .fractal-fern-frame{height:min(65vh,620px)}
+  .fractal-fern-footer{display:none}
+}
