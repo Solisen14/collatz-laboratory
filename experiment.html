@@ -268,13 +268,19 @@
       <div class="anb-angle-rule-sliders" role="group" aria-label="Change the odd-number rule coefficients">
         <div class="anb-angle-slider">
           <label for="exp-angle-a">Odd-rule multiplier <em>a</em> <output id="exp-angle-a-value" for="exp-angle-a">3</output></label>
-          <input id="exp-angle-a" type="range" min="1" max="11" step="1" value="3">
-          <div class="anb-angle-slider-ticks"><span>1</span><span>11</span></div>
+          <div class="anb-angle-slider-inputs">
+            <input id="exp-angle-a" type="range" min="1" max="99" step="1" value="3">
+            <input id="exp-angle-a-number" type="number" min="1" max="99" step="1" value="3" aria-label="Enter exact multiplier a, from 1 to 99">
+          </div>
+          <div class="anb-angle-slider-ticks"><span>1</span><span>99</span></div>
         </div>
         <div class="anb-angle-slider">
           <label for="exp-angle-b">Odd-rule addend <em>b</em> <output id="exp-angle-b-value" for="exp-angle-b">1</output></label>
-          <input id="exp-angle-b" type="range" min="1" max="19" step="1" value="1">
-          <div class="anb-angle-slider-ticks"><span>1</span><span>19</span></div>
+          <div class="anb-angle-slider-inputs">
+            <input id="exp-angle-b" type="range" min="1" max="99" step="1" value="1">
+            <input id="exp-angle-b-number" type="number" min="1" max="99" step="1" value="1" aria-label="Enter exact addend b, from 1 to 99">
+          </div>
+          <div class="anb-angle-slider-ticks"><span>1</span><span>99</span></div>
         </div>
       </div>
       <div class="anb-angle-display-controls">
@@ -300,7 +306,7 @@
         <button class="anb-angle-save" id="exp-angle-save" type="button">Save PNG</button>
       </div>
       <div class="anb-angle-canvas-wrap">
-        <canvas id="exp-angle-canvas" class="anb-angle-canvas" role="img" aria-label="Generalized Collatz Angle-Path Trails. Each finite orbit is converted to a winding line using the same turning and length equations as the Visualize page. Trails begin from a common drawing point for comparison, which does not mean they share a starting or ending integer."></canvas>
+        <canvas id="exp-angle-canvas" class="anb-angle-canvas" role="img" aria-label="Generalized Collatz Angle-Path Trails. Finite integer sequences are converted to winding lines. In artistic overlay all curves begin at the same pen position, without implying numeric convergence; in separated mode, distinct observed cycles and unfinished calculations have offset origins."></canvas>
       </div>
       <div class="anb-angle-readout">
         <span id="exp-angle-outcome">Comparing outcomes…</span>
@@ -312,8 +318,10 @@
         <div class="anb-angle-metric"><span>CALCULATION LIMIT</span><strong id="exp-angle-open">0</strong></div>
       </div>
       <div class="anb-angle-interpretation">
-        <p><strong>How are the trails drawn?</strong> For a completed cycle, we trace backward from the smallest integer in that cycle toward the sampled starting number. For an unfinished calculation, we draw backward from its last computed value. Each integer determines a turn and a length, just as in our original Angle-Path Trails.</p>
-        <p><strong>What can we conclude?</strong> All trails share a <em>drawing origin</em> for visual comparison, but this does not mean their number sequences meet. Different cycles are genuinely different destinations, and stopping at a computational boundary does not demonstrate divergence. The picture offers patterns to investigate, not proof.</p>
+        <p><strong>How do we read this?</strong> Each curve represents one sampled starting integer. For a completed cycle, we draw backward from the smallest number in that cycle; for an unfinished calculation, from the last computed value. Parity controls turning, and the integer controls step length.</p>
+        <p><strong>Are the number sequences converging?</strong> <em>Not necessarily.</em> The artistic overlay places every line at one pen position, even when the sequences head toward different cycles or hit our limits. Separated mode deliberately offsets those destinations to avoid a false impression of convergence; the canvas positions are not numerical coordinates.</p>
+        <p><strong>Why can growing numbers make a tiny spiral?</strong> For exponent 1.2, large values produce drawing steps approximately proportional to <em>r</em><sup>−0.2</sup>. Under 4n + 1, each successive odd value grows more than fourfold, so the pen movements shrink geometrically, even while the integers grow without bound.</p>
+        <p><strong>What remains unknown?</strong> A cycle is recorded only if an integer actually repeats. Paths that stop at our 200-step or 10<sup>12</sup> value limit are <em>unfinished</em>, not proved divergent. The picture offers patterns to investigate, not proof.</p>
       </div>
     </div>
   </section>
