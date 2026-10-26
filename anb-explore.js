@@ -463,8 +463,8 @@
     const val=Number(raw);
     return Number.isInteger(val)&&val>=min&&val<=max?val:defaultValue;
   }
-  els.a.value=initialNumber('a',3,1,11);
-  els.b.value=initialNumber('b',1,1,19);
+  els.a.value=initialNumber('a',3,1,99);
+  els.b.value=initialNumber('b',1,1,99);
   els.a.addEventListener('input',updateRules);
   els.b.addEventListener('input',updateRules);
   document.querySelectorAll('.anb-preset').forEach(btn=>{
