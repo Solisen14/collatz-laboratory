@@ -132,7 +132,11 @@
       }
       const seed=state.seeds[index];
       const slot=Math.floor((seed*.00013+index*.43)%ORIGINAL.length);
-      const frac=seed/count;
+      // Normalize by the seed range, not the number of paths. Random
+      // samples can reach 200 million; using seed/count would make the
+      // noninteger width exponent NaN and corrupt the stroke settings.
+      const seedMaximum=sampling.value==='random'?Number(maximum.value):count;
+      const frac=seed/seedMaximum;
       return {seed,group,anchor,points,slot,offsetX:0,offsetY:0,
         alpha:.065+.30*Math.pow(frac,2),
         width:.45+2.1*Math.pow(1-frac,4*STEP_EXPONENT)};
