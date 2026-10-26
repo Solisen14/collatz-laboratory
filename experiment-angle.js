@@ -11,12 +11,14 @@
   const panel=$('angle-path-experiment');
   const ruleA=$('anb-a'),ruleB=$('anb-b');
   const countSelect=$('exp-angle-count'),paletteSelect=$('exp-angle-palette');
+  const directA=$('exp-angle-a'),directB=$('exp-angle-b');
+  const directAValue=$('exp-angle-a-value'),directBValue=$('exp-angle-b-value');
   const ruleLabel=$('exp-angle-rule'),outcome=$('exp-angle-outcome');
   const oneCount=$('exp-angle-one'),otherCount=$('exp-angle-other');
   const openCount=$('exp-angle-open'),status=$('exp-angle-status');
   const save=$('exp-angle-save');
   const model=window.CollatzExperiment;
-  if(!panel||!canvas||!ruleA||!ruleB||!model||!countSelect||!paletteSelect)return;
+  if(!panel||!canvas||!ruleA||!ruleB||!model||!countSelect||!paletteSelect||!directA||!directB)return;
   const context=canvas.getContext('2d',{alpha:false});
   if(!context){status.textContent='The drawing canvas is unavailable in this browser.';return;}
 
@@ -63,7 +65,15 @@
     return {path,sequence:values.slice().reverse()};
   }
 
+  function syncRuleSliders(){
+    directA.value=ruleA.value;
+    directB.value=ruleB.value;
+    directAValue.textContent=ruleA.value;
+    directBValue.textContent=ruleB.value;
+  }
+
   function generate(){
+    syncRuleSliders();
     state.a=Number(ruleA.value);
     state.b=Number(ruleB.value);
     const count=Number(countSelect.value);
@@ -185,11 +195,20 @@
   }
 
   function schedule(){
+    syncRuleSliders();
     window.clearTimeout(state.delay);
     state.delay=window.setTimeout(generate,110);
   }
   ruleA.addEventListener('input',schedule);
   ruleB.addEventListener('input',schedule);
+  directA.addEventListener('input',()=>{
+    ruleA.value=directA.value;
+    ruleA.dispatchEvent(new Event('input',{bubbles:true}));
+  });
+  directB.addEventListener('input',()=>{
+    ruleB.value=directB.value;
+    ruleB.dispatchEvent(new Event('input',{bubbles:true}));
+  });
   countSelect.addEventListener('change',generate);
   paletteSelect.addEventListener('change',()=>{
     panel.dataset.palette=paletteSelect.value;
