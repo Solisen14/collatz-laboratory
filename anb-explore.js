@@ -471,7 +471,8 @@
     btn.addEventListener('click',()=>{
       els.a.value=btn.dataset.a;
       els.b.value=btn.dataset.b;
-      updateRules();
+      // Notify every applet that reads these shared rule controls.
+      els.a.dispatchEvent(new Event('input',{bubbles:true}));
     });
   });
   els.showAll.addEventListener('click',()=>selectSeed(null));

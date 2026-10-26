@@ -139,6 +139,19 @@
     "tree-loop": {title:"And then the sequence repeats.",chapter:"14",kicker:"THE 4–2–1 CYCLE",status:"1 → 4 → 2 → 1"},
     "tree-formal": {title:"The Collatz Conjecture",chapter:"15",kicker:"THE MATHEMATICAL QUESTION",status:"Still unproved"}
   };
+  function layoutTree(){
+    if(!drawing||!drawing.isConnected)return;
+    const heading=document.querySelector(".stage-heading");
+    const stage=drawing.parentElement;
+    if(!heading||!stage)return;
+    // Keep the clipped SVG viewport below the complete heading, even
+    // when the title wraps or the short-screen heading position changes.
+    const top=Math.max(0,Math.ceil(heading.getBoundingClientRect().bottom-
+      stage.getBoundingClientRect().top+20));
+    drawing.style.top=top+"px";
+    drawing.style.maxHeight="calc(100% - "+(top+40)+"px)";
+    drawing.style.minHeight="0";
+  }
   function header(scene){
     const meta=info[scene],h=document.getElementById("stage-title");
     const chapter=document.querySelector(".stage-heading .chapter");
@@ -147,6 +160,7 @@
     if(chapter)chapter.textContent=meta.chapter;
     if(kicker)kicker.textContent=meta.kicker;
     showStatus(meta.status);
+    layoutTree();
   }
   function cancelLoop(){loopTimers.forEach(window.clearTimeout);loopTimers=[];}
   function queue(fn,delay){loopTimers.push(window.setTimeout(fn,delay));}
@@ -192,7 +206,11 @@
     });
   }
   window.addEventListener("scroll",onScroll,{passive:true});
-  window.addEventListener("resize",onScroll);
+  window.addEventListener("resize",function(){layoutTree();onScroll();});
+  const stageHeading=document.querySelector(".stage-heading");
+  if(stageHeading&&typeof ResizeObserver!=="undefined"){
+    new ResizeObserver(layoutTree).observe(stageHeading);
+  }
   function fullTree(){
     // Highest branch tips are at y=-120; 1 sits at y=1000. Both newly
     // extended vertical branches fit within the established tree scale.
