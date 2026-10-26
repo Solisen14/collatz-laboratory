@@ -9,9 +9,11 @@
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
   <link rel="stylesheet" href="anb-explore.css?v=20261025-directed-graph-2">
   <link rel="stylesheet" href="experiment-27.css?v=20261025-1">
+  <link rel="stylesheet" href="experiment-angle.css?v=20261025-1">
   <script src="anb-model.js?v=20261025-review-1" defer></script>
   <script src="anb-explore.js?v=20261025-review-1" defer></script>
   <script src="experiment-27.js?v=20261025-1" defer></script>
+  <script src="experiment-angle.js?v=20261025-1" defer></script>
 </head>
 <body class="anb-page">
 <header class="site-header">
@@ -214,6 +216,63 @@
           <p id="anb-detail-note" class="anb-detail-note"></p>
         </div>
       </section>
+    </div>
+  </section>
+
+  <section class="anb-angle-experiment" id="angle-path-experiment" data-palette="original" aria-labelledby="exp-angle-heading">
+    <header class="anb-angle-head">
+      <p class="anb-angle-kicker">06 / WHEN THE PATH BECOMES ART</p>
+      <h2 id="exp-angle-heading">What would these rules <em>look like?</em></h2>
+      <p>In <a href="visualize.html#angle">Angle-Path Trails</a>, we turned a Collatz orbit into a winding line. Now let's use the <strong>same turning and step-length formulas</strong> with different choices of <strong>a</strong> and <strong>b</strong>. How much does the drawing change when we change the rule?</p>
+    </header>
+    <div class="anb-angle-panel">
+      <div class="anb-angle-toolbar">
+        <div class="anb-angle-control">
+          <label for="exp-angle-count">Compare starting integers</label>
+          <select id="exp-angle-count">
+            <option value="25">1–25 · start with the original workbench</option>
+            <option value="100">1–100 · look for more structure</option>
+            <option value="200" selected>1–200 · build a richer picture</option>
+          </select>
+        </div>
+        <div class="anb-angle-control">
+          <label for="exp-angle-palette">Colour palette</label>
+          <select id="exp-angle-palette">
+            <option value="original" selected>Original colours</option>
+            <option value="monochrome">Monochrome · ink on paper</option>
+            <option value="aurora">Aurora · northern lights</option>
+            <option value="ember">Ember · copper and gold</option>
+          </select>
+        </div>
+        <p class="anb-angle-rule">CURRENT ODD RULE<strong id="exp-angle-rule">3n + 1</strong></p>
+      </div>
+      <div class="anb-angle-presets" role="group" aria-label="Choose a rule for the angle-path experiment">
+        <span>TRY ANOTHER RULE</span>
+        <button type="button" class="is-current" data-exp-angle-rule="3,1" aria-pressed="true">3n + 1</button>
+        <button type="button" data-exp-angle-rule="5,1" aria-pressed="false">5n + 1</button>
+        <button type="button" data-exp-angle-rule="3,3" aria-pressed="false">3n + 3</button>
+        <button type="button" data-exp-angle-rule="4,1" aria-pressed="false">4n + 1</button>
+      </div>
+      <div class="anb-angle-canvas-top">
+        <p>THE SAME DRAWING RULE · DIFFERENT INTEGER DYNAMICS</p>
+        <button class="anb-angle-save" id="exp-angle-save" type="button">Save PNG</button>
+      </div>
+      <div class="anb-angle-canvas-wrap">
+        <canvas id="exp-angle-canvas" class="anb-angle-canvas" role="img" aria-label="Generalized Collatz Angle-Path Trails. Each finite orbit is converted to a winding line using the same turning and length equations as the Visualize page. Trails begin from a common drawing point for comparison, which does not mean they share a starting or ending integer."></canvas>
+      </div>
+      <div class="anb-angle-readout">
+        <span id="exp-angle-outcome">Comparing outcomes…</span>
+        <span id="exp-angle-status" role="status" aria-live="polite">Computing the paths…</span>
+      </div>
+      <div class="anb-angle-metrics" aria-label="Finite outcomes for the sampled angle paths">
+        <div class="anb-angle-metric"><span>CYCLE WITH 1</span><strong id="exp-angle-one">0</strong></div>
+        <div class="anb-angle-metric"><span>OTHER CYCLE</span><strong id="exp-angle-other">0</strong></div>
+        <div class="anb-angle-metric"><span>CALCULATION LIMIT</span><strong id="exp-angle-open">0</strong></div>
+      </div>
+      <div class="anb-angle-interpretation">
+        <p><strong>How are the trails drawn?</strong> For a completed cycle, we trace backward from the smallest integer in that cycle toward the sampled starting number. For an unfinished calculation, we draw backward from its last computed value. Each integer determines a turn and a length, just as in our original Angle-Path Trails.</p>
+        <p><strong>What can we conclude?</strong> All trails share a <em>drawing origin</em> for visual comparison, but this does not mean their number sequences meet. Different cycles are genuinely different destinations, and stopping at a computational boundary does not demonstrate divergence. The picture offers patterns to investigate, not proof.</p>
+      </div>
     </div>
   </section>
 
