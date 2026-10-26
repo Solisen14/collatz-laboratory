@@ -149,8 +149,6 @@
     const top=Math.max(0,Math.ceil(heading.getBoundingClientRect().bottom-
       stage.getBoundingClientRect().top+20));
     drawing.style.top=top+"px";
-    drawing.style.maxHeight="calc(100% - "+(top+40)+"px)";
-    drawing.style.minHeight="0";
   }
   function header(scene){
     const meta=info[scene],h=document.getElementById("stage-title");
