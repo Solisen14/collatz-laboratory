@@ -201,8 +201,9 @@
       ruleA.value=a;ruleB.value=b;
       // Updating the existing workbench also updates its graph, summaries
       // and shareable URL. This applet listens to that same change.
+      // One input event is sufficient: the existing workbench reads both
+      // slider values together, and this panel listens to the same event.
       ruleA.dispatchEvent(new Event('input',{bubbles:true}));
-      ruleB.dispatchEvent(new Event('input',{bubbles:true}));
       generate();
     });
   });
