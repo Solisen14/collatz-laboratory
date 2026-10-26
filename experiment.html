@@ -9,11 +9,11 @@
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
   <link rel="stylesheet" href="anb-explore.css?v=20261025-directed-graph-2">
   <link rel="stylesheet" href="experiment-27.css?v=20261025-1">
-  <link rel="stylesheet" href="experiment-angle.css?v=20261025-1">
+  <link rel="stylesheet" href="experiment-angle.css?v=20261026-interpretation-1">
   <script src="anb-model.js?v=20261025-review-1" defer></script>
   <script src="anb-explore.js?v=20261025-review-1" defer></script>
   <script src="experiment-27.js?v=20261025-1" defer></script>
-  <script src="experiment-angle.js?v=20261025-1" defer></script>
+  <script src="experiment-angle.js?v=20261026-interpretation-1" defer></script>
 </head>
 <body class="anb-page">
 <header class="site-header">
@@ -146,15 +146,15 @@
       <p class="anb-panel-intro">Even numbers are always divided by 2. The sliders change what happens to odd numbers.</p>
       <div class="anb-slider">
         <label for="anb-a"><span>Multiplier <em>a</em></span><output id="anb-a-value" for="anb-a">3</output></label>
-        <input id="anb-a" type="range" min="1" max="11" step="1" value="3">
-        <div class="anb-slider-scale"><span>1</span><span>11</span></div>
+        <input id="anb-a" type="range" min="1" max="99" step="1" value="3">
+        <div class="anb-slider-scale"><span>1</span><span>99</span></div>
       </div>
       <div class="anb-slider">
         <label for="anb-b"><span>Addend <em>b</em></span><output id="anb-b-value" for="anb-b">1</output></label>
-        <input id="anb-b" type="range" min="1" max="19" step="1" value="1">
-        <div class="anb-slider-scale"><span>1</span><span>19</span></div>
+        <input id="anb-b" type="range" min="1" max="99" step="1" value="1">
+        <div class="anb-slider-scale"><span>1</span><span>99</span></div>
       </div>
-      <p class="anb-control-note">We allow positive integer values of a and b, including even choices. Some combinations create cycles; others grow beyond our finite viewing limit.</p>
+      <p class="anb-control-note">We allow positive integer values of a and b from 1 to 99, including even choices. Some combinations create cycles; others grow beyond our finite viewing limit.</p>
       <div class="anb-presets">
         <h3>Try a different rule</h3>
         <div class="anb-preset-grid">
@@ -223,7 +223,7 @@
     <header class="anb-angle-head">
       <p class="anb-angle-kicker">06 / WHEN THE PATH BECOMES ART</p>
       <h2 id="exp-angle-heading">What would these rules <em>look like?</em></h2>
-      <p>In <a href="visualize.html#angle">Angle-Path Trails</a>, we turned a Collatz orbit into a winding line. Now let's use the <strong>same turning and step-length formulas</strong> with different choices of <strong>a</strong> and <strong>b</strong>. How much does the drawing change when we change the rule?</p>
+      <p>In <a href="visualize.html#angle">Angle-Path Trails</a>, we turned a Collatz orbit into a winding line. Now let's use the <strong>same turning and step-length formulas</strong> with your choices of <strong>a</strong> and <strong>b</strong>. How much does the picture change, and what can we actually conclude from it?</p>
     </header>
     <div class="anb-angle-panel">
       <div class="anb-angle-toolbar">
@@ -232,7 +232,26 @@
           <select id="exp-angle-count">
             <option value="25">1–25 · start with the original workbench</option>
             <option value="100">1–100 · look for more structure</option>
-            <option value="200" selected>1–200 · build a richer picture</option>
+            <option value="200" selected>200 paths</option>
+            <option value="500">500 paths</option>
+            <option value="1000">1,000 paths</option>
+            <option value="2000">2,000 paths</option>
+          </select>
+        </div>
+        <div class="anb-angle-control">
+          <label for="exp-angle-sampling">Choose starting numbers</label>
+          <select id="exp-angle-sampling">
+            <option value="consecutive" selected>First N integers (1 to N)</option>
+            <option value="random">Random sample up to a maximum</option>
+          </select>
+        </div>
+        <div class="anb-angle-control" id="exp-angle-maximum-wrap" hidden>
+          <label for="exp-angle-maximum">Maximum starting integer</label>
+          <select id="exp-angle-maximum">
+            <option value="1000">1,000</option>
+            <option value="100000">100,000</option>
+            <option value="20000000">20,000,000</option>
+            <option value="200000000" selected>200,000,000</option>
           </select>
         </div>
         <div class="anb-angle-control">
@@ -257,6 +276,17 @@
           <input id="exp-angle-b" type="range" min="1" max="19" step="1" value="1">
           <div class="anb-angle-slider-ticks"><span>1</span><span>19</span></div>
         </div>
+      </div>
+      <div class="anb-angle-display-controls">
+        <div class="anb-angle-control">
+          <label for="exp-angle-layout">How should we arrange the trails?</label>
+          <select id="exp-angle-layout">
+            <option value="separate" selected>Separate observed destinations</option>
+            <option value="overlay">Artistic overlay (shared origin)</option>
+          </select>
+        </div>
+        <button id="exp-angle-randomize" class="anb-angle-save" type="button" hidden>New random sample</button>
+        <p id="exp-angle-layout-note" class="anb-angle-display-note">Observed cycles appear in separate regions; unfinished paths are spread out. Positions are for clarity, not numeric coordinates.</p>
       </div>
       <div class="anb-angle-presets" role="group" aria-label="Choose a rule for the angle-path experiment">
         <span>TRY ANOTHER RULE</span>
@@ -292,7 +322,7 @@
     <p class="anb-panel-eyebrow">HOW TO READ THIS EXPERIMENT</p>
     <h2 id="anb-notes-heading">Finite paths. Open questions.</h2>
     <div class="anb-notes-grid">
-      <p><strong>Only positive starts.</strong> We use starting numbers 1 to 25, positive a and b, and ordinary integer arithmetic. All subsequent values are positive.</p>
+      <p><strong>Only positive starts.</strong> The directed graph uses starting numbers 1 to 25, positive a and b, and ordinary integer arithmetic; the Angle-Path Experiment can sample many more starting integers. All subsequent values are positive.</p>
       <p><strong>A shared directed graph.</strong> Every integer is one node, even when multiple starting values visit it. Each arrow points to the next value; cyclic arrows are shown explicitly.</p>
       <p><strong>Stopping rules.</strong> We continue through 1 and stop at the first repeated value, after 200 steps, or before exceeding 1,000,000,000,000. A repeated value closes a cycle; the outcome tells us whether that cycle contains 1. The map draws at most the first 32 edges per starting value, while the inspector reports the calculated path and its outcome. Reaching a boundary does not establish that a path tends to infinity.</p>
       <p><strong>No proof by picture.</strong> Changing a and b creates different dynamical systems. Seeing 25 paths does not establish what happens for all starting values.</p>
