@@ -123,7 +123,7 @@ function ensureBranchingStyles() {
   document.head.appendChild(style);
 }
 
-function makeBranchStoryStep(scene, number, title, className = "tall-step", description = "INSERT TEXT HERE") {
+function makeBranchStoryStep(scene, number, title, className = "tall-step", description = "") {
   const article = document.createElement("article");
   article.className = `story-step ${className}`;
   article.dataset.scene = scene;
@@ -140,8 +140,10 @@ function makeBranchStoryStep(scene, number, title, className = "tall-step", desc
 function installBranchStorySteps() {
   if (storySteps.some(step => step.dataset.scene === "revisit-three")) return;
 
-  const textStep = storySteps.find(step => step.dataset.scene === "text-placeholder");
-  if (!textStep) return;
+  // Append real story steps directly: the retired author-only placeholder
+  // is no longer needed as a hidden insertion point.
+  const container = document.querySelector(".story-steps");
+  if (!container) return;
 
   const revisit = makeBranchStoryStep(
     "revisit-three", "REVISIT", "Let's revisit the first three paths.",
@@ -203,15 +205,13 @@ function installBranchStorySteps() {
   treeFormal.dataset.scene = "tree-formal";
   treeFormal.setAttribute("aria-label", "The Collatz Conjecture and where to explore next");
 
-  textStep.before(
+  const newSteps = [
     revisit, merge, grow, reverseQuestion, reverseReveal,
     treeRise, treeConverge, treeLoop, treeFormal
-  );
-  const insertAt = storySteps.indexOf(textStep);
-  storySteps.splice(
-    insertAt, 0, revisit, merge, grow, reverseQuestion, reverseReveal,
-    treeRise, treeConverge, treeLoop, treeFormal
-  );
+  ];
+  container.append(...newSteps);
+  // app.js keeps this array for its scroll-driven active-scene detection.
+  storySteps.push(...newSteps);
 }
 
 function branchMarker(defs, id, colour) {
