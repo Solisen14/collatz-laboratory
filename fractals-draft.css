@@ -586,3 +586,41 @@ input[type=range]{accent-color:#7ae7ff;cursor:pointer;width:100%}
   }
   .fractal-collatz-legend{gap:8px}
 }
+
+/* Reader pause: discover the real-axis reflection and integer Collatz orbits. */
+.fractal-axis-reflection{
+  margin:32px 0 24px;
+  padding:clamp(24px,3.4vw,42px);
+  border:1px solid rgba(181,161,241,.3);
+  border-radius:20px;
+  background:linear-gradient(132deg,rgba(72,46,118,.19),rgba(12,20,37,.89) 60%),#0d1528;
+}
+.fractal-axis-reflection>.fractal-tool-label{display:block;margin:0 0 12px;color:#bfa5fc}
+.fractal-axis-reflection h3{font-size:clamp(26px,3vw,38px);line-height:1.2;margin:0 0 16px;letter-spacing:-.035em}
+.fractal-axis-reflection>p:not(.fractal-tool-label){max-width:920px;margin:0 0 23px;color:#bbcee1;font-size:clamp(15px,1.5vw,18px);line-height:1.78}
+.fractal-axis-reflection strong{color:#f2f7ff}
+.fractal-axis-discovery{border-top:1px solid rgba(171,194,239,.18);padding-top:16px}
+.fractal-axis-discovery summary{
+  display:flex;align-items:center;justify-content:space-between;gap:17px;
+  cursor:pointer;list-style:none;width:100%;
+  font-size:14px;line-height:1.5;font-weight:780;color:#bdeeff;
+}
+.fractal-axis-discovery summary::-webkit-details-marker{display:none}
+.fractal-axis-discovery summary span{
+  display:inline-grid;place-items:center;flex:0 0 31px;
+  height:31px;border:1px solid rgba(160,206,234,.31);
+  background:rgba(29,48,70,.6);border-radius:50%;font-size:19px;
+  transition:transform .18s ease
+}
+.fractal-axis-discovery[open] summary span{transform:rotate(45deg)}
+.fractal-axis-discovery summary:hover{color:#e7faff}
+.fractal-axis-discovery summary:focus-visible{outline:2px solid #ffd479;outline-offset:6px;border-radius:5px}
+.fractal-axis-discovery-copy{padding-top:15px;max-width:930px}
+.fractal-axis-discovery-copy p{margin:0 0 15px;color:#b7cbdd;line-height:1.77;font-size:15px}
+.fractal-axis-discovery-copy p:last-child{margin-bottom:0}
+.fractal-axis-discovery-copy .fractal-axis-discovery-caution{
+  padding:12px 16px;border-left:2px solid #9fcfe8;
+  background:rgba(45,65,91,.17);color:#acc7d8
+}
+@media(max-width:600px){.fractal-axis-reflection{margin-top:24px;padding:22px 18px}.fractal-axis-discovery-copy p{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.fractal-axis-discovery summary span{transition:none}}
