@@ -242,3 +242,11 @@
   .anb-angle-display-note{flex-basis:100%}
   .anb-angle-interpretation{grid-template-columns:1fr}
 }
+
+.anb-angle-cycles-description{
+  margin:15px 0 0;padding:12px 16px;
+  color:#bad4e5;background:rgba(23,49,75,.45);
+  border-left:2px solid #98dff0;
+  border-radius:2px 9px 9px 2px;
+  font-size:13px;line-height:1.7
+}
