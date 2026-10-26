@@ -7,8 +7,9 @@
   <meta name="description" content="Explore fractals, inverse Collatz trees, complex numbers, and the Julia and Mandelbrot sets through interactive mathematics.">
   <title>Fractals | The Collatz Laboratory</title>
   <link rel="stylesheet" href="styles.css?v=20261021-nav-all-1">
-  <link rel="stylesheet" href="fractals-draft.css?v=20261025-orbit-1">
+  <link rel="stylesheet" href="fractals-draft.css?v=20261025-fern-scroll-1">
   <script src="fractals-draft.js?v=20261025-one-step-bridge-1" defer></script>
+  <script src="fern-zoom.js?v=20261025-scroll-1" defer></script>
 </head>
 <body class="fractal-page">
   <header class="site-header">
@@ -55,6 +56,28 @@
         <h2 id="fractal-intro-title">What are fractals, anyway?</h2>
         <p>Imagine zooming into a fern. Its smaller branches resemble the larger one. Zoom in again, and the same kind of shape seems to return. In mathematics, we can create objects whose detailed structure keeps revealing new structure, often with repeated or approximately repeated patterns at different scales.</p>
       </div>
+
+      <div class="fractal-fern-journey" id="fern-scroll-journey" aria-label="Explore repeating structures by zooming into a fern as you scroll">
+        <figure class="fractal-fern-sticky">
+          <div class="fractal-fern-frame">
+            <img class="fractal-fern-photo"
+                 src="https://images.unsplash.com/photo-1556784167-455912085908?auto=format&amp;fit=crop&amp;w=3200&amp;q=88"
+                 width="3000" height="2000" loading="lazy" decoding="async"
+                 alt="Close photograph of a green fern frond, with many smaller branches and finely divided leaflets." />
+            <div class="fractal-fern-scrim" aria-hidden="true"></div>
+            <div class="fractal-fern-topline" aria-hidden="true"><span>LOOK CLOSER / A FERN</span><span class="fractal-fern-counter">01 / 04</span></div>
+            <div class="fractal-fern-captions">
+              <div class="fractal-fern-caption is-active" aria-hidden="false"><p class="fractal-fern-label">01 · THE BIG PICTURE</p><h3>Look at the whole frond.</h3><p>Its branches resemble smaller versions of the larger shape. What happens when we move closer?</p></div>
+              <div class="fractal-fern-caption" aria-hidden="true"><p class="fractal-fern-label">02 · MOVE CLOSER</p><h3>A branch becomes the picture.</h3><p>The smaller leaflets are arranged in a familiar branching pattern.</p></div>
+              <div class="fractal-fern-caption" aria-hidden="true"><p class="fractal-fern-label">03 · LOOK AGAIN</p><h3>There is more detail.</h3><p>Each scale reveals smaller shapes and intricate structure.</p></div>
+              <div class="fractal-fern-caption" aria-hidden="true"><p class="fractal-fern-label">04 · THINK ABOUT THE PATTERN</p><h3>Similar, not identical.</h3><p>Nature gives us approximate self-similarity. Some mathematical fractals repeat much more precisely.</p></div>
+            </div>
+            <div class="fractal-fern-footer" aria-hidden="true"><span class="fractal-fern-scroll-cue">SCROLL TO ZOOM ↓</span><div class="fractal-fern-progress"><div class="fractal-fern-progress-fill"></div></div></div>
+          </div>
+          <figcaption class="fractal-fern-credit">Fern photograph: <a href="https://unsplash.com/photos/UIaINM8lxSU" target="_blank" rel="noopener noreferrer">Naoki Suzuki / Unsplash</a>. Scroll-driven digital magnification of a single image.</figcaption>
+        </figure>
+      </div>
+
       <div class="fractal-split">
         <div class="fractal-prose">
           <h3>Fractals involve simple rules that can be repeated endlessly.</h3>
