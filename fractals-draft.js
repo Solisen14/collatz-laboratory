@@ -659,7 +659,7 @@
   complexExplorer.palette.addEventListener('change',event=>{
     applyFractalPalette(event.target.value);
   });
-  const COMPLEX_ITERATIONS=24;
+  const COMPLEX_ITERATIONS=50;
   const COMPLEX_THRESHOLD=40;
   function complexFirstCrossing(real,imag) {
     for(let i=1;i<=COMPLEX_ITERATIONS;i++){
@@ -772,7 +772,7 @@
       // zoom and pan; at reset the real ticks run exactly from -5 to 5.
       drawComplexCoordinateAxes(ctx,w,h,left,top,dx,dy,s.span,spanY);
       const zoom=COMPLEX_BASE.span/s.span;
-      s.status.textContent='24 steps · first crossing |Fⁿ(z)| > 40 · Zoom ×'+
+      s.status.textContent=COMPLEX_ITERATIONS+' steps · first crossing |Fⁿ(z)| > 40 · Zoom ×'+
         (zoom<10?zoom.toFixed(1):Math.round(zoom).toLocaleString());
     }
     requestAnimationFrame(work);
