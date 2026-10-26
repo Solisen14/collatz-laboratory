@@ -514,11 +514,6 @@ nav a.active {
   padding-bottom: 17vh;
 }
 
-.story-step.writing-step {
-  min-height: 120vh;
-  align-items: center;
-}
-
 .step-card {
   width: min(480px, 31vw);
   padding: 26px 28px;
@@ -626,46 +621,6 @@ nav a.active {
 
 .refined-card .step-number {
   color: var(--green);
-}
-
-.writing-card {
-  border-style: dashed;
-  background: rgba(10,13,22,.56);
-}
-
-.writing-card h3 {
-  color: #c9d0dc;
-  letter-spacing: .08em;
-  font-size: 20px;
-}
-
-.prototype-end {
-  position: relative;
-  z-index: 20;
-  min-height: 78vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 100px 20vw;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(122,231,255,.09), transparent 34rem),
-    #06080d;
-  border-top: 1px solid rgba(255,255,255,.06);
-}
-
-.prototype-end h2 {
-  margin: 0;
-  font-size: 46px;
-  letter-spacing: -.04em;
-  font-weight: 560;
-}
-
-.prototype-end > p:last-child {
-  max-width: 720px;
-  color: #8f99a9;
-  line-height: 1.7;
 }
 
 @media (max-height: 780px) {
@@ -843,11 +798,6 @@ nav a.active {
   .conjecture-finale, .finale-path { transition-duration: .01ms !important; transition-delay: 0s !important; }
 }
 
-
-/* Retain the original writing placeholder in source for collaboration,
-   but let the new conjecture navigation be the public story's ending. */
-.story-steps > .story-step[data-scene="text-placeholder"],
-.prototype-end { display: none !important; }
 
 @media (max-height: 600px) {
   .conjecture-finale { padding-top: calc(var(--header-h) + 10px); }
